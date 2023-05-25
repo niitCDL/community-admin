@@ -6,7 +6,8 @@
 		"build": "vue-tsc --noEmit && vite build",
 		"preview": "vite preview",
 		"lint": "eslint --fix --ext .vue,.jsx,.ts,.tsx .",
-		"changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r0"
+		"changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r0",
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@element-plus/icons-vue": "^2.1.0",
@@ -30,6 +31,8 @@
 	},
 	"devDependencies": {
 		"@babel/types": "^7.21.5",
+		"@commitlint/cli": "^17.6.3",
+		"@commitlint/config-conventional": "^17.6.3",
 		"@types/node": "^20.2.1",
 		"@types/nprogress": "^0.2.0",
 		"@types/qs": "^6.9.7",
@@ -39,20 +42,27 @@
 		"@vue/eslint-config-prettier": "^7.1.0",
 		"@vue/eslint-config-typescript": "^11.0.3",
 		"@vue/tsconfig": "^0.4.0",
+		"cz-customizable": "^7.0.0",
 		"eslint": "^8.41.0",
 		"eslint-plugin-vue": "^9.13.0",
+		"husky": "^8.0.3",
 		"prettier": "^2.8.8",
 		"sass": "^1.62.1",
 		"typescript": "^5.0.4",
 		"vite": "^4.3.8",
 		"vite-plugin-svg-icons": "^2.0.1",
 		"vite-plugin-vue-setup-extend": "^0.4.0",
-		"vue-tsc": "^1.6.5",
-		"cz-customizable": "^7.0.0"
+		"vue-tsc": "^1.6.5"
 	},
 	"config": {
 		"commitizen": {
 			"path": "node_modules/cz-customizable"
 		}
+	},
+	"lint-staged": {
+		"src/**/*.{js,vue}": [
+			"eslint --fix",
+			"git add"
+		]
 	}
 }
