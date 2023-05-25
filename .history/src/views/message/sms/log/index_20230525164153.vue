@@ -1,28 +1,4 @@
-<script setup lang="ts" name="MessageSmsLogIndex">
-import { useCrud } from '@/hooks'
-import { reactive, ref } from 'vue'
-import Detail from './detail.vue'
-import { IHooksOptions } from '@/hooks/interface'
-
-const state: IHooksOptions = reactive({
-	dataListUrl: '/message/sms/log/page',
-	deleteUrl: '/message/sms/log',
-	queryForm: {
-		platformId: '',
-		platform: ''
-	}
-})
-
-const detailRef = ref()
-const detailHandle = (row: any) => {
-	detailRef.value.init(row)
-}
-
-const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
-</script>
-
 <template>
-	<div>楼宇管理</div>
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
@@ -64,4 +40,25 @@ const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandl
 	</el-card>
 </template>
 
-<style scoped></style>
+<script setup lang="ts" name="MessageSmsLogIndex">
+import { useCrud } from '@/hooks'
+import { reactive, ref } from 'vue'
+import Detail from './detail.vue'
+import { IHooksOptions } from '@/hooks/interface'
+
+const state: IHooksOptions = reactive({
+	dataListUrl: '/message/sms/log/page',
+	deleteUrl: '/message/sms/log',
+	queryForm: {
+		platformId: '',
+		platform: ''
+	}
+})
+
+const detailRef = ref()
+const detailHandle = (row: any) => {
+	detailRef.value.init(row)
+}
+
+const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
+</script>

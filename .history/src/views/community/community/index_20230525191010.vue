@@ -5,8 +5,8 @@ import Detail from './detail.vue'
 import { IHooksOptions } from '@/hooks/interface'
 
 const state: IHooksOptions = reactive({
-	dataListUrl: '/message/sms/log/page',
-	deleteUrl: '/message/sms/log',
+	dataListUrl: '/sys/community/page',
+	//deleteUrl: '/message/sms/log',
 	queryForm: {
 		platformId: '',
 		platform: ''
@@ -26,10 +26,10 @@ const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandl
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-input v-model="state.queryForm.platformId" placeholder="平台ID"></el-input>
+				<el-input v-model="state.queryForm.id" placeholder="社区ID"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<fast-select v-model="state.queryForm.platform" dict-type="sms_platform" clearable placeholder="平台类型"></fast-select>
+				<fast-select v-model="state.queryForm.communityName" clearable placeholder="社区名称"></fast-select>
 			</el-form-item>
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
@@ -37,10 +37,16 @@ const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandl
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="platformId" label="平台ID" header-align="center" align="center"></el-table-column>
-			<fast-table-column prop="platform" label="平台类型" dict-type="sms_platform"></fast-table-column>
-			<el-table-column prop="mobile" label="手机号" header-align="center" align="center"></el-table-column>
-			<fast-table-column prop="status" label="状态" dict-type="success_fail"></fast-table-column>
+			<el-table-column prop="id" label="社区ID" header-align="center" align="center" width="80"></el-table-column>
+			<fast-table-column prop="communityName" label="社区名称" dict-type="sms_platform"></fast-table-column>
+			<el-table-column prop="address" label="社区地址" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="communityImgs" label="社区图片" header-align="center" align="center">
+				<template #default="scope">
+					<img :src="scope.row.communityImgs" alt="图片" style="width: 120px; height: 120px" />
+				</template>
+			</el-table-column>
+			<el-table-column prop="coverArea" label="社区面积" align="center"></el-table-column>
+			<el-table-column prop="content" label="备注" align="center"></el-table-column>
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center"></el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
@@ -65,3 +71,4 @@ const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandl
 </template>
 
 <style scoped></style>
+

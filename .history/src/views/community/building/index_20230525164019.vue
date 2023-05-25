@@ -1,25 +1,4 @@
-<script setup lang="ts" name="MessageSmsLogIndex">
-import { useCrud } from '@/hooks'
-import { reactive, ref } from 'vue'
-import Detail from './detail.vue'
-import { IHooksOptions } from '@/hooks/interface'
-
-const state: IHooksOptions = reactive({
-	dataListUrl: '/message/sms/log/page',
-	deleteUrl: '/message/sms/log',
-	queryForm: {
-		platformId: '',
-		platform: ''
-	}
-})
-
-const detailRef = ref()
-const detailHandle = (row: any) => {
-	detailRef.value.init(row)
-}
-
-const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
-</script>
+<script setup lang="ts"></script>
 
 <template>
 	<div>楼宇管理</div>

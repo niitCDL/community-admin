@@ -5,7 +5,7 @@ import Detail from './detail.vue'
 import { IHooksOptions } from '@/hooks/interface'
 
 const state: IHooksOptions = reactive({
-	dataListUrl: '/message/sms/log/page',
+	dataListUrl: '/sys/community/page',
 	deleteUrl: '/message/sms/log',
 	queryForm: {
 		platformId: '',
@@ -65,3 +65,4 @@ const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandl
 </template>
 
 <style scoped></style>
+
