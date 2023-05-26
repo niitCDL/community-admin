@@ -15,11 +15,6 @@
 					<el-option v-for="item in deviceTypeList" :key="item.id" :label="item.type" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<el-form-item label="设备小区" prop="communityId">
-				<el-select v-model="dataForm.communityId" placeholder="请选择">
-					<el-option label="请选择" value="0"></el-option>
-				</el-select>
-			</el-form-item>
 			<el-form-item label="设备位置" prop="address">
 				<el-input v-model="dataForm.address" placeholder="设备位置"></el-input>
 			</el-form-item>
@@ -38,23 +33,11 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useDeviceApi, useDeviceSubmitApi } from '@/api/smart'
+import { deviceTypeEntity } from '../entity'
 
 defineProps<{
 	deviceTypeList: deviceTypeEntity[]
 }>()
-
-interface deviceTypeEntity {
-	id?: number
-	creator?: number
-	updater?: number
-	createTime?: Date
-	updateTime?: Date
-	deleted?: number
-	type?: string
-	des?: string
-	enabled?: number
-	orderd?: number
-}
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -66,7 +49,6 @@ const dataForm = reactive({
 	deviceName: '',
 	status: '',
 	deviceType: '',
-	communityId: '',
 	address: '',
 	qrCode: '',
 	deleted: '',
@@ -98,8 +80,7 @@ const getDevice = (id: number) => {
 
 const dataRules = ref({
 	deviceName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	deviceType: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	communityId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
+	deviceType: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
 // 表单提交
