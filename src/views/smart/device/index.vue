@@ -16,11 +16,6 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-select v-model="state.queryForm.communityId" placeholder="设备所属小区" clearable>
-					<el-option label="选择" value="0"></el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item>
 				<el-input v-model="state.queryForm.address" placeholder="设备位置"></el-input>
 			</el-form-item>
 			<el-form-item>
@@ -37,7 +32,6 @@
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
 			<el-table-column prop="deviceTypeName" label="类别" header-align="center" align="center" width="100"></el-table-column>
 			<el-table-column prop="deviceName" label="设备名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="communityName" label="小区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="address" label="设备位置" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="qrCode" label="设备二维码" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="status" label="状态" header-align="center" align="center" width="80">
@@ -75,6 +69,7 @@ import { useCrud } from '@/hooks'
 import { reactive, ref, onMounted } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
+import { deviceTypeEntity } from '../entity'
 import { getEnabledTypeList } from '@/api/smart'
 
 const state: IHooksOptions = reactive({
@@ -96,25 +91,11 @@ const addOrUpdateHandle = (id?: number) => {
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 
-interface deviceTypeEntity {
-	id?: number
-	creator?: number
-	updater?: number
-	createTime?: Date
-	updateTime?: Date
-	deleted?: number
-	type?: string
-	des?: string
-	enabled?: number
-	orderd?: number
-}
-
 let deviceTypeList = ref<deviceTypeEntity[]>([])
 
 const getDeviceType = () => {
 	getEnabledTypeList().then((res: any) => {
 		deviceTypeList.value = res.data
-		console.log(deviceTypeList)
 	})
 }
 

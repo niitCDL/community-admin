@@ -2,44 +2,45 @@
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-input v-model="state.queryForm.communityName" placeholder="社区名称"></el-input>
-				<!-- <fast-select v-model="state.queryForm.communityName" clearable placeholder="社区名称"></fast-select> -->
+				<el-input v-model="state.queryForm.username" placeholder="用户名" clearable></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="state.queryForm.mobile" placeholder="手机号" clearable></el-input>
+			</el-form-item>
+			<el-form-item>
+				<fast-select v-model="state.queryForm.gender" dict-type="user_gender" clearable placeholder="性别"></fast-select>
 			</el-form-item>
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
 			</el-form-item>
 			<el-form-item>
-				<el-button v-auth="'sys:community:save'" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+				<el-button v-auth="'sys:user:save'" type="primary" @click="addOrUpdateHandle()">新增</el-button>
 			</el-form-item>
 			<el-form-item>
-				<el-button v-auth="'sys:community:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
+				<el-button v-auth="'sys:user:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
 			</el-form-item>
-			<el-form-item v-auth="'sys:community:import'">
+			<el-form-item v-auth="'sys:user:import'">
 				<el-upload :action="constant.uploadUserExcelUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
 					<el-button type="info">导入</el-button>
 				</el-upload>
 			</el-form-item>
 			<el-form-item>
-				<el-button v-auth="'sys:community:export'" type="success" @click="downloadExcel()">导出</el-button>
+				<el-button v-auth="'sys:user:export'" type="success" @click="downloadExcel()">导出</el-button>
 			</el-form-item>
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="id" label="社区ID" header-align="center" align="center" width="80"></el-table-column>
-			<fast-table-column prop="communityName" label="社区名称" dict-type="sms_platform"></fast-table-column>
-			<el-table-column prop="address" label="社区地址" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="communityImgs" label="社区图片" header-align="center" align="center">
-				<template #default="scope">
-					<img :src="scope.row.communityImgs" alt="图片" style="width: 100px; height: 100px" />
-				</template>
-			</el-table-column>
-			<el-table-column prop="coverArea" label="社区面积" align="center"></el-table-column>
-			<el-table-column prop="content" label="备注" align="center"></el-table-column>
-			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="id" label="楼宇ID" header-align="center" align="center" width="80"></el-table-column>
+			<el-table-column prop="communityName" label="小区名字" header-align="center" align="center"></el-table-column>
+			<fast-table-column prop="buildingName" label="楼宇名称" dict-type="user_gender"></fast-table-column>
+			<el-table-column prop="units" label="所在单元" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="usedArea" label="占地面积" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="content" label="备注" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center" width="180"></el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
-					<el-button v-auth="'sys:community:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-					<el-button v-auth="'sys:community:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
+					<el-button v-auth="'sys:user:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+					<el-button v-auth="'sys:user:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -59,7 +60,7 @@
 	</el-card>
 </template>
 
-<script setup lang="ts">
+<script setup lang="ts" name="SysUserIndex">
 import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
@@ -69,10 +70,12 @@ import { useUserExportApi } from '@/api/sys/user'
 import { ElMessage, UploadProps } from 'element-plus'
 
 const state: IHooksOptions = reactive({
-	dataListUrl: '/sys/community/page',
-	deleteUrl: '/sys/community/delete',
+	dataListUrl: '/sys/building/page',
+	deleteUrl: '/sys/building/delete',
 	queryForm: {
-		communityName: ''
+		username: '',
+		mobile: '',
+		gender: ''
 	}
 })
 
@@ -111,5 +114,3 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>
-
-<style scoped></style>
