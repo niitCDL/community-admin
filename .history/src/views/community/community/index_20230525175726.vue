@@ -5,8 +5,8 @@ import Detail from './detail.vue'
 import { IHooksOptions } from '@/hooks/interface'
 
 const state: IHooksOptions = reactive({
-	dataListUrl: '/message/sms/log/page',
-	deleteUrl: '/message/sms/log',
+	dataListUrl: '/sys/community/page',
+	//deleteUrl: '/message/sms/log',
 	queryForm: {
 		platformId: '',
 		platform: ''
@@ -37,10 +37,15 @@ const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandl
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="platformId" label="平台ID" header-align="center" align="center"></el-table-column>
-			<fast-table-column prop="platform" label="平台类型" dict-type="sms_platform"></fast-table-column>
-			<el-table-column prop="mobile" label="手机号" header-align="center" align="center"></el-table-column>
-			<fast-table-column prop="status" label="状态" dict-type="success_fail"></fast-table-column>
+			<el-table-column prop="communityId" label="社区ID" header-align="center" align="center"></el-table-column>
+			<fast-table-column prop="communityName" label="社区名字" dict-type="sms_platform"></fast-table-column>
+			<el-table-column prop="address" label="社区地址" header-align="center" align="center"></el-table-column>
+			<el-table-column label="社区图片" header-align="center" align="center">
+				<!-- <template slot-scope="scope">
+					<img :src="scope.row.communityImgs" alt="" />
+				</template> -->
+			</el-table-column>
+			<fast-table-column prop="coverArea" label="社区面积" dict-type="success_fail"></fast-table-column>
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center"></el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
@@ -65,3 +70,4 @@ const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandl
 </template>
 
 <style scoped></style>
+
