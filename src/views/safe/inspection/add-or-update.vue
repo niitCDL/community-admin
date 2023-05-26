@@ -2,24 +2,26 @@
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="communityId" label="所属小区">
-				<el-input v-model="dataForm.communityId" placeholder="所属小区"></el-input>
+				<el-select v-model="dataForm.communityId" class="m-2" placeholder="Select">
+					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
+				</el-select>
 			</el-form-item>
 			<el-form-item prop="name" label="项目名称">
 				<el-input v-model="dataForm.name" placeholder="项目名称"></el-input>
 			</el-form-item>
-			<!-- <el-form-item prop="orgId" label="所属机构">
-				<el-tree-select
-					v-model="dataForm.orgId"
-					:data="orgList"
-					value-key="id"
-					check-strictly
-					:render-after-expand="false"
-					:props="{ label: 'name', children: 'children' }"
-					style="width: 100%"
-				/>
-			</el-form-item> -->
+			<el-form-item label="项目图片">
+				<el-upload
+					class="avatar-uploader"
+					:action="upurl"
+					:show-file-list="false"
+					:on-success="handleAvatarSuccess"
+					:before-upload="beforeAvatarUpload"
+				>
+					<el-image v-if="dataForm.photo" :src="dataForm.photo" style="width: 80px; height: 60px" />
+					<el-icon v-else class="avatar-uploader-icon" style="width: 80px; height: 60px">上传</el-icon>
+				</el-upload>
+			</el-form-item>
 			<el-form-item label="设备型号">
-				<!-- <fast-radio-group v-model="dataForm.type" dict-type="user_gender"></fast-radio-group> -->
 				<el-input v-model="dataForm.type" placeholder="设备型号"></el-input>
 			</el-form-item>
 			<el-form-item label="品牌厂商">
@@ -49,11 +51,14 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useInspectionApi, useInspectionSubmitApi } from '@/api/safe/inspectionItem'
+import { getCommunityList } from '@/api/community/community'
+import type { UploadProps } from 'element-plus'
+import cache from '@/utils/cache'
 
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-const postList = ref<any[]>([])
+const communityList = ref<any[]>([])
 const roleList = ref<any[]>([])
 const orgList = ref([])
 const dataFormRef = ref()
@@ -65,10 +70,9 @@ const dataForm = reactive({
 	type: '',
 	factory: '',
 	insuranceFactory: '',
-	photo: 0,
+	photo: '',
 	coordinate: '',
 	note: '',
-	communityList: [] as any[],
 	status: 1
 })
 
@@ -88,6 +92,7 @@ const init = (id?: number) => {
 	if (id) {
 		getInspectionItem(id)
 	}
+	getCommunityLists()
 }
 
 // 获取信息
@@ -97,9 +102,15 @@ const getInspectionItem = (id: number) => {
 	})
 }
 
+//获取所有小区列表
+const getCommunityLists = () => {
+	getCommunityList().then(res => {
+		communityList.value = res.data
+	})
+}
 const dataRules = ref({
 	name: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	communityId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
+	communityId: [{ required: true, message: '必填项不能为空', trigger: 'change	' }]
 })
 
 // 表单提交
@@ -119,6 +130,27 @@ const submitHandle = () => {
 			})
 		})
 	})
+}
+
+const upurl = import.meta.env.VITE_API_URL + '/safe/inspectionitem/upload?accessToken=' + cache.getToken()
+
+//图片上传
+const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
+	console.log(response)
+	dataForm.photo = response.data.url
+	console.log(dataForm)
+}
+
+//图片上传前
+const beforeAvatarUpload: UploadProps['beforeUpload'] = rawFile => {
+	if (rawFile.type !== 'image/jpeg') {
+		ElMessage.error('Avatar picture must be JPG format!')
+		return false
+	} else if (rawFile.size / 1024 / 1024 > 10) {
+		ElMessage.error('Avatar picture size can not exceed 2MB!')
+		return false
+	}
+	return true
 }
 defineExpose({
 	init
