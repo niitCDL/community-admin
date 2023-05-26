@@ -17,8 +17,8 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-select v-model="state.queryForm.monitorType" placeholder="监控分组id">
-					<el-option label="选择" value="1"></el-option>
+				<el-select v-model="state.queryForm.monitorType" placeholder="监控分组">
+					<el-option v-for="item in monitorTypeList" :key="item.id" :label="item.type" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -68,15 +68,16 @@
 		</el-pagination>
 
 		<!-- 弹窗, 新增 / 修改 -->
-		<add-or-update ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>
+		<add-or-update ref="addOrUpdateRef" :monitor-type-list="monitorTypeList" @refreshDataList="getDataList"></add-or-update>
 	</el-card>
 </template>
 
 <script setup lang="ts" name="Soft2242MonitorIndex">
 import { useCrud } from '@/hooks'
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
+import { getEnabledMonitorTypeList } from '@/api/smart'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/smart/monitor/page',
@@ -95,4 +96,16 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
+
+let monitorTypeList = ref<any[]>([])
+
+const getMonitorType = () => {
+	getEnabledMonitorTypeList().then((res: any) => {
+		monitorTypeList.value = res.data
+	})
+}
+
+onMounted(() => {
+	getMonitorType()
+})
 </script>

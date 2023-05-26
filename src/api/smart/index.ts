@@ -55,3 +55,19 @@ export const useMonitorSubmitApi = (dataForm: any) => {
 		return service.post('/smart/monitor', dataForm)
 	}
 }
+
+export const useMonitorTypeApi = (id: number) => {
+	return service.get('/smart/monitorType/' + id)
+}
+
+export const useMonitorTypeSubmitApi = (dataForm: any) => {
+	if (dataForm.id) {
+		return service.put('/smart/monitorType', dataForm)
+	} else {
+		return service.post('/smart/monitorType', dataForm)
+	}
+}
+
+export const getEnabledMonitorTypeList = () => {
+	return service.get('/smart/monitorType/list')
+}

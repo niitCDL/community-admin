@@ -1,16 +1,19 @@
 <template>
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false">
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="100px" @keyup.enter="submitHandle()">
-			<el-form-item label="自增主键" prop="id">
-				<el-input v-model="dataForm.id" placeholder="自增主键"></el-input>
-			</el-form-item>
-			<el-form-item label="设备主键" prop="deviceId">
+			<el-form-item label="硬件设备" prop="deviceId">
 				<el-select v-model="dataForm.deviceId" placeholder="请选择">
-					<el-option label="请选择" value="0"></el-option>
+					<el-option v-for="item in deviceList" :key="item.id" :label="item.deviceName" :value="item.id"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="监控名称" prop="monitorName">
 				<el-input v-model="dataForm.monitorName" placeholder="监控名称"></el-input>
+			</el-form-item>
+			<el-form-item label="所属小区" prop="communityId">
+				<el-select v-model="dataForm.communityId" placeholder="请选择">
+					<el-option label="万象城" :value="1"></el-option>
+					<el-option label="汤臣一品" :value="2"></el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-radio-group v-model="dataForm.status">
@@ -26,14 +29,14 @@
 			</el-form-item>
 			<el-form-item label="监控分组" prop="monitorType">
 				<el-select v-model="dataForm.monitorType" placeholder="请选择">
-					<el-option label="请选择" :value="0"></el-option>
+					<el-option v-for="item in monitorTypeList" :key="item.id" :label="item.type" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item label="监控直播url" prop="url">
 				<el-input v-model="dataForm.url" placeholder="监控直播url"></el-input>
 			</el-form-item>
 			<el-form-item label="排序" prop="orderd">
-				<el-input v-model="dataForm.orderd" placeholder="排序"></el-input>
+				<el-input-number v-model="dataForm.orderd" controls-position="right" :min="0" label="排序"></el-input-number>
 			</el-form-item>
 		</el-form>
 		<template #footer>
@@ -44,9 +47,10 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useMonitorApi, useMonitorSubmitApi } from '@/api/smart'
+import { getDeviceList } from '@/api/smart'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -56,18 +60,18 @@ const dataFormRef = ref()
 const dataForm = reactive({
 	id: '',
 	deviceId: '',
+	communityId: '',
 	monitorName: '',
-	status: '',
-	enabled: '',
+	status: 0,
+	enabled: 0,
 	monitorType: '',
 	url: '',
-	orderd: '',
-	daleted: '',
-	createTime: '',
-	creator: '',
-	updateTime: '',
-	updater: ''
+	orderd: 0
 })
+
+defineProps<{
+	monitorTypeList: any[]
+}>()
 
 const init = (id?: number) => {
 	visible.value = true
@@ -117,5 +121,19 @@ const submitHandle = () => {
 
 defineExpose({
 	init
+})
+
+// 获取设备列表
+const deviceList = ref<any[]>([])
+
+const getDevice = () => {
+	getDeviceList().then((res: any) => {
+		deviceList.value = res.data
+		console.log(deviceList)
+	})
+}
+
+onMounted(() => {
+	getDevice()
 })
 </script>
