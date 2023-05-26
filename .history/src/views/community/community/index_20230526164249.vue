@@ -1,26 +1,15 @@
 <template>
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
+			<!-- <el-form-item>
+				<el-input v-model="state.queryForm.id" placeholder="社区ID"></el-input>
+			</el-form-item> -->
 			<el-form-item>
 				<el-input v-model="state.queryForm.communityName" placeholder="社区名称"></el-input>
 				<!-- <fast-select v-model="state.queryForm.communityName" clearable placeholder="社区名称"></fast-select> -->
 			</el-form-item>
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
-			</el-form-item>
-			<el-form-item>
-				<el-button v-auth="'sys:community:save'" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-			</el-form-item>
-			<el-form-item>
-				<el-button v-auth="'sys:community:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
-			</el-form-item>
-			<el-form-item v-auth="'sys:community:import'">
-				<el-upload :action="constant.uploadUserExcelUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
-					<el-button type="info">导入</el-button>
-				</el-upload>
-			</el-form-item>
-			<el-form-item>
-				<el-button v-auth="'sys:community:export'" type="success" @click="downloadExcel()">导出</el-button>
 			</el-form-item>
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
@@ -38,8 +27,7 @@
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center"></el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
-					<el-button v-auth="'sys:community:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-					<el-button v-auth="'sys:community:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
+					<el-button type="primary" link @click="detailHandle(scope.row)">详情</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -54,8 +42,8 @@
 		>
 		</el-pagination>
 
-		<!-- 弹窗, 新增 / 修改 -->
-		<add-or-update ref="addOrUpdateRef" @refresh-data-list="getDataList"></add-or-update>
+		<!-- 详情 -->
+		<detail ref="detailRef"></detail>
 	</el-card>
 </template>
 
@@ -75,39 +63,6 @@ const state: IHooksOptions = reactive({
 		communityName: ''
 	}
 })
-
-const addOrUpdateRef = ref()
-const addOrUpdateHandle = (id?: number) => {
-	addOrUpdateRef.value.init(id)
-}
-
-const downloadExcel = () => {
-	useUserExportApi()
-	return
-}
-
-const handleSuccess: UploadProps['onSuccess'] = (res, file) => {
-	if (res.code !== 0) {
-		ElMessage.error('上传失败：' + res.msg)
-		return false
-	}
-
-	ElMessage.success({
-		message: '上传成功',
-		duration: 500,
-		onClose: () => {
-			getDataList()
-		}
-	})
-}
-
-const beforeUpload: UploadProps['beforeUpload'] = file => {
-	if (file.size / 1024 / 1024 / 1024 / 1024 > 1) {
-		ElMessage.error('文件大小不能超过100M')
-		return false
-	}
-	return true
-}
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>

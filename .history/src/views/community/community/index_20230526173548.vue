@@ -54,8 +54,8 @@
 		>
 		</el-pagination>
 
-		<!-- 弹窗, 新增 / 修改 -->
-		<add-or-update ref="addOrUpdateRef" @refresh-data-list="getDataList"></add-or-update>
+		<!-- 详情 -->
+		<detail ref="detailRef"></detail>
 	</el-card>
 </template>
 
