@@ -1,8 +1,10 @@
 <template>
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
-			<el-form-item prop="communityId" label="所属小区">
-				<el-input v-model="dataForm.communityId" placeholder="所属小区" required="true"></el-input>
+			<el-form-item prop="communityId" label="所属社区">
+				<el-select v-model="dataForm.communityId" placeholder="请选择社区">
+					<el-option v-for="option in communities" :key="option.id" :label="option.communityName" :value="option.id"></el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item prop="buildingId" label="所属楼宇">
 				<el-input v-model="dataForm.buildingId" placeholder="所属楼宇"></el-input>
@@ -20,9 +22,14 @@
 				<el-input v-model="dataForm.pointNumber" placeholder="寻更点编号"></el-input>
 			</el-form-item>
 
-			<el-form-item prop="coordinate" label="经纬度坐标">
+			<!-- <el-form-item prop="coordinate" label="经纬度坐标">
 				<el-input v-model="dataForm.coordinate" placeholder="经纬度坐标"></el-input>
+			</el-form-item> -->
+			<el-form-item prop="coordinate" label="经纬度坐标">
+				<el-input v-model="dataForm.coordinate"> </el-input>
+				<mapper :form="form" @change-form="handleClick"></mapper>
 			</el-form-item>
+
 			<!-- <el-form-item prop="orgId" label="所属机构">
 				<el-tree-select
 					v-model="dataForm.orgId"
@@ -50,6 +57,14 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { usePointSubmitApi, usePointApi } from '@/api/safe/point'
+
+import { useCommuntiySearchApi } from '@/api/safe/point'
+import mapper from './mapper.vue'
+
+const communities = ref<any[]>([])
+useCommuntiySearchApi().then(res => {
+	communities.value = res.data
+})
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -121,4 +136,13 @@ const submitHandle = () => {
 defineExpose({
 	init
 })
+
+let form = ref()
+
+const handleClick = newValue => {
+	console.log('niah' + newValue.lng)
+	form.value = newValue
+	const newForm = form.value
+	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+}
 </script>
