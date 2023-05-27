@@ -54,10 +54,6 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { usePlanApi, usePlanSubmitApi, useGetPathListByComm, useUserListByRoleId } from '@/api/safe/plan'
-import { getCommunityList } from '@/api/community/community'
-import type { UploadProps } from 'element-plus'
-import cache from '@/utils/cache'
-import { el } from 'element-plus/es/locale'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -126,13 +122,6 @@ const getPlanItem = (id: number) => {
 		Object.assign(dataForm, res.data)
 	})
 }
-
-// //获取所有小区列表
-// const getCommunityLists = () => {
-// 	getCommunityList().then(res => {
-// 		communityList.value = res.data
-// 	})
-// }
 
 const getInspectorList = () => {
 	useUserListByRoleId(5).then(res => {
