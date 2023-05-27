@@ -6,7 +6,7 @@
 		</template>
 		<menu-item v-for="sub in menu.children" :key="sub.path" :menu="sub"></menu-item>
 	</el-sub-menu>
-	<el-menu-item v-else :key="menu" :index="menu.path" @click="handleClickMenu(menu)">
+	<el-menu-item v-else :key="menu" :index="menu.path" @click="handleClickMenu(menu)" v-show="menu.path.indexOf('/info') == -1">
 		<svg-icon v-if="showIcon" :icon="menu.meta.icon"></svg-icon>
 		<template #title>
 			{{ menu.meta.title }}

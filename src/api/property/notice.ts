@@ -4,6 +4,7 @@ export const useNoticeApi = (id: number) => {
 	return service.get('/property/notice/' + id)
 }
 
+
 export const useNoticeSubmitApi = (dataForm: any) => {
 	if (dataForm.id) {
 		return service.put('/property/notice', dataForm)
@@ -11,3 +12,8 @@ export const useNoticeSubmitApi = (dataForm: any) => {
 		return service.post('/property/notice', dataForm)
 	}
 }
+
+export const useReadNoticeUser = (id: number) => {
+	return service.get('/property/notice/readNoticeUser?noticeId=' + id)
+}
+

@@ -2,8 +2,20 @@
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-input v-model="state.queryForm.communityId" placeholder="社区id"></el-input>
+				<!-- <el-input v-model="state.queryForm.communityId" placeholder="社区id"></el-input> -->
+				<!-- <el-select-v2 v-model="value" :options="options" placeholder="选择小区" style="width: 240px" multiple /> -->
+				<el-select-v2
+					v-model="state.queryForm.communityId"
+					:options="options"
+					placeholder="选择小区"
+					style="width: 240px"
+					multiple
+					collapse-tags
+					collapse-tags-tooltip
+					:max-collapse-tags="3"
+				/>
 			</el-form-item>
+
 			<el-form-item>
 				<el-input v-model="state.queryForm.title" placeholder="标题"></el-input>
 			</el-form-item>
@@ -19,22 +31,22 @@
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="id" label="自增主键" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="title" label="标题" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="communityId" label="社区id" header-align="center" align="center"></el-table-column>
-					<!-- <el-table-column prop="type" label="通知类型(0:消杀通知 1：物业通知 2：缴费通知)" header-align="center" align="center">
+			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="title" label="通知标题" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
+			<!-- <el-table-column prop="type" label="通知类型(0:消杀通知 1：物业通知 2：缴费通知)" header-align="center" align="center">
 			</el-table-column> -->
-			<fast-table-column prop="type" label="性别" dict-type="user_gender"></fast-table-column>
+			<fast-table-column prop="type" label="通知类型" dict-type="totice_type"></fast-table-column>
 			<!-- <fast-table-column prop="type" label="通知类型" dict-type="type"></fast-table-column> -->
-			<el-table-column prop="adminId" label="发布人id" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="userName" label="发布人" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="publishTime" label="发布时间" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="review" label="审核(0:未审核，1：已审核，2:审核不通过)" header-align="center" align="center"></el-table-column>
+			<fast-table-column prop="review" label="状态" dict-type="review_status"></fast-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="300">
 				<template #default="scope">
 					<el-button v-auth="'property:notice:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">编辑</el-button>
 					<el-button v-auth="'property:notice:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
-					<el-button v-auth="'property:notice:delete'" type="primary" link @click="review(scope.row.id)">审核</el-button>
-					<el-button v-auth="'property:notice:delete'" type="primary" link @click="info(scope.row.id)">查看</el-button>
+					<el-button v-auth="'property:notice:delete'" type="primary" link @click="review(scope.row)">审核</el-button>
+					<el-button v-auth="'property:notice:delete'" type="primary" link @click="info(scope.row)">查看</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -60,6 +72,11 @@ import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
 import { ElMessageBox } from 'element-plus'
+import service from '@/utils/request'
+import { useNoticeSubmitApi } from '@/api/property/notice'
+import { dataType } from 'element-plus/es/components/table-v2/src/common'
+import { router } from '@/router'
+import { useGetCommunityList, useSetInfo } from '../property'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/property/notice/page',
@@ -76,26 +93,61 @@ const addOrUpdateHandle = (id?: number) => {
 	addOrUpdateRef.value.init(id)
 }
 
-const review = (id?: number) => {
-	ElMessageBox.confirm('审核', '警告', {
-        type: 'info',
-        cancelButtonText: '不通过',
-        confirmButtonText: '通过',
-        beforeClose: (action, instance, done) =>  {
-            if (action === 'confirm') {
-			
-                alert("通过")
-				done()
-            } else {
-				alert("不通过")
-                done()
-            }
-        }
-    }).then(() => {
-    }).catch(() => { })
+// 实现审核功能
+const review = (dataForm?: any) => {
+	ElMessageBox.confirm('判断这个公告是否可以通过？', '确认信息', {
+		type: 'info',
+		distinguishCancelAndClose: true,
+		cancelButtonText: '不通过',
+		confirmButtonText: '通过'
+	})
+		.then(() => {
+			dataForm.review = 1
+			useNoticeSubmitApi(dataForm)
+				.then(() => {
+					alert('审核成功')
+				})
+				.catch(error => {
+					alert(error)
+				})
+		})
+		.catch(action => {
+			if (action === 'cancel') {
+				dataForm.review = 2
+				useNoticeSubmitApi(dataForm)
+					.then(() => {
+						alert('审核成功')
+					})
+					.catch(error => {
+						alert(error)
+					})
+			}
+		})
 }
+let communities
+let options = [
+	{
+		label: 'community',
+		value: '0'
+	},
+	{
+		label: 'community1',
+		value: '1'
+	}
+]
+communities = useGetCommunityList()
+// console.log(communities)
+options = communities.map(obj => ({
+	value: obj.id,
+	label: obj.communityName
+}))
 
-
-
+//详情
+const info = (data: any) => {
+	console.log(data)
+	useSetInfo(data)
+	
+	router.push('/property/notice/info')
+}
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>

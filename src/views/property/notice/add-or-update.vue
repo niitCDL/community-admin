@@ -1,18 +1,14 @@
 <template>
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false">
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="100px" @keyup.enter="submitHandle()" class="w-4/5">
-			<el-form-item label="社区id" prop="communityId">
+			<el-form-item label="选择小区" prop="communityId">
 				<el-select v-model="dataForm.communityId" placeholder="请选择">
-					<el-option label="万达小区" value="1"></el-option>
-					<el-option label="万象城" value="2"></el-option>
-					<el-option label="汤臣一品" value="3"></el-option>
+					<el-option v-for="c in communities"  :label="c.communityName" :value="c.id"/>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="通知类型" prop="type">
 				<el-select v-model="dataForm.type" placeholder="请选择">
-					<el-option label="消杀通知" value="0"></el-option>
-					<el-option label="物业通知" value="1"></el-option>
-					<el-option label="缴费通知" value="2"></el-option>
+					<el-option v-for="n in notice_type"  :label="n.dictLabel" :value="n.dictValue"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="标题" prop="title">
@@ -24,18 +20,19 @@
 			<el-form-item label="附件" prop="file">
 				<el-input v-model="dataForm.file" placeholder="附件"></el-input>
 			</el-form-item>
+			<el-form-item label="接受范围" prop="noticeRange">
+				<el-radio-group v-model="dataForm.noticeRange">
+					<el-radio :label="0">全部楼宇</el-radio>
+					<el-radio :label="1">指定楼宇</el-radio>
+				</el-radio-group>
+			</el-form-item>
 			<el-form-item label="提醒方式" prop="noticeWay">
 				<el-radio-group v-model="dataForm.noticeWay">
 					<el-radio :label="0">系统消息</el-radio>
 					<el-radio :label="1">短信通知</el-radio>
 				</el-radio-group>
 			</el-form-item>
-			<el-form-item label="接受范围(0:全部楼宇，1：指定楼宇)" prop="noticeRange">
-				<el-radio-group v-model="dataForm.noticeRange">
-					<el-radio :label="0">全部楼宇</el-radio>
-					<el-radio :label="1">指定楼宇</el-radio>
-				</el-radio-group>
-			</el-form-item>
+		
 			<el-form-item label="发布时间" prop="publishTime">
 				<el-date-picker type="datetime" placeholder="发布时间" v-model="dataForm.publishTime"></el-date-picker>
 			</el-form-item>
@@ -51,6 +48,9 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useNoticeApi, useNoticeSubmitApi } from '@/api/property/notice'
+import { getCommunityList } from '@/api/community/community'
+import { useDictDataApi, useDictTypeAllApi, useDictTypeApi } from '@/api/sys/dict'
+import { useGetCommunityList } from '../property'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -66,8 +66,8 @@ const dataForm = reactive({
 	content: '',
 	file: '',
 	readNumber: '',
-	noticeWay: '',
-	noticeRange: '',
+	noticeWay: 0,
+	noticeRange: 0,
 	publishTime: '',
 	review: '',
 	reviewUserId: '',
@@ -78,7 +78,13 @@ const dataForm = reactive({
 	creator: '',
 	updater: ''
 })
-
+let communities;
+communities = useGetCommunityList()
+let notice_type;
+useDictTypeAllApi().then((res) => {
+	notice_type = res.data[13].dataList
+	
+})
 const init = (id?: number) => {
 	visible.value = true
 	dataForm.id = ''
@@ -99,7 +105,15 @@ const getNotice = (id: number) => {
 	})
 }
 
-const dataRules = ref({})
+const dataRules = ref({
+	communityId:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	type:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	title:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	content:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	noticeRange:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	noticeWay:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	publishTime:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+})
 
 // 表单提交
 const submitHandle = () => {
