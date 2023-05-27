@@ -2,10 +2,26 @@
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="communityId" label="所属小区">
-				<el-input v-model="dataForm.communityId" placeholder="所属小区"></el-input>
+				<el-input v-model="dataForm.communityId" placeholder="所属小区" required="true"></el-input>
 			</el-form-item>
-			<el-form-item prop="name" label="项目名称">
-				<el-input v-model="dataForm.name" placeholder="项目名称"></el-input>
+			<el-form-item prop="buildingId" label="所属楼宇">
+				<el-input v-model="dataForm.buildingId" placeholder="所属楼宇"></el-input>
+			</el-form-item>
+
+			<el-form-item prop="units" label="所属单元">
+				<el-input v-model="dataForm.units" placeholder="所属单元"></el-input>
+			</el-form-item>
+
+			<el-form-item prop="pointName" label="巡更点名称">
+				<el-input v-model="dataForm.pointName" placeholder="巡更点名称"></el-input>
+			</el-form-item>
+
+			<el-form-item prop="pointNumber" label="寻更点编号">
+				<el-input v-model="dataForm.pointNumber" placeholder="寻更点编号"></el-input>
+			</el-form-item>
+
+			<el-form-item prop="coordinate" label="经纬度坐标">
+				<el-input v-model="dataForm.coordinate" placeholder="经纬度坐标"></el-input>
 			</el-form-item>
 			<!-- <el-form-item prop="orgId" label="所属机构">
 				<el-tree-select
@@ -18,22 +34,7 @@
 					style="width: 100%"
 				/>
 			</el-form-item> -->
-			<el-form-item label="设备型号">
-				<!-- <fast-radio-group v-model="dataForm.type" dict-type="user_gender"></fast-radio-group> -->
-				<el-input v-model="dataForm.type" placeholder="设备型号"></el-input>
-			</el-form-item>
-			<el-form-item label="品牌厂商">
-				<el-input v-model="dataForm.factory" placeholder="品牌厂商"></el-input>
-			</el-form-item>
-			<el-form-item label="维保厂商">
-				<el-input v-model="dataForm.insuranceFactory" placeholder="维保厂商"></el-input>
-			</el-form-item>
-			<el-form-item label="坐标">
-				<el-input v-model="dataForm.coordinate" placeholder="座标"></el-input>
-			</el-form-item>
-			<el-form-item label="备注">
-				<el-input v-model="dataForm.note" placeholder="备注"></el-input>
-			</el-form-item>
+
 			<el-form-item prop="status" label="状态">
 				<fast-radio-group v-model="dataForm.status" dict-type="enable_disable"></fast-radio-group>
 			</el-form-item>
@@ -48,7 +49,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { useInspectionApi, useInspectionSubmitApi } from '@/api/safe/inspectionItem'
+import { usePointSubmitApi, usePointApi } from '@/api/safe/point'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -61,15 +62,12 @@ const dataFormRef = ref()
 const dataForm = reactive({
 	id: '',
 	communityId: '',
-	name: '',
-	type: '',
-	factory: '',
-	insuranceFactory: '',
-	photo: 0,
+	buildingId: '',
+	units: '',
+	pointName: '',
+	pointNumber: '',
 	coordinate: '',
-	note: '',
-	communityList: [] as any[],
-	status: 1
+	status: ''
 })
 
 const init = (id?: number) => {
@@ -92,7 +90,7 @@ const init = (id?: number) => {
 
 // 获取信息
 const getInspectionItem = (id: number) => {
-	useInspectionApi(id).then(res => {
+	usePointApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }
@@ -108,7 +106,7 @@ const submitHandle = () => {
 		if (!valid) {
 			return false
 		}
-		useInspectionSubmitApi(dataForm).then(() => {
+		usePointSubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,

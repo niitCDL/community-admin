@@ -6,7 +6,13 @@ import { reactive, ref } from 'vue'
 import { useCrud } from '@/hooks'
 //添加修改组件
 import AddOrUpdate from './add-or-update.vue'
+import { useCommuntiySearchApi } from '@/api/safe/point'
+const communities = ref<any[]>([])
+useCommuntiySearchApi().then(res => {
+	communities.value = res.data
+})
 
+console.log(communities)
 const state: IHooksOptions = reactive({
 	dataListUrl: '/safe/point/page',
 	deleteUrl: '/safe/point',
@@ -25,8 +31,13 @@ const addOrUpdateHandle = (id?: number) => {
 <template>
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
-			<el-form-item>
+			<!-- <el-form-item>
 				<el-input v-model="state.queryForm.communityId" placeholder="小区名" clearable></el-input>
+			</el-form-item> -->
+			<el-form-item>
+				<el-select v-model="state.queryForm.communityId" placeholder="请选择社区">
+					<el-option v-for="option in communities" :key="option.id" :label="option.communityName" :value="option.id"></el-option>
+				</el-select>
 			</el-form-item>
 
 			<!-- <el-form-item>
@@ -54,8 +65,8 @@ const addOrUpdateHandle = (id?: number) => {
 
 			<el-table-column prop="status" label="状态" dict-type="user_status" align="center">
 				<template #default="{ row }">
-					<el-tag v-if="row.status == 0" type="success">启用</el-tag>
-					<el-tag v-if="row.status == 1" type="danger">禁用</el-tag>
+					<el-tag v-if="row.status == 1" type="success">启用</el-tag>
+					<el-tag v-if="row.status == 0" type="danger">禁用</el-tag>
 				</template>
 			</el-table-column>
 
@@ -77,7 +88,7 @@ const addOrUpdateHandle = (id?: number) => {
 		>
 		</el-pagination>
 		<!-- 弹窗, 新增 / 修改 -->
-		<!-- <AddOrUpdate ref="addOrUpdateRef" @refresh-data-list="getDataList"></AddOrUpdate> -->
+		<AddOrUpdate ref="addOrUpdateRef" @refresh-data-list="getDataList"></AddOrUpdate>
 	</el-card>
 </template>
 
