@@ -1,8 +1,12 @@
 <template>
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
+			<el-form-item prop="communityId" label="社区ID">
+				<!-- <el-select v-model="dataForm.communityId" placeholder="社区名称"></el-select> -->
+				<el-input v-model="dataForm.communityId" placeholder="社区ID"></el-input>
+			</el-form-item>
 			<el-form-item prop="communityId" label="所属小区">
-				<el-select v-model="dataForm.communityId" class="m-2" placeholder="所属小区">
+				<el-select v-model="dataForm.communityId" class="m-2" placeholder="Select">
 					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
@@ -42,12 +46,11 @@ import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useBuildingApi, useBuildingSubmitApi } from '@/api/building/building'
 import { getCommunityList } from '@/api/community/community'
-// import type { UploadProps } from 'element-plus'
-// import cache from '@/utils/cache'
+import type { UploadProps } from 'element-plus'
+import cache from '@/utils/cache'
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-const communityList = ref<any[]>([])
 const postList = ref<any[]>([])
 const roleList = ref<any[]>([])
 const orgList = ref([])
@@ -69,9 +72,6 @@ const init = (id?: number) => {
 	// 重置表单数据
 	if (dataFormRef.value) {
 		dataFormRef.value.resetFields()
-		for (const key in dataForm) {
-			dataForm[key] = ''
-		}
 	}
 
 	//id 存在则为修改
@@ -120,26 +120,6 @@ const submitHandle = () => {
 		})
 	})
 }
-// const upurl = import.meta.env.VITE_API_URL + '/safe/inspectionitem/upload?accessToken=' + cache.getToken()
-
-// //图片上传
-// const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
-// 	console.log(response)
-// 	dataForm.photo = response.data.url
-// 	console.log(dataForm)
-// }
-
-// //图片上传前
-// const beforeAvatarUpload: UploadProps['beforeUpload'] = rawFile => {
-// 	if (rawFile.type !== 'image/jpeg') {
-// 		ElMessage.error('Avatar picture must be JPG format!')
-// 		return false
-// 	} else if (rawFile.size / 1024 / 1024 > 10) {
-// 		ElMessage.error('Avatar picture size can not exceed 2MB!')
-// 		return false
-// 	}
-// 	return true
-// }
 
 defineExpose({
 	init

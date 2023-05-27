@@ -80,8 +80,10 @@ const getCommunity = (id: number) => {
 }
 
 const dataRules = ref({
-	communityName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	address: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
+	username: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	realName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	mobile: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	orgId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
 // 表单提交

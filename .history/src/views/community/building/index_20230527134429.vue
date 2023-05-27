@@ -30,10 +30,11 @@
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<!-- <el-table-column type="index" label="编号" header-align="center" align="center" width="80"></el-table-column> -->
+			<el-table-column type="index" label="编号" header-align="center" align="center" width="80"></el-table-column>
+			<!-- <el-table-column prop="id" label="楼宇ID" header-align="center" align="center" width="80"></el-table-column> -->
 			<el-table-column prop="communityName" label="小区名称" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="buildingName" label="楼宇名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="units" label="所在单元" header-align="center" align="center" width="110"></el-table-column>
+			<el-table-column prop="units" label="所在单元" header-align="center" align="center" width="80"></el-table-column>
 			<el-table-column prop="usedArea" label="占地面积" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="content" label="备注" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center" width="180"></el-table-column>

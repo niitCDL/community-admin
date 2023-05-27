@@ -69,9 +69,6 @@ const init = (id?: number) => {
 	// 重置表单数据
 	if (dataFormRef.value) {
 		dataFormRef.value.resetFields()
-		for (const key in dataForm) {
-			dataForm[key] = ''
-		}
 	}
 
 	//id 存在则为修改
