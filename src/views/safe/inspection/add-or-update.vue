@@ -18,7 +18,7 @@
 					:before-upload="beforeAvatarUpload"
 				>
 					<el-image v-if="dataForm.photo" :src="dataForm.photo" style="width: 80px; height: 60px" />
-					<el-icon v-else class="avatar-uploader-icon" style="width: 80px; height: 60px">上传</el-icon>
+					<el-icon v-else class="avatar-uploader-icon" style="width: 80px; height: 60px">点击上传</el-icon>
 				</el-upload>
 			</el-form-item>
 			<el-form-item label="设备型号">
