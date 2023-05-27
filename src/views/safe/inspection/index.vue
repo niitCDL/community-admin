@@ -62,8 +62,8 @@ const addOrUpdateHandle = (id?: number) => {
 			<el-table-column prop="note" label="备注" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="status" label="状态" dict-type="user_status" align="center">
 				<template #default="{ row }">
-					<el-tag v-if="row.status == 0" type="success">启用</el-tag>
-					<el-tag v-if="row.status == 1" type="danger">禁用</el-tag>
+					<el-tag v-if="row.status == 1" type="success">启用</el-tag>
+					<el-tag v-if="row.status == 0" type="danger">禁用</el-tag>
 				</template>
 			</el-table-column>
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center" width="180"></el-table-column>

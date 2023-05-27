@@ -1,25 +1,21 @@
 <template>
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
-					<el-form-item>
-			  <el-select v-model="state.queryForm.communityId" placeholder="社区id">
-				<el-option label="选择" value="0"></el-option>
-			  </el-select>
+			<el-form-item>
+				<el-select v-model="state.queryForm.communityId" placeholder="社区id">
+					<el-option label="选择" value="0"></el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item>
-			  <el-input v-model="state.queryForm.title" placeholder="报修标题"></el-input>
+				<el-input v-model="state.queryForm.title" placeholder="报修标题"></el-input>
 			</el-form-item>
 			<el-form-item>
-			  <el-select v-model="state.queryForm.state" placeholder="处理状态（0：未处理，1：处理中，2：已处理，3：已评价）">
-				<el-option label="选择" value="0"></el-option>
-			  </el-select>
+				<el-select v-model="state.queryForm.state" placeholder="处理状态（0：未处理，1：处理中，2：已处理，3：已评价）">
+					<el-option label="选择" value="0"></el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item>
-			  <el-date-picker
-				v-model="state.queryForm.createTime"
-				type="datetimerange"
-				value-format="YYYY-MM-DD HH:mm:ss">
-			  </el-date-picker>
+				<el-date-picker v-model="state.queryForm.createTime" type="datetimerange" value-format="YYYY-MM-DD HH:mm:ss"> </el-date-picker>
 			</el-form-item>
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
@@ -40,7 +36,12 @@
 			<el-table-column prop="category" label="报修类型(0:路灯，1：厕所)" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="place" label="报修地址" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="imgs" label="图片" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="state" label="处理状态（0：未处理，1：处理中，2：已处理，3：已评价）" header-align="center" align="center"></el-table-column>
+			<el-table-column
+				prop="state"
+				label="处理状态（0：未处理，1：处理中，2：已处理，3：已评价）"
+				header-align="center"
+				align="center"
+			></el-table-column>
 			<el-table-column prop="employeeIds" label="处理人id，逗号分隔" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="handleTime" label="处理时间" header-align="center" align="center"></el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
@@ -76,9 +77,9 @@ const state: IHooksOptions = reactive({
 	dataListUrl: '/property/repair/page',
 	deleteUrl: '/property/repair',
 	queryForm: {
-		communityId: '', 
-		title: '', 
-		state: '', 
+		communityId: '',
+		title: '',
+		state: '',
 		createTime: ''
 	}
 })

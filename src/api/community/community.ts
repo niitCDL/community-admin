@@ -3,6 +3,7 @@ export const useCommunityApi = (id: number) => {
 	return service.get('/sys/community/' + id)
 }
 
+
 export const useCommunitySubmitApi = (dataForm: any) => {
 	if (dataForm.id) {
 		return service.put('/sys/community', dataForm)
