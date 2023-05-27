@@ -19,7 +19,7 @@
 					:on-success="handleAvatarSuccess"
 					:before-upload="beforeAvatarUpload"
 				>
-					<el-image v-if="dataForm.communityImgs" :src="dataForm.communityImgs" style="width: 80px; height: 60px" />
+					<el-image v-if="dataForm.photo" :src="dataForm.photo" style="width: 80px; height: 60px" />
 					<el-icon v-else class="avatar-uploader-icon" style="width: 80px; height: 60px">上传</el-icon>
 				</el-upload>
 			</el-form-item>
@@ -49,7 +49,6 @@ const dataForm = reactive({
 	id: '',
 	communityName: '',
 	address: '',
-	communityImgs: '',
 	coverArea: '',
 	content: ''
 })
@@ -61,9 +60,6 @@ const init = (id?: number) => {
 	// 重置表单数据
 	if (dataFormRef.value) {
 		dataFormRef.value.resetFields()
-		for (const key in dataForm) {
-			dataForm[key] = ''
-		}
 	}
 
 	//id 存在则为修改
@@ -80,8 +76,10 @@ const getCommunity = (id: number) => {
 }
 
 const dataRules = ref({
-	communityName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	address: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
+	username: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	realName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	mobile: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	orgId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
 // 表单提交

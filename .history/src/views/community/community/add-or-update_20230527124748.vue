@@ -61,9 +61,6 @@ const init = (id?: number) => {
 	// 重置表单数据
 	if (dataFormRef.value) {
 		dataFormRef.value.resetFields()
-		for (const key in dataForm) {
-			dataForm[key] = ''
-		}
 	}
 
 	//id 存在则为修改
@@ -80,8 +77,10 @@ const getCommunity = (id: number) => {
 }
 
 const dataRules = ref({
-	communityName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	address: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
+	username: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	realName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	mobile: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	orgId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
 // 表单提交

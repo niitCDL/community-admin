@@ -42,8 +42,8 @@ import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useBuildingApi, useBuildingSubmitApi } from '@/api/building/building'
 import { getCommunityList } from '@/api/community/community'
-// import type { UploadProps } from 'element-plus'
-// import cache from '@/utils/cache'
+import type { UploadProps } from 'element-plus'
+import cache from '@/utils/cache'
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
@@ -69,9 +69,6 @@ const init = (id?: number) => {
 	// 重置表单数据
 	if (dataFormRef.value) {
 		dataFormRef.value.resetFields()
-		for (const key in dataForm) {
-			dataForm[key] = ''
-		}
 	}
 
 	//id 存在则为修改
@@ -120,26 +117,26 @@ const submitHandle = () => {
 		})
 	})
 }
-// const upurl = import.meta.env.VITE_API_URL + '/safe/inspectionitem/upload?accessToken=' + cache.getToken()
+const upurl = import.meta.env.VITE_API_URL + '/safe/inspectionitem/upload?accessToken=' + cache.getToken()
 
-// //图片上传
-// const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
-// 	console.log(response)
-// 	dataForm.photo = response.data.url
-// 	console.log(dataForm)
-// }
+//图片上传
+const handleAvatarSuccess: UploadProps['onSuccess'] = (response, uploadFile) => {
+	console.log(response)
+	dataForm.photo = response.data.url
+	console.log(dataForm)
+}
 
-// //图片上传前
-// const beforeAvatarUpload: UploadProps['beforeUpload'] = rawFile => {
-// 	if (rawFile.type !== 'image/jpeg') {
-// 		ElMessage.error('Avatar picture must be JPG format!')
-// 		return false
-// 	} else if (rawFile.size / 1024 / 1024 > 10) {
-// 		ElMessage.error('Avatar picture size can not exceed 2MB!')
-// 		return false
-// 	}
-// 	return true
-// }
+//图片上传前
+const beforeAvatarUpload: UploadProps['beforeUpload'] = rawFile => {
+	if (rawFile.type !== 'image/jpeg') {
+		ElMessage.error('Avatar picture must be JPG format!')
+		return false
+	} else if (rawFile.size / 1024 / 1024 > 10) {
+		ElMessage.error('Avatar picture size can not exceed 2MB!')
+		return false
+	}
+	return true
+}
 
 defineExpose({
 	init
