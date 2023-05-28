@@ -31,7 +31,8 @@
 				<el-input v-model="dataForm.insuranceFactory" placeholder="维保厂商"></el-input>
 			</el-form-item>
 			<el-form-item label="坐标">
-				<el-input v-model="dataForm.coordinate" placeholder="座标"></el-input>
+				<el-input v-model="dataForm.coordinate" placeholder="座标" @click="choose"></el-input>
+				<mapper v-model="show" :form="form" @change-form="handleClick"></mapper>
 			</el-form-item>
 			<el-form-item label="备注">
 				<el-input v-model="dataForm.note" placeholder="备注"></el-input>
@@ -54,13 +55,13 @@ import { useInspectionApi, useInspectionSubmitApi } from '@/api/safe/inspectionI
 import { getCommunityList } from '@/api/community/community'
 import type { UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
+import mapper from './mapper.vue'
 
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
 const communityList = ref<any[]>([])
-const roleList = ref<any[]>([])
-const orgList = ref([])
+const show = ref(false)
 const dataFormRef = ref()
 
 const dataForm = reactive({
@@ -76,6 +77,21 @@ const dataForm = reactive({
 	status: 1
 })
 
+let form = ref()
+const choose = () => {
+	show.value = true
+}
+
+const handleClick = newValue => {
+	console.log('niah' + newValue.lng)
+	form.value = newValue
+	const newForm = form.value
+	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+	for (const key in newValue) {
+		newValue[key] = ''
+	}
+	show.value = false
+}
 const init = (id?: number) => {
 	visible.value = true
 	dataForm.id = ''
