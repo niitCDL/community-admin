@@ -68,7 +68,6 @@ import { IHooksOptions } from '@/hooks/interface'
 import constant from '@/utils/constant'
 import { useUserExportApi } from '@/api/sys/user'
 import { ElMessage, UploadProps } from 'element-plus'
-import { importBuilding, exportBuilding } from '@/api/building/building'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/building/page',
@@ -86,8 +85,8 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const downloadExcel = () => {
-	// exportBuilding()
-	//return
+	useUserExportApi()
+	return
 }
 
 const handleSuccess: UploadProps['onSuccess'] = (res, file) => {

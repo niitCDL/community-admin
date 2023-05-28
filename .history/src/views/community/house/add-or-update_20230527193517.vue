@@ -6,23 +6,17 @@
 					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
+			<el-form-item prop="buildingId" label="所属楼宇">
+				<el-select v-model="dataForm.buildingId" class="m-2" placeholder="所属小区">
+					<el-option v-for="item in buildingList" :key="item.id" :label="item.buildingName" :value="item.id" />
+				</el-select>
+			</el-form-item>
 			<el-form-item prop="buildingName" label="楼宇名称">
 				<el-input v-model="dataForm.buildingName" placeholder="楼宇名称"></el-input>
 			</el-form-item>
-			<el-form-item prop="units" label="层数">
+			<el-form-item prop="units" label="所在单元">
 				<el-input v-model="dataForm.units" placeholder="所在单元"></el-input>
 			</el-form-item>
-			<!-- <el-form-item prop="orgId" label="所属机构">
-				<el-tree-select
-					v-model="dataForm.orgId"
-					:data="orgList"
-					value-key="id"
-					check-strictly
-					:render-after-expand="false"
-					:props="{ label: 'name', children: 'children' }"
-					style="width: 100%"
-				/>
-			</el-form-item> -->
 			<el-form-item prop="usedArea" label="占地面积">
 				<el-input v-model="dataForm.usedArea" placeholder="占地面积"></el-input>
 			</el-form-item>
@@ -42,12 +36,14 @@ import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useBuildingApi, useBuildingSubmitApi } from '@/api/building/building'
 import { getCommunityList } from '@/api/community/community'
+import { getBuildingList } from '@/api/building/building'
 // import type { UploadProps } from 'element-plus'
 // import cache from '@/utils/cache'
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
 const communityList = ref<any[]>([])
+const buildingList = ref<any[]>([])
 const postList = ref<any[]>([])
 const roleList = ref<any[]>([])
 const orgList = ref([])
@@ -55,6 +51,7 @@ const dataFormRef = ref()
 
 const dataForm = reactive({
 	id: '',
+	buildingId: '',
 	communityId: [] as any[],
 	buildingName: '',
 	units: '',
@@ -76,14 +73,14 @@ const init = (id?: number) => {
 
 	//id 存在则为修改
 	if (id) {
-		getBuilding(id)
+		getHouse(id)
 	}
 	getCommunityLists()
 }
 
 // 获取信息
-const getBuilding = (id: number) => {
-	useBuildingApi(id).then(res => {
+const getHouse = (id: number) => {
+	useHouseApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }

@@ -9,7 +9,7 @@
 			<el-form-item prop="buildingName" label="楼宇名称">
 				<el-input v-model="dataForm.buildingName" placeholder="楼宇名称"></el-input>
 			</el-form-item>
-			<el-form-item prop="units" label="层数">
+			<el-form-item prop="units" label="所在单元">
 				<el-input v-model="dataForm.units" placeholder="所在单元"></el-input>
 			</el-form-item>
 			<!-- <el-form-item prop="orgId" label="所属机构">

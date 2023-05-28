@@ -5,7 +5,7 @@
 				<el-input v-model="state.queryForm.communityName" placeholder="小区名称" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-input v-model="state.queryForm.units" placeholder="层数" clearable></el-input>
+				<el-input v-model="state.queryForm.units" placeholder="所在单元" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-input v-model="state.queryForm.buildingName" clearable placeholder="楼宇名称"></el-input>
@@ -33,8 +33,8 @@
 			<!-- <el-table-column type="index" label="编号" header-align="center" align="center" width="80"></el-table-column> -->
 			<el-table-column prop="communityName" label="小区名称" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="buildingName" label="楼宇名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="units" label="层数" header-align="center" align="center" width="110"></el-table-column>
-			<el-table-column prop="usedArea" label="占地面积" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="units" label="所在单元" header-align="center" align="center" width="110"></el-table-column>
+			<el-table-column prop="houseNumber" label="房间号" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="content" label="备注" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center" width="180"></el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
@@ -68,7 +68,6 @@ import { IHooksOptions } from '@/hooks/interface'
 import constant from '@/utils/constant'
 import { useUserExportApi } from '@/api/sys/user'
 import { ElMessage, UploadProps } from 'element-plus'
-import { importBuilding, exportBuilding } from '@/api/building/building'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/building/page',
@@ -86,8 +85,8 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const downloadExcel = () => {
-	// exportBuilding()
-	//return
+	useUserExportApi()
+	return
 }
 
 const handleSuccess: UploadProps['onSuccess'] = (res, file) => {
@@ -115,3 +114,4 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>
+
