@@ -78,7 +78,7 @@ import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-updates.vue'
 import { IHooksOptions } from '@/hooks/interface'
 // import constant from '@/utils/constant'
-import { useUserExportApi } from '@/api/society/order'
+import { useOrderExportApi } from '@/api/society/order'
 import { ElMessage, UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
 
@@ -100,7 +100,7 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const downloadExcel = () => {
-	useUserExportApi()
+	useOrderExportApi()
 	return
 }
 
