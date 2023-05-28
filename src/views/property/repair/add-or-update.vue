@@ -94,8 +94,7 @@ const submitHandle = () => {
 		})
 	})
 }
-let options = []
-options = useGetListOption()
+let options = await useGetListOption()
 defineExpose({
 	init
 })

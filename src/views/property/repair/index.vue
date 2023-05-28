@@ -28,8 +28,13 @@
 				</el-select>
 			</el-form-item>
 
-			<el-form-item >
-				<el-date-picker v-model="state.queryForm.createTime" type="datetimerange" placeholder="选择日期" value-format="YYYY-MM-DD HH:mm:ss"></el-date-picker>
+			<el-form-item>
+				<el-date-picker
+					v-model="state.queryForm.createTime"
+					type="datetimerange"
+					placeholder="选择日期"
+					value-format="YYYY-MM-DD HH:mm:ss"
+				></el-date-picker>
 			</el-form-item>
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
@@ -44,7 +49,7 @@
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
 			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
-	
+
 			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="type" label="报修类型" dict-type="repair_type"></fast-table-column>
 			<el-table-column prop="userName" label="报修人" header-align="center" align="center"></el-table-column>
@@ -52,7 +57,7 @@
 			<el-table-column prop="employeeNames" label="处理人" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="handleTime" label="处理时间" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="state" label="状态" dict-type="hand_status"></fast-table-column>
-			
+
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<!-- <el-button v-auth="'property:repair:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button> -->
@@ -102,8 +107,8 @@ const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id?: number) => {
 	addOrUpdateRef.value.init(id)
 }
-let options = []
-options = userGetCommunityOption()
+
+let options = await userGetCommunityOption()
 //详情
 const info = (data: any) => {
 	// console.log(data)
