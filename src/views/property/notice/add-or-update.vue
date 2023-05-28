@@ -82,7 +82,12 @@ let communities;
 communities = useGetCommunityList()
 let notice_type;
 useDictTypeAllApi().then((res) => {
+	// console.log(res)
 	notice_type = res.data[13].dataList
+	notice_type = notice_type.map(obj =>({
+		dictLabel:obj.dictLabel,
+		dictValue:parseInt(obj.dictValue)
+	}))
 	
 })
 const init = (id?: number) => {
