@@ -10,6 +10,7 @@
 		"prepare": "husky install"
 	},
 	"dependencies": {
+		"@amap/amap-jsapi-loader": "^1.0.1",
 		"@element-plus/icons-vue": "^2.1.0",
 		"@vueuse/core": "^10.1.2",
 		"@wangeditor/editor": "^5.1.23",
@@ -25,6 +26,7 @@
 		"qs": "^6.11.2",
 		"sortablejs": "^1.15.0",
 		"vue": "^3.3.4",
+		"vue-amap": "^0.5.10",
 		"vue-router": "^4.2.1",
 		"vxe-table": "^4.3.14",
 		"xe-utils": "^3.5.7"
