@@ -1,5 +1,5 @@
 ﻿<template>
-	<div>抄表账单</div>
+	<div>添加活动分类</div>
 </template>
 
 <script setup lang="ts"></script>
