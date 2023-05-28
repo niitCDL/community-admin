@@ -1,12 +1,6 @@
 ﻿<template>
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
-			<!-- <el-form-item>
-				<el-input v-model="state.queryForm.createTime" placeholder="开始时间" clearable></el-input>
-			</el-form-item>
-			<el-form-item>
-				<el-input v-model="state.queryForm.endTime" placeholder="结束时间" clearable></el-input>
-			</el-form-item> -->
 			<el-form-item>
 				<el-date-picker
 					v-model="state.queryForm.createTime"
@@ -47,6 +41,7 @@
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
 			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="houseNumber" label="房产" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="orderType" label="收费项目" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="createTime" label="账单开始时间" dict-type="user_gender"></fast-table-column>
@@ -96,6 +91,7 @@ const state: IHooksOptions = reactive({
 		gender: ''
 	}
 })
+
 const uploadUserExcelUrl = import.meta.env.VITE_API_URL + '/soft2242/order/import?accessToken=' + cache.getToken()
 
 const addOrUpdateRef = ref()

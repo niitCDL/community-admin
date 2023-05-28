@@ -2,8 +2,10 @@
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="houseNumber" label="房屋">
-				<!-- <el-input v-model="dataForm.houseNumber" placeholder="输入房屋"></el-input> -->
 				<el-tree-select v-model="dataForm.houseNumber" :data="houseList" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="communityName" label="小区">
+				<el-tree-select v-model="dataForm.communityName" :data="communityList" style="width: 100%" />
 			</el-form-item>
 			<el-form-item prop="orderType" label="收费项目">
 				<el-tree-select v-model="dataForm.orderType" :data="orgList" style="width: 100%" />
@@ -50,16 +52,13 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
-// import { useOrgListApi } from '@/api/sys/orgs'
-import { useOrderSubmitApi, useOrderApi, useHouseListApi } from '@/api/society/order'
-import { List } from 'vxe-table'
-// import { usePostListApi } from '@/api/sys/post'
-// import { useRoleListApi } from '@/api/sys/role'
+import { useOrderSubmitApi, useOrderApi, useHouseListApi, useCommunityListApi } from '@/api/society/order'
 
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
 let houseList = reactive([{}])
+let communityList = reactive([{}])
 
 const orgList = ref([
 	{
@@ -106,7 +105,8 @@ const dataForm = reactive({
 	houseId: 1,
 	ownerId: 1,
 	endTime: '2023-05-25 19:25:55',
-	houseNumber: ''
+	houseNumber: '',
+	communityName: ''
 })
 
 const init = (id?: number) => {
@@ -123,27 +123,40 @@ const init = (id?: number) => {
 		getOrder(id)
 	}
 
-	// getOrgList()
-	// getPostList()
+	getCommunityList()
 	getHouseList()
 }
 
 // 获取房屋列表
 const getHouseList = () => {
 	return useHouseListApi().then(res => {
-		const getList = ref([{ houseNumber: '' }])
+		const getList = ref([{ id: 1, houseNumber: '' }])
 		getList.value = res.data
 		console.log(getList.value)
 		// 遍历housrList
 		getList.value.map(item => {
 			console.log(item.houseNumber)
 			// 将getList的元素插入 houseList中
-			houseList.push({ value: item.houseNumber, label: item.houseNumber })
+			houseList.push({ value: item.id, label: item.houseNumber })
 			console.log(houseList)
 		})
 	})
 }
-
+// 获取小区列表
+const getCommunityList = () => {
+	return useCommunityListApi().then(res => {
+		const getList = ref([{ id: 1, communityName: '' }])
+		getList.value = res.data
+		console.log(getList.value)
+		// 遍历housrList
+		getList.value.map(item => {
+			console.log(item.communityName)
+			// 将getList的元素插入 houseList中
+			communityList.push({ value: item.id, label: item.communityName })
+			console.log(communityList)
+		})
+	})
+}
 // 获取信息
 const getOrder = (id: number) => {
 	useOrderApi(id).then(res => {

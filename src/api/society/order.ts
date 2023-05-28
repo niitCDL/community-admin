@@ -23,3 +23,6 @@ export const useOrderApi = (id: number) => {
 export const useHouseListApi = () => {
 	return service.get('/soft2242/order/list')
 }
+export const useCommunityListApi = () => {
+	return service.get('/soft2242/order/community')
+}
