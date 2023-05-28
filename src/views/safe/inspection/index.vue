@@ -2,6 +2,7 @@
 //添加删除url和查询对象类型
 import { IHooksOptions } from '@/hooks/interface'
 import { reactive, ref } from 'vue'
+import { getCommunityList } from '@/api/community/community'
 //增删改查方法
 import { useCrud } from '@/hooks'
 //添加修改组件
@@ -11,9 +12,13 @@ const state: IHooksOptions = reactive({
 	dataListUrl: '/safe/inspectionitem/page',
 	deleteUrl: '/safe/inspectionitem',
 	queryForm: {
-		communityName: '',
+		communityId: '',
 		name: ''
 	}
+})
+const communityList = ref<any[]>([])
+getCommunityList().then(res => {
+	communityList.value = res.data
 })
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 
@@ -27,7 +32,9 @@ const addOrUpdateHandle = (id?: number) => {
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-input v-model="state.queryForm.communityName" placeholder="小区名" clearable></el-input>
+				<el-select v-model="state.queryForm.communityId" class="m-2" placeholder="选择小区" clearable>
+					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
+				</el-select>
 			</el-form-item>
 			<el-form-item>
 				<el-input v-model="state.queryForm.name" placeholder="巡检项目名" clearable></el-input>
