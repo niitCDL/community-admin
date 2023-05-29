@@ -54,6 +54,7 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { usePlanApi, usePlanSubmitApi, useGetPathListByComm, useUserListByRoleId } from '@/api/safe/plan'
+import { el } from 'element-plus/es/locale'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -134,12 +135,14 @@ const communitychange = value => {
 	PathListByCommunity.value.forEach(element => {
 		if (element.communityId === value) {
 			pathList.value = element.patrolPathVO
-			dataForm.pathId = pathList.value[0].id
+			if (pathList.value.length > 0) {
+				dataForm.pathId = pathList.value[0].id
+			} else {
+				dataForm.pathId = ''
+			}
 			return
 		}
 	})
-	console.log(value)
-	// getPathListByCommId(dataForm.communityId)
 }
 
 const getPathListByCommId = () => {
