@@ -22,7 +22,8 @@
 
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
+			  <el-table-column type="index" align="center" width="90"  label="编号"> </el-table-column>
+			<!-- <el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column> -->
 			<el-table-column prop="title" label="通知标题" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="type" label="通知类型" dict-type="notice_type"></fast-table-column>
@@ -60,7 +61,7 @@ import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import service from '@/utils/request'
 import { useNoticeSubmitApi } from '@/api/property/notice'
 import { dataType } from 'element-plus/es/components/table-v2/src/common'
@@ -94,10 +95,11 @@ const review = (dataForm?: any) => {
 			dataForm.review = 1
 			useNoticeSubmitApi(dataForm)
 				.then(() => {
-					alert('审核成功')
+					// alert('审核成功')
+					ElMessage.success('审核成功')
 				})
 				.catch(error => {
-					alert(error)
+					// alert(error)
 				})
 		})
 		.catch(action => {
@@ -105,10 +107,10 @@ const review = (dataForm?: any) => {
 				dataForm.review = 2
 				useNoticeSubmitApi(dataForm)
 					.then(() => {
-						alert('审核成功')
+						ElMessage.success('审核成功')
 					})
 					.catch(error => {
-						alert(error)
+						// alert(error)
 					})
 			}
 		})

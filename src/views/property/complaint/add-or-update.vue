@@ -1,48 +1,15 @@
 <template>
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false">
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="100px" @keyup.enter="submitHandle()">
-			<el-form-item label="id" prop="id">
-				<el-input v-model="dataForm.id" placeholder="id"></el-input>
-			</el-form-item>
-			<el-form-item label="社区id" prop="communityId">
-				<el-input v-model="dataForm.communityId" placeholder="社区id"></el-input>
-			</el-form-item>
-			<el-form-item label="投诉人id" prop="userId">
-				<el-input v-model="dataForm.userId" placeholder="投诉人id"></el-input>
-			</el-form-item>
-			<el-form-item label="投诉类型(0:物业服务，1:社区服务)" prop="type">
-				<el-input v-model="dataForm.type" placeholder="投诉类型(0:物业服务，1:社区服务)"></el-input>
-			</el-form-item>
-			<el-form-item label="投诉标题" prop="titile">
-				<el-input v-model="dataForm.titile" placeholder="投诉标题"></el-input>
-			</el-form-item>
-			<el-form-item label="投诉内容" prop="content">
-				<el-input v-model="dataForm.content" placeholder="投诉内容"></el-input>
-			</el-form-item>
-			<el-form-item label="图片" prop="imgs">
-				<el-input v-model="dataForm.imgs" placeholder="图片"></el-input>
-			</el-form-item>
-			<el-form-item label="处理状态（0：未处理，1：处理中，2：已处理，3：已评价）" prop="state">
-				<el-input v-model="dataForm.state" placeholder="处理状态（0：未处理，1：处理中，2：已处理，3：已评价）"></el-input>
-			</el-form-item>
-			<el-form-item label="处理结果" prop="result">
-				<el-input v-model="dataForm.result" placeholder="处理结果"></el-input>
-			</el-form-item>
-			<el-form-item label="处理人id，逗号分隔" prop="employeeIds">
-				<el-input v-model="dataForm.employeeIds" placeholder="处理人id，逗号分隔"></el-input>
-			</el-form-item>
-			<el-form-item label="处理时间" prop="handleTime">
-				<el-input v-model="dataForm.handleTime" placeholder="处理时间"></el-input>
-			</el-form-item>
-			<el-form-item label="评价内容" prop="evaluate">
-				<el-input v-model="dataForm.evaluate" placeholder="评价内容"></el-input>
-			</el-form-item>
-			<el-form-item label="评价时间" prop="evaluateTime">
-				<el-input v-model="dataForm.evaluateTime" placeholder="评价时间"></el-input>
+			<el-form-item label="验收人" prop="employeeIds">
+				<!-- <el-select-v2 ref="v2" v-model="dataForm.employeeIds" :options="options" style="width: 240px" multiple /> -->
+				<el-select v-model="dataForm.employeeIds" multiple placeholder="验收人" style="width: 240px">
+					<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+				</el-select>
 			</el-form-item>
 		</el-form>
 		<template #footer>
-			<el-button @click="visible = false">取消</el-button>
+			<!-- <el-button @click="visible = false">取消</el-button> -->
 			<el-button type="primary" @click="submitHandle()">确定</el-button>
 		</template>
 	</el-dialog>
@@ -52,6 +19,7 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useComplaintApi, useComplaintSubmitApi } from '@/api/property/complaint'
+import { useGetListOption } from '../property'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -63,12 +31,12 @@ const dataForm = reactive({
 	communityId: '',
 	userId: '',
 	type: '',
-	titile: '',
+	title: '',
 	content: '',
 	imgs: '',
 	state: '',
 	result: '',
-	employeeIds: '',
+	employeeIds: null,
 	handleTime: '',
 	evaluate: '',
 	evaluateTime: '',
@@ -120,7 +88,7 @@ const submitHandle = () => {
 		})
 	})
 }
-
+let options = await useGetListOption()
 defineExpose({
 	init
 })

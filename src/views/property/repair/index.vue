@@ -47,8 +47,8 @@
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
-
+			<!-- <el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column> -->
+			<el-table-column type="index" align="center" width="90"  label="编号"> </el-table-column>
 			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="type" label="报修类型" dict-type="repair_type"></fast-table-column>
 			<el-table-column prop="userName" label="报修人" header-align="center" align="center"></el-table-column>
