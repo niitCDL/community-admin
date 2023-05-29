@@ -14,8 +14,8 @@ useCommuntiySearchApi().then(res => {
 
 console.log(communities)
 const state: IHooksOptions = reactive({
-	dataListUrl: '/safe/point/page',
-	deleteUrl: '/safe/point',
+	dataListUrl: '/safe/path/page',
+	deleteUrl: '/safe/path',
 	queryForm: {
 		communityIds: []
 	}
@@ -35,7 +35,7 @@ const addOrUpdateHandle = (id?: number) => {
 				<el-input v-model="state.queryForm.communityId" placeholder="小区名" clearable></el-input>
 			</el-form-item> -->
 			<el-form-item>
-				<el-select v-model="state.queryForm.communityIds" placeholder="请选择社区" multiple class="select-list">
+				<el-select v-model="state.queryForm.communityIds" multiple placeholder="请选择社区" class="select-list">
 					<el-option v-for="option in communities" :key="option.id" :label="option.communityName" :value="option.id"></el-option>
 				</el-select>
 			</el-form-item>
@@ -46,11 +46,12 @@ const addOrUpdateHandle = (id?: number) => {
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
 			</el-form-item>
+
 			<el-form-item>
-				<el-button v-auth="'safe:point:save'" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+				<el-button v-auth="'safe:path:save'" type="primary" @click="addOrUpdateHandle()">新增</el-button>
 			</el-form-item>
 			<el-form-item>
-				<el-button v-auth="'safe:point:delete'" type="danger" @click="deleteBatchHandle()">批量删除</el-button>
+				<el-button v-auth="'safe:path:delete'" type="danger" @click="deleteBatchHandle()">批量删除</el-button>
 			</el-form-item>
 		</el-form>
 
@@ -58,10 +59,7 @@ const addOrUpdateHandle = (id?: number) => {
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
 			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="buildingName" label="楼宇名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="units" label="单元号" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="pointName" label="巡更点名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="pointNumber" label="位置编号" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="wayName" label="巡更路线" header-align="center" align="center"></el-table-column>
 
 			<el-table-column prop="status" label="状态" dict-type="user_status" align="center">
 				<template #default="{ row }">
@@ -72,9 +70,10 @@ const addOrUpdateHandle = (id?: number) => {
 
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
+					<!-- <el-button type="primary" link @click="deleteBatchHandle(scope.row.id)">巡更地图</el-button> -->
 					<el-button v-auth="'safe:point:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
 					<el-button v-auth="'safe:point:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
-					<el-button type="primary" link @click="deleteBatchHandle(scope.row.id)">巡更记录</el-button>
+					<!-- <el-button type="primary" link @click="deleteBatchHandle(scope.row.id)">巡更记录</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
