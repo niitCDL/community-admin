@@ -14,7 +14,7 @@ export const usePlanApi = (id: number) => {
  * @returns 返回Promise对象
  */
 export const useGetPathListByComm = () => {
-	return service.get('/sys/path/index/communityid')
+	return service.get('/safe/path/communityid')
 }
 
 /**
