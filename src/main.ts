@@ -30,7 +30,9 @@ VXETable.setup({
 })
 
 const app = createApp(App)
+
 app.use(createPinia())
+
 
 // 注册 Pinia
 registerStore()

@@ -30,7 +30,7 @@
 			<el-form-item label="维保厂商">
 				<el-input v-model="dataForm.insuranceFactory" placeholder="维保厂商"></el-input>
 			</el-form-item>
-			<el-form-item label="坐标">
+			<el-form-item prop="coordinate" label="坐标">
 				<el-input v-model="dataForm.coordinate" placeholder="座标" @click="choose"></el-input>
 				<mapper ref="mapcontainer" :form="form" @change-form="handleClick"></mapper>
 			</el-form-item>
@@ -131,7 +131,8 @@ const getCommunityLists = () => {
 }
 const dataRules = ref({
 	name: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	communityId: [{ required: true, message: '必填项不能为空', trigger: 'change	' }]
+	communityId: [{ required: true, message: '必填项不能为空', trigger: 'change	' }],
+	coordinate: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
 // 表单提交
