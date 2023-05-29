@@ -6,13 +6,13 @@
 					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<input v-model="dataForm.communityName" type="hidden" />
+			<input type="hidden" v-model="dataForm.communityName" />
 			<el-form-item prop="buildingId" label="所属楼宇">
 				<el-select v-model="dataForm.buildingId" class="m-2" placeholder="所属楼宇" @change="updateBuildingName">
 					<el-option v-for="item in filteredBuildings" :key="item.id" :label="item.buildingName" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<input v-model="dataForm.buildingName" type="hidden" />
+			<input type="hidden" v-model="dataForm.buildingName" />
 			<el-form-item prop="houseNumber" label="房间号">
 				<el-input v-model="dataForm.houseNumber" placeholder="房间号"></el-input>
 			</el-form-item>
@@ -118,22 +118,8 @@ watch(
 		dataForm.buildingId = undefined
 		// 更新 communityName
 		updateCommunityName()
-		updateBuildingName()
 	},
 	{ deep: true }
-)
-// 监听 dataForm.buildingId 的变化并更新 buildingName
-watch(
-	() => dataForm.buildingId,
-	value => {
-		const selectedBuilding = buildingList.value.find(item => item.id === value)
-		if (selectedBuilding) {
-			dataForm.buildingName = selectedBuilding.buildingName
-		} else {
-			dataForm.buildingName = ''
-		}
-	},
-	{ immediate: true }
 )
 
 // 处理选择小区时的事件
@@ -156,15 +142,6 @@ const updateCommunityName = () => {
 		dataForm.communityName = selectedCommunity.communityName
 	} else {
 		dataForm.communityName = ''
-	}
-}
-// 更新 buildingName
-const updateBuildingName = () => {
-	const selectedBuilding = buildingList.value.find(item => item.id === dataForm.buildingId)
-	if (selectedBuilding) {
-		dataForm.buildingName = selectedBuilding.building
-	} else {
-		dataForm.buildingName = ''
 	}
 }
 

@@ -34,7 +34,6 @@
 			<el-table-column prop="communityName" label="小区名称" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="realName" label="业主" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="mallNumber" label="商铺编号" header-align="center" align="center" width="110"></el-table-column>
-			<el-table-column prop="mallArea" label="商铺面积" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="address" label="商铺地址" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="mallType" label="商铺类型" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="mallStatus" label="商铺状态" header-align="center" align="center"
@@ -121,3 +120,4 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>
+
