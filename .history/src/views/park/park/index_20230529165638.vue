@@ -37,7 +37,7 @@
 			</el-table-column>
 			<el-table-column prop="content" label="备注" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="price" label="单价" header-align="center" align="center" width="60"></el-table-column>
-			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="130">
+			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<el-button v-auth="'sys:park:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
 					<el-button v-auth="'sys:park:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>

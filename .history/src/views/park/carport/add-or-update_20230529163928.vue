@@ -3,18 +3,18 @@
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="parkId" label="所属停车场">
 				<el-select v-model="dataForm.parkId" class="m-2" placeholder="所属停车场">
-					<el-option v-for="item in parkList" :key="item.id" :label="item.parkName" :value="item.id" />
+					<el-option v-for="item in communityList" :key="item.id" :label="item.parkyName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 
 			<el-form-item prop="ownerId" label="户主名">
 				<el-select v-model="dataForm.ownerId" class="m-2" placeholder="户主名">
-					<el-option v-for="item in ownerList" :key="item.id" :label="item.realName" :value="item.id" />
+					<el-option v-for="item in filteredBuildings" :key="item.id" :label="item.realName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item prop="carId" label="所属车辆">
 				<el-select v-model="dataForm.carId" class="m-2" placeholder="所属车辆">
-					<el-option v-for="item in carList" :key="item.id" :label="item.licence" :value="item.id" />
+					<el-option v-for="item in communityList" :key="item.id" :label="item.licence" :value="item.id" />
 				</el-select>
 			</el-form-item>
 
@@ -45,33 +45,33 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { useCarportApi, useCarportSubmitApi } from '@/api/carport/carport'
-import { getParkList, getOwnerList, getCarList } from '@/api/carport/carport'
+import { useHouseApi, useHouseSubmitApi } from '@/api/house/house'
+import { getCommunityList } from '@/api/community/community'
+import { getBuildingList } from '@/api/building/building'
 // import type { UploadProps } from 'element-plus'
 // import cache from '@/utils/cache'
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-const parkList = ref<any[]>([])
-const ownerList = ref<any[]>([])
-const carList = ref<any[]>([])
+const communityList = ref<any[]>([])
+const buildingList = ref<any[]>([])
+const postList = ref<any[]>([])
 const roleList = ref<any[]>([])
 const dataFormRef = ref()
 
 const dataForm = reactive({
 	id: undefined as number | undefined,
-	parkId: '',
+	parkId: undefined as number | undefined,
 	carId: '',
 	ownerId: '',
 	carportName: '',
 	status: '',
 	startTime: '',
-	endTime: '',
-	parkName: ''
+	endTime: ''
 })
 
-// // 经过筛选的楼宇列表
-// const filteredBuildings = ref<any[]>([])
+// 经过筛选的楼宇列表
+const filteredBuildings = ref<any[]>([])
 
 const init = (id?: number) => {
 	visible.value = true
@@ -87,68 +87,61 @@ const init = (id?: number) => {
 
 	//id 存在则为修改
 	if (id) {
-		getCarport(id)
+		getHouse(id)
 	}
-	getParkLists()
-	getOwnerLists()
-	getCarLists()
+	getCommunityLists()
+	getBuildingLists()
 }
 
 // 获取信息
-const getCarport = (id: number) => {
-	useCarportApi(id).then(res => {
+const getHouse = (id: number) => {
+	useHouseApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }
-//获取所有停车场列表
-const getParkLists = () => {
-	getParkList().then(res => {
-		parkList.value = res.data
+//获取所有小区列表
+const getCommunityLists = () => {
+	getCommunityList().then(res => {
+		communityList.value = res.data
 	})
 }
-//获取所有户主列表
-const getOwnerLists = () => {
-	getOwnerList().then(res => {
-		ownerList.value = res.data
+//获取所有楼宇列表
+const getBuildingLists = () => {
+	getBuildingList().then(res => {
+		buildingList.value = res.data
 	})
 }
-//获取所有车辆列表
-const getCarLists = () => {
-	getCarList().then(res => {
-		carList.value = res.data
-	})
-}
-// // 监听dataForm.communityId的变化并更新filteredBuildings
-// watch(
-// 	() => dataForm.communityId,
-// 	value => {
-// 		filteredBuildings.value = buildingList.value.filter(b => b.communityId === value)
-// 		dataForm.buildingId = undefined
-// 		// 更新 communityName
-// 		updateCommunityName()
-// 		updateBuildingName()
-// 	},
-// 	{ deep: true }
-// )
-// // 监听 dataForm.buildingId 的变化并更新 buildingName
-// watch(
-// 	() => dataForm.buildingId,
-// 	value => {
-// 		const selectedBuilding = buildingList.value.find(item => item.id === value)
-// 		if (selectedBuilding) {
-// 			dataForm.buildingName = selectedBuilding.buildingName
-// 		} else {
-// 			dataForm.buildingName = ''
-// 		}
-// 	},
-// 	{ immediate: true }
-// )
+// 监听dataForm.communityId的变化并更新filteredBuildings
+watch(
+	() => dataForm.communityId,
+	value => {
+		filteredBuildings.value = buildingList.value.filter(b => b.communityId === value)
+		dataForm.buildingId = undefined
+		// 更新 communityName
+		updateCommunityName()
+		updateBuildingName()
+	},
+	{ deep: true }
+)
+// 监听 dataForm.buildingId 的变化并更新 buildingName
+watch(
+	() => dataForm.buildingId,
+	value => {
+		const selectedBuilding = buildingList.value.find(item => item.id === value)
+		if (selectedBuilding) {
+			dataForm.buildingName = selectedBuilding.buildingName
+		} else {
+			dataForm.buildingName = ''
+		}
+	},
+	{ immediate: true }
+)
 
-// // 处理选择小区时的事件
-// const handleCommunityChange = () => {
-// 	filteredBuildings.value = buildingList.value.filter(b => b.communityId === dataForm.communityId)
-// 	dataForm.buildingId = undefined
-// }
+// 处理选择小区时的事件
+const handleCommunityChange = () => {
+	filteredBuildings.value = buildingList.value.filter(b => b.communityId === dataForm.communityId)
+	dataForm.buildingId = undefined
+}
 
 const dataRules = ref({
 	username: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
@@ -157,24 +150,24 @@ const dataRules = ref({
 	orgId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
-// // 更新 communityName
-// const updateCommunityName = () => {
-// 	const selectedCommunity = communityList.value.find(item => item.id === dataForm.communityId)
-// 	if (selectedCommunity) {
-// 		dataForm.communityName = selectedCommunity.communityName
-// 	} else {
-// 		dataForm.communityName = ''
-// 	}
-// }
+// 更新 communityName
+const updateCommunityName = () => {
+	const selectedCommunity = communityList.value.find(item => item.id === dataForm.communityId)
+	if (selectedCommunity) {
+		dataForm.communityName = selectedCommunity.communityName
+	} else {
+		dataForm.communityName = ''
+	}
+}
 // 更新 buildingName
-// const updateBuildingName = () => {
-// 	const selectedBuilding = buildingList.value.find(item => item.id === dataForm.buildingId)
-// 	if (selectedBuilding) {
-// 		dataForm.buildingName = selectedBuilding.building
-// 	} else {
-// 		dataForm.buildingName = ''
-// 	}
-// }
+const updateBuildingName = () => {
+	const selectedBuilding = buildingList.value.find(item => item.id === dataForm.buildingId)
+	if (selectedBuilding) {
+		dataForm.buildingName = selectedBuilding.building
+	} else {
+		dataForm.buildingName = ''
+	}
+}
 
 // 表单提交
 const submitHandle = () => {
@@ -183,7 +176,7 @@ const submitHandle = () => {
 			return false
 		}
 
-		useCarportSubmitApi(dataForm).then(() => {
+		useHouseSubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,
@@ -195,7 +188,12 @@ const submitHandle = () => {
 		})
 	})
 }
-
+// const updateCommunityName = () => {
+//       const selectedCommunity = this.communityList.find(item => item.id === this.dataForm.communityId)
+//       if (selectedCommunity) {
+//         this.dataForm.communityName = selectedCommunity.communityName
+//       }
+// 	}
 defineExpose({
 	init
 })

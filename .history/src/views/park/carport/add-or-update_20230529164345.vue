@@ -3,7 +3,7 @@
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="parkId" label="所属停车场">
 				<el-select v-model="dataForm.parkId" class="m-2" placeholder="所属停车场">
-					<el-option v-for="item in parkList" :key="item.id" :label="item.parkName" :value="item.id" />
+					<el-option v-for="item in parkList" :key="item.id" :label="item.parkyName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 
@@ -45,33 +45,32 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { useCarportApi, useCarportSubmitApi } from '@/api/carport/carport'
-import { getParkList, getOwnerList, getCarList } from '@/api/carport/carport'
+import { useCarportApi, useCarportApi } from '@/api/carport/carport'
+import { getParkList,getOwnerList,getCarList } from '@/api/carport/carport'
 // import type { UploadProps } from 'element-plus'
 // import cache from '@/utils/cache'
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-const parkList = ref<any[]>([])
-const ownerList = ref<any[]>([])
-const carList = ref<any[]>([])
+const communityList = ref<any[]>([])
+const buildingList = ref<any[]>([])
+const postList = ref<any[]>([])
 const roleList = ref<any[]>([])
 const dataFormRef = ref()
 
 const dataForm = reactive({
 	id: undefined as number | undefined,
-	parkId: '',
+	parkId: undefined as number | undefined,
 	carId: '',
 	ownerId: '',
 	carportName: '',
 	status: '',
 	startTime: '',
-	endTime: '',
-	parkName: ''
+	endTime: ''
 })
 
-// // 经过筛选的楼宇列表
-// const filteredBuildings = ref<any[]>([])
+// 经过筛选的楼宇列表
+const filteredBuildings = ref<any[]>([])
 
 const init = (id?: number) => {
 	visible.value = true
@@ -87,16 +86,16 @@ const init = (id?: number) => {
 
 	//id 存在则为修改
 	if (id) {
-		getCarport(id)
+		getHouse(id)
 	}
 	getParkLists()
 	getOwnerLists()
-	getCarLists()
+    getCarLists()
 }
 
 // 获取信息
-const getCarport = (id: number) => {
-	useCarportApi(id).then(res => {
+const getHouse = (id: number) => {
+	useHouseApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }
@@ -110,12 +109,6 @@ const getParkLists = () => {
 const getOwnerLists = () => {
 	getOwnerList().then(res => {
 		ownerList.value = res.data
-	})
-}
-//获取所有车辆列表
-const getCarLists = () => {
-	getCarList().then(res => {
-		carList.value = res.data
 	})
 }
 // // 监听dataForm.communityId的变化并更新filteredBuildings
@@ -183,7 +176,7 @@ const submitHandle = () => {
 			return false
 		}
 
-		useCarportSubmitApi(dataForm).then(() => {
+		useHouseSubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,
