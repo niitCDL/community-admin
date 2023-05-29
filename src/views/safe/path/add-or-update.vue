@@ -2,34 +2,42 @@
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="communityId" label="所属社区">
-				<el-select v-model="dataForm.communityId" placeholder="请选择社区">
+				<el-select v-model="dataForm.communityId" placeholder="请选择社区" @click="change">
 					<el-option v-for="option in communities" :key="option.id" :label="option.communityName" :value="option.id"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item prop="buildingId" label="所属楼宇">
-				<el-input v-model="dataForm.buildingId" placeholder="所属楼宇"></el-input>
+
+			<el-form-item prop="wayName" label="巡更线路名称">
+				<el-input v-model="dataForm.wayName" placeholder="巡更线路名称"></el-input>
 			</el-form-item>
 
-			<el-form-item prop="units" label="所属单元">
-				<el-input v-model="dataForm.units" placeholder="所属单元"></el-input>
-			</el-form-item>
+			<div style="display: flex">
+				<el-form-item prop="choose" class="choose">
+					<el-select v-model="choose" placeholder="请选择">
+						<el-option v-for="option in chooseForm" :key="option.id" :label="option.name" :value="option.id"></el-option>
+					</el-select>
+				</el-form-item>
 
-			<el-form-item prop="pointName" label="巡更点名称">
-				<el-input v-model="dataForm.pointName" placeholder="巡更点名称"></el-input>
-			</el-form-item>
+				<el-form-item v-show="choose == '0'" prop="pointIds" label="请选择巡更点">
+					<el-select v-model="dataForm.elementIds" placeholder="请选择巡更点" multiple>
+						<el-option v-for="option in points" :key="option.id" :label="option.pointName" :value="option.id"></el-option>
+					</el-select>
+				</el-form-item>
 
-			<el-form-item prop="pointNumber" label="寻更点编号">
-				<el-input v-model="dataForm.pointNumber" placeholder="寻更点编号"></el-input>
+				<el-form-item v-show="choose == '1'" prop="itemIds" label="请选择巡检项目">
+					<el-select v-model="dataForm.elementIds" placeholder="请选择巡检项目" multiple>
+						<el-option v-for="option in items" :key="option.id" :label="option.name" :value="option.id"></el-option>
+					</el-select>
+				</el-form-item>
+			</div>
+
+			<el-form-item prop="locationLength" label="定位距离">
+				<el-input v-model="dataForm.locationLength" placeholder="定位距离"></el-input>
 			</el-form-item>
 
 			<!-- <el-form-item prop="coordinate" label="经纬度坐标">
 				<el-input v-model="dataForm.coordinate" placeholder="经纬度坐标"></el-input>
 			</el-form-item> -->
-			<el-form-item prop="coordinate" label="经纬度坐标">
-				<el-input v-model="dataForm.coordinate" :suffix-icon="Location" @click="openMapper" />
-
-				<!-- <mapper :form="form" @change-form="handleClick" :ifShow="message"></mapper> -->
-			</el-form-item>
 
 			<!-- <el-form-item prop="orgId" label="所属机构">
 				<el-tree-select
@@ -55,35 +63,56 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, computed } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { usePointSubmitApi, usePointApi } from '@/api/safe/point'
+import { usePathSubmitApi, usePathApi } from '@/api/safe/path'
 
 import { useCommuntiySearchApi } from '@/api/safe/point'
-import mapper from './mapper.vue'
-import { Location } from '@element-plus/icons-vue'
+import { usePointSearchApi, useItemsSearchApi } from '@/api/safe/path'
 
-const communities = ref<any[]>([])
+//获取社区id和name
+let communities = ref<any[]>([])
 useCommuntiySearchApi().then(res => {
 	communities.value = res.data
 })
 
+//巡更点列表
+let points = ref<any[]>([])
+
+//巡检项目列表
+let items = ref<any[]>([])
+
+//获取巡检项目和巡更点数据
+const change = () => {
+	if (dataForm.communityId != '') {
+		if (choose.value == '0') {
+			usePointSearchApi(dataForm.communityId).then(res => {
+				points.value = res.data
+			})
+		}
+
+		if (choose.value == '1') {
+			useItemsSearchApi(dataForm.communityId).then(res => {
+				items.value = res.data
+			})
+		}
+	}
+	return items.value
+}
+
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-const postList = ref<any[]>([])
-const roleList = ref<any[]>([])
-const orgList = ref([])
 const dataFormRef = ref()
 
+const value1 = ref
 const dataForm = reactive({
 	id: '',
 	communityId: '',
-	buildingId: '',
-	units: '',
-	pointName: '',
-	pointNumber: '',
-	coordinate: '',
+	elementIds: [],
+	locationLength: '',
+	type: '',
+	wayName: '',
 	status: ''
 })
 
@@ -107,7 +136,7 @@ const init = (id?: number) => {
 
 // 获取信息
 const getInspectionItem = (id: number) => {
-	usePointApi(id).then(res => {
+	usePathApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }
@@ -123,7 +152,14 @@ const submitHandle = () => {
 		if (!valid) {
 			return false
 		}
-		usePointSubmitApi(dataForm).then(() => {
+		if (choose.value == '0') {
+			dataForm.type = '0'
+		}
+		if (choose.value == '1') {
+			dataForm.type = '1'
+		}
+
+		usePathSubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,
@@ -139,17 +175,16 @@ defineExpose({
 	init
 })
 
-let form = ref()
-
-// const handleClick = newValue => {
-// 	console.log('niah' + newValue.lng)
-// 	form.value = newValue
-// 	const newForm = form.value
-// 	message.value = newValue.ifShow
-// 	dataForm.coordinate = newForm.lng + ',' + newForm.lat
-// }
-const message = ref()
-const openMapper = () => {
-	message.value = true
-}
+const chooseForm = ref({
+	choose1: {
+		id: '0',
+		name: '巡更点'
+	},
+	choose2: {
+		id: '1',
+		name: '巡更项目'
+	}
+})
+const choose = ref(chooseForm.value.choose1.id)
 </script>
+<style scoped></style>
