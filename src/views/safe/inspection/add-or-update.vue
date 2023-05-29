@@ -32,7 +32,7 @@
 			</el-form-item>
 			<el-form-item label="坐标">
 				<el-input v-model="dataForm.coordinate" placeholder="座标" @click="choose"></el-input>
-				<mapper v-model="show" :form="form" @change-form="handleClick"></mapper>
+				<mapper ref="mapcontainer" :form="form" @change-form="handleClick"></mapper>
 			</el-form-item>
 			<el-form-item label="备注">
 				<el-input v-model="dataForm.note" placeholder="备注"></el-input>
@@ -55,7 +55,7 @@ import { useInspectionApi, useInspectionSubmitApi } from '@/api/safe/inspectionI
 import { getCommunityList } from '@/api/community/community'
 import type { UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
-import mapper from './mapper.vue'
+import mapper from '@/components/position/mapper.vue'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -78,8 +78,14 @@ const dataForm = reactive({
 })
 
 let form = ref()
+
+//定位组件先绑定ref
+const mapcontainer = ref()
+
+//选择座标被点击
 const choose = () => {
-	show.value = true
+	//根据组件绑定的ref使用初始化方法
+	mapcontainer.value.initMap(dataForm.coordinate)
 }
 
 const handleClick = newValue => {
@@ -90,7 +96,6 @@ const handleClick = newValue => {
 	for (const key in newValue) {
 		newValue[key] = ''
 	}
-	show.value = false
 }
 const init = (id?: number) => {
 	visible.value = true
