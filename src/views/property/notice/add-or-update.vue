@@ -3,12 +3,12 @@
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="100px" @keyup.enter="submitHandle()" class="w-4/5">
 			<el-form-item label="选择小区" prop="communityId">
 				<el-select v-model="dataForm.communityId" placeholder="请选择">
-					<el-option v-for="c in communities"  :label="c.communityName" :value="c.id"/>
+					<el-option v-for="c in communities" :label="c.communityName" :value="c.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item label="通知类型" prop="type">
 				<el-select v-model="dataForm.type" placeholder="请选择">
-					<el-option v-for="n in notice_type"  :label="n.dictLabel" :value="n.dictValue"></el-option>
+					<el-option v-for="n in notice_type" :label="n.dictLabel" :value="n.dictValue"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="标题" prop="title">
@@ -32,7 +32,7 @@
 					<el-radio :label="1">短信通知</el-radio>
 				</el-radio-group>
 			</el-form-item>
-		
+
 			<el-form-item label="发布时间" prop="publishTime">
 				<el-date-picker type="datetime" placeholder="发布时间" v-model="dataForm.publishTime"></el-date-picker>
 			</el-form-item>
@@ -50,7 +50,7 @@ import { ElMessage } from 'element-plus/es'
 import { useNoticeApi, useNoticeSubmitApi } from '@/api/property/notice'
 import { getCommunityList } from '@/api/community/community'
 import { useDictDataApi, useDictTypeAllApi, useDictTypeApi } from '@/api/sys/dict'
-import { useGetCommunityList } from '../property'
+import { a, useGetCommunityList } from '../property'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -78,13 +78,42 @@ const dataForm = reactive({
 	creator: '',
 	updater: ''
 })
-let communities;
-communities = useGetCommunityList()
-let notice_type;
-useDictTypeAllApi().then((res) => {
+// let communities = await useGetCommunityList()
+//第一种方式
+async function a() {
+	let data
+	await getCommunityList().then(res => {
+		data = res.data
+		console.log('内部')
+		console.log(data)
+	})
+	console.log('外部')
+	console.log(data)
+	return data
+}
+let communities = await a()
+console.log('大外部')
+console.log(communities)
+// let communities
+// getCommunityList().then(res => {
+// 	communities = res.data
+// 	console.log('内部')
+// 	console.log(communities)
+// })
+// console.log('外部')
+// console.log(communities)
+
+let notice_type
+useDictTypeAllApi().then(res => {
 	notice_type = res.data[13].dataList
-	
+	// console.log(notice_type)
+	notice_type = notice_type.map(obj => ({
+		dictLabel: obj.dictLabel,
+		dictValue: parseInt(obj.dictValue)
+	}))
 })
+// console.log("22222")
+// console.log(notice_type)
 const init = (id?: number) => {
 	visible.value = true
 	dataForm.id = ''
@@ -106,13 +135,13 @@ const getNotice = (id: number) => {
 }
 
 const dataRules = ref({
-	communityId:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	type:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	title:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	content:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	noticeRange:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	noticeWay:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	publishTime:[{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	communityId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	type: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	title: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	content: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	noticeRange: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	noticeWay: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	publishTime: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
 // 表单提交
@@ -132,7 +161,7 @@ const submitHandle = () => {
 
 		// 将格式化后的日期字符串赋值给 dataForm.publishTime
 		dataForm.publishTime = formattedDate
-		
+
 		useNoticeSubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
