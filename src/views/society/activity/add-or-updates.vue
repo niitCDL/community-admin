@@ -1,16 +1,28 @@
 ﻿<template>
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
-			<el-form-item prop="name" label="分类名称">
-				<el-input v-model="dataForm.name" placeholder="活动名称 "></el-input>
+			<el-form-item prop="activityName" label="活动名称">
+				<el-input v-model="dataForm.activityName" placeholder="活动名称 "></el-input>
+			</el-form-item>
+			<el-form-item prop="title" label="活动标题">
+				<el-input v-model="dataForm.title" placeholder="活动标题 "></el-input>
 			</el-form-item>
 			<el-form-item prop="communityId" label="所属社区">
 				<el-tree-select v-model="dataForm.communityId" :data="communityList" style="width: 100%" />
 			</el-form-item>
-			<!-- <el-form-item prop="orderType" label="收费项目">
-				<el-tree-select v-model="dataForm.orderType" :data="orgList" style="width: 100%" />
-			</el-form-item> -->
-			<!-- <el-form-item prop="createTime" label="账单开始时间">
+			<el-form-item prop="typeId" label="活动类别">
+				<el-tree-select v-model="dataForm.typeId" :data="activityTypeList" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="content" label="活动内容">
+				<el-input v-model="dataForm.content" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="tel" label="联系电话">
+				<el-input v-model="dataForm.tel" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="location" label="活动地点">
+				<el-input v-model="dataForm.location" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="createTime" label="开始时间">
 				<el-date-picker
 					v-model="dataForm.createTime"
 					type="datetime"
@@ -19,7 +31,7 @@
 					value-format="YYYY-MM-DD hh:mm:ss"
 				/>
 			</el-form-item>
-			<el-form-item prop="endTime" label="账单截至时间">
+			<el-form-item prop="endTime" label="截至时间">
 				<el-date-picker
 					v-model="dataForm.endTime"
 					type="datetime"
@@ -27,12 +39,9 @@
 					format="YYYY/MM/DD hh:mm:ss"
 					value-format="YYYY-MM-DD hh:mm:ss"
 				/>
-			</el-form-item> -->
-			<!-- <el-form-item prop="price" label="价格">
-				<el-input v-model="dataForm.price" placeholder="价格"></el-input>
 			</el-form-item>
-			<el-form-item prop="money" label="金额">
-				<el-input v-model="dataForm.money" placeholder="金额"></el-input>
+			<!-- <el-form-item prop="price" label="物业公司">
+				<el-input v-model="dataForm.price" placeholder="物业公司"></el-input>
 			</el-form-item> -->
 			<el-form-item prop="status" label="状态">
 				<!-- <fast-radio-group v-model="dataForm.status" dict-type="user_status"></fast-radio-group> -->
@@ -53,12 +62,12 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useCommunityListApi } from '@/api/society/order'
-import { useActivityTypeSubmitApi, useTypeApi } from '@/api/society/activity'
+import { useActivitySubmitApi, useTypeApi, useActivityTypeListApi } from '@/api/society/activity'
 
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-let houseList = reactive([{}])
+let activityTypeList = reactive([{}])
 let communityList = reactive([{}])
 
 // const orgList = ref([
@@ -92,7 +101,6 @@ const dataFormRef = ref()
 const dataForm = reactive({
 	id: '',
 	userId: 1,
-	name: '',
 	communityId: 1,
 	status: 1,
 	deleted: '0',
@@ -100,7 +108,13 @@ const dataForm = reactive({
 	creator: 10000,
 	updater: 10000,
 	updateTime: '2023-05-25 19:25:55',
-	communityName: ''
+	typeId: 0,
+	title: '',
+	content: '',
+	location: '',
+	tel: '',
+	activityName: '',
+	endTime: '2023-05-25 19:25:55'
 })
 
 const init = (id?: number) => {
@@ -118,6 +132,7 @@ const init = (id?: number) => {
 	}
 
 	getCommunityList()
+	getList()
 }
 
 // 获取小区列表
@@ -135,6 +150,22 @@ const getCommunityList = () => {
 		})
 	})
 }
+// 获取活动类型列表
+const getList = () => {
+	return useActivityTypeListApi().then(res => {
+		const getList = ref([{ id: 1, name: '' }])
+		getList.value = res.data
+		console.log(getList.value)
+		// 遍历housrList
+		getList.value.map(item => {
+			console.log(item.name)
+			// 将getList的元素插入 houseList中
+			activityTypeList.push({ value: item.id, label: item.name })
+			console.log(activityTypeList)
+		})
+	})
+}
+
 // 获取信息
 const getType = (id: number) => {
 	useTypeApi(id).then(res => {
@@ -156,7 +187,7 @@ const submitHandle = () => {
 			return false
 		}
 
-		useActivityTypeSubmitApi(dataForm).then(() => {
+		useActivitySubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,
