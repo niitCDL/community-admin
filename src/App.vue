@@ -1,8 +1,6 @@
 <template>
 	<el-config-provider :size="size">
-		<Suspense>
 			<router-view />
-		</Suspense>
 	</el-config-provider>
 </template>
 

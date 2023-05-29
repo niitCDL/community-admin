@@ -1,6 +1,8 @@
 import { getCommunityList } from '@/api/community/community'
+import { useDictTypeAllApi } from '@/api/sys/dict'
 import { getUserList } from '@/api/sys/user'
 import { reactive } from 'vue'
+
 
 export async function a() {
 	//第二种方式
@@ -97,4 +99,18 @@ export const useGetInfo = () => {
 	let data = localStorage.getItem('info')
 	data = JSON.parse(data)
 	return data
+}
+
+export   const  useGetDictType = async (id:any)=>{
+	let notice_type
+    await useDictTypeAllApi().then(res => {
+		console.log(res.data)
+		notice_type = res.data[id].dataList
+		
+		notice_type = notice_type.map(obj => ({
+			dictLabel: obj.dictLabel,
+			dictValue: parseInt(obj.dictValue)
+		}))
+	})
+	return notice_type
 }
