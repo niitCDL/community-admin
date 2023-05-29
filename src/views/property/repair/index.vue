@@ -23,8 +23,7 @@
 			</el-form-item>
 			<el-form-item>
 				<el-select v-model="state.queryForm.type" placeholder="报修类型">
-					<el-option label="公共报修" value="0"></el-option>
-					<el-option label="个人报修" value="1"></el-option>
+					<el-option v-for="n in repair_type" :key="n.dictValue" :label="n.dictLabel" :value="n.dictValue"></el-option>
 				</el-select>
 			</el-form-item>
 
@@ -88,7 +87,7 @@ import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
-import { useGetCommunityList, userGetCommunityOption, useSetInfo } from '../property'
+import { useGetCommunityList, useGetDictType, userGetCommunityOption, useSetInfo } from '../property'
 import { router } from '@/router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
@@ -102,7 +101,7 @@ const state: IHooksOptions = reactive({
 		createTime: ''
 	}
 })
-
+let repair_type =await useGetDictType(16)
 const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id?: number) => {
 	addOrUpdateRef.value.init(id)

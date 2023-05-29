@@ -3,12 +3,12 @@
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="100px" @keyup.enter="submitHandle()" class="w-4/5">
 			<el-form-item label="选择小区" prop="communityId">
 				<el-select v-model="dataForm.communityId" placeholder="请选择">
-					<el-option v-for="c in communities" :label="c.communityName" :value="c.id" />
+					<el-option v-for="c in communities" :label="c.communityName" :value="c.id" :key="c.id"/>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="通知类型" prop="type">
 				<el-select v-model="dataForm.type" placeholder="请选择">
-					<el-option v-for="n in notice_type" :label="n.dictLabel" :value="n.dictValue"></el-option>
+					<el-option v-for="n in notice_type" :key="n.dictValue" :label="n.dictLabel" :value="n.dictValue"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="标题" prop="title">
@@ -50,7 +50,7 @@ import { ElMessage } from 'element-plus/es'
 import { useNoticeApi, useNoticeSubmitApi } from '@/api/property/notice'
 import { getCommunityList } from '@/api/community/community'
 import { useDictDataApi, useDictTypeAllApi, useDictTypeApi } from '@/api/sys/dict'
-import { a, useGetCommunityList } from '../property'
+import { a, useGetCommunityList, useGetDictType } from '../property'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -78,22 +78,25 @@ const dataForm = reactive({
 	creator: '',
 	updater: ''
 })
-// let communities = await useGetCommunityList()
+let communities = await useGetCommunityList()
 //第一种方式
-async function a() {
-	let data
-	await getCommunityList().then(res => {
-		data = res.data
-		console.log('内部')
-		console.log(data)
-	})
-	console.log('外部')
-	console.log(data)
-	return data
-}
-let communities = await a()
-console.log('大外部')
-console.log(communities)
+// async function a() {
+// 	// let data
+// 	//  getCommunityList().then(res => {
+// 	// 	data = res.data
+// 	// 	console.log('内部')
+// 	// 	console.log(data)
+// 	// })
+// 	// console.log('外部')
+// 	// console.log(data)
+// 	let {data} =  await getCommunityList()
+// 	console.log('内部')
+// 	console.log(data)
+// 	return data
+// }
+// let communities = await a()
+// console.log('大外部')
+// console.log(communities)
 // let communities
 // getCommunityList().then(res => {
 // 	communities = res.data
@@ -103,15 +106,15 @@ console.log(communities)
 // console.log('外部')
 // console.log(communities)
 
-let notice_type
-useDictTypeAllApi().then(res => {
-	notice_type = res.data[13].dataList
-	// console.log(notice_type)
-	notice_type = notice_type.map(obj => ({
-		dictLabel: obj.dictLabel,
-		dictValue: parseInt(obj.dictValue)
-	}))
-})
+let notice_type =await useGetDictType(13)
+// useDictTypeAllApi().then(res => {
+// 	notice_type = res.data[13].dataList
+// 	// console.log(notice_type)
+// 	notice_type = notice_type.map(obj => ({
+// 		dictLabel: obj.dictLabel,
+// 		dictValue: parseInt(obj.dictValue)
+// 	}))
+// })
 // console.log("22222")
 // console.log(notice_type)
 const init = (id?: number) => {

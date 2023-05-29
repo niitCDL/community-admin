@@ -5,7 +5,9 @@
 				<div class="layout-card" :style="layoutMainHeight">
 					<router-view v-slot="{ Component, route }">
 						<keep-alive v-if="theme.isTabsCache" :include="[...store.tabsStore.cachedViews]">
-							<component :is="Component" :key="route.name" />
+							<Suspense>
+								<component :is="Component" :key="route.name" />
+							</Suspense>
 						</keep-alive>
 						<component :is="Component" v-else :key="route.name" />
 					</router-view>
