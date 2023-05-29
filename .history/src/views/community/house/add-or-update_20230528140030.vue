@@ -6,25 +6,25 @@
 					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<el-form-item prop="buildingName" label="楼宇名称">
-				<el-input v-model="dataForm.buildingName" placeholder="楼宇名称"></el-input>
+			<el-form-item prop="buildingId" label="所属楼宇">
+				<el-select v-model="dataForm.buildingId" class="m-2" placeholder="所属小区">
+					<el-option v-for="item in buildingList" :key="item.id" :label="item.buildingName" :value="item.id" />
+				</el-select>
 			</el-form-item>
-			<el-form-item prop="units" label="层数">
+			<el-form-item prop="houseNumber" label="房间号">
+				<el-input v-model="dataForm.houseNumber" placeholder="房间号"></el-input>
+			</el-form-item>
+			<el-form-item prop="units" label="所在单元">
 				<el-input v-model="dataForm.units" placeholder="所在单元"></el-input>
 			</el-form-item>
-			<!-- <el-form-item prop="orgId" label="所属机构">
-				<el-tree-select
-					v-model="dataForm.orgId"
-					:data="orgList"
-					value-key="id"
-					check-strictly
-					:render-after-expand="false"
-					:props="{ label: 'name', children: 'children' }"
-					style="width: 100%"
-				/>
-			</el-form-item> -->
-			<el-form-item prop="usedArea" label="占地面积">
-				<el-input v-model="dataForm.usedArea" placeholder="占地面积"></el-input>
+			<el-form-item label="状态" prop="status">
+				<el-radio-group v-model="dataForm.houseStatus">
+					<el-radio :label="0">未售</el-radio>
+					<el-radio :label="1">已售</el-radio>
+				</el-radio-group>
+			</el-form-item>
+			<el-form-item prop="usedArea" label="房屋面积">
+				<el-input v-model="dataForm.usedArea" placeholder="房屋面积"></el-input>
 			</el-form-item>
 			<el-form-item prop="content" label="备注">
 				<el-input v-model="dataForm.content" placeholder="备注"></el-input>
@@ -38,29 +38,36 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { useBuildingApi, useBuildingSubmitApi } from '@/api/building/building'
+import { useHouseApi, useHouseSubmitApi } from '@/api/house/house'
 import { getCommunityList } from '@/api/community/community'
+import { getBuildingList } from '@/api/building/building'
 // import type { UploadProps } from 'element-plus'
 // import cache from '@/utils/cache'
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
 const communityList = ref<any[]>([])
+const buildingList = ref<any[]>([])
 const postList = ref<any[]>([])
 const roleList = ref<any[]>([])
-const orgList = ref([])
 const dataFormRef = ref()
 
 const dataForm = reactive({
 	id: '',
-	communityId: [] as any[],
+	buildingId: '',
+	houseNumber: '',
+	communityId: '',
 	buildingName: '',
 	units: '',
+	houseStatus: '',
 	usedArea: '',
 	content: ''
 })
+
+// 经过筛选的楼宇列表
+const filteredBuildings = ref([])
 
 const init = (id?: number) => {
 	visible.value = true
@@ -76,14 +83,15 @@ const init = (id?: number) => {
 
 	//id 存在则为修改
 	if (id) {
-		getBuilding(id)
+		getHouse(id)
 	}
 	getCommunityLists()
+	getBuildingLists()
 }
 
 // 获取信息
-const getBuilding = (id: number) => {
-	useBuildingApi(id).then(res => {
+const getHouse = (id: number) => {
+	useHouseApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }
@@ -92,6 +100,23 @@ const getCommunityLists = () => {
 	getCommunityList().then(res => {
 		communityList.value = res.data
 	})
+}
+//获取所有楼宇列表
+const getBuildingLists = () => {
+	getBuildingList().then(res => {
+		buildingList.value = res.data
+	})
+}
+// 监听dataForm.communityId的变化并更新filteredBuildings
+watch(dataForm, value => {
+	filteredBuildings.value = buildingList.value.filter(b => b.communityId === value.communityId)
+	dataForm.buildingId = null
+})
+
+// 处理选择小区时的事件
+const handleCommunityChange = () => {
+	filteredBuildings.value = buildingList.value.filter(b => b.communityId === dataForm.communityId)
+	dataForm.buildingId = null
 }
 
 const dataRules = ref({
@@ -108,7 +133,7 @@ const submitHandle = () => {
 			return false
 		}
 
-		useBuildingSubmitApi(dataForm).then(() => {
+		useHouseSubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,
