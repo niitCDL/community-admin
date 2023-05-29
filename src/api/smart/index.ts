@@ -71,3 +71,19 @@ export const useMonitorTypeSubmitApi = (dataForm: any) => {
 export const getEnabledMonitorTypeList = () => {
 	return service.get('/smart/monitorType/list')
 }
+
+export const useDoorApi = (id: number) => {
+	return service.get('/smart/door/' + id)
+}
+
+export const useDoorSubmitApi = (dataForm: any) => {
+	if (dataForm.id) {
+		return service.put('/smart/door', dataForm)
+	} else {
+		return service.post('/smart/door', dataForm)
+	}
+}
+
+export const changeSettings = (dataForm: any) => {
+	return service.put('/smart/doorReview', dataForm)
+}
