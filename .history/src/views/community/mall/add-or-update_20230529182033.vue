@@ -6,14 +6,11 @@
 					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<el-form-item prop="userId" label="业主">
-				<el-select v-model="dataForm.userId" class="m-2" placeholder="业主">
+			<!-- <el-form-item prop="userId" label="业主">
+				<el-select v-model="dataForm.userId" class="m-2" placeholder="业主">kkkkkkkkkkkkkkkkkkkkkkkkkkkjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
 					<el-option v-for="item in userList" :key="item.id" :label="item.realName" :value="item.id" />
 				</el-select>
-			</el-form-item>
-			<el-form-item prop="mallNumber" label="商铺编号">
-				<el-input v-model="dataForm.mallNumber" placeholder="商铺编号"></el-input>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item prop="mallNumber" label="商铺编号">
 				<el-input v-model="dataForm.mallNumber" placeholder="商铺编号"></el-input>
 			</el-form-item>
