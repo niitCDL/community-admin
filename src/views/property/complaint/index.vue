@@ -23,7 +23,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-date-picker v-model="state.queryForm.updateTime" type="datetimerange" value-format="YYYY-MM-DD HH:mm:ss"> </el-date-picker>
+				<el-date-picker v-model="state.queryForm.createTime" type="datetimerange" value-format="YYYY-MM-DD HH:mm:ss"> </el-date-picker>
 			</el-form-item>
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
@@ -37,22 +37,29 @@
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="communityId" label="社区id" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="userId" label="投诉人id" header-align="center" align="center"></el-table-column>
+			<el-table-column type="index" align="center" width="90"  label="编号"> </el-table-column>
+			<!-- <el-table-column prop="communityId" label="社区id" header-align="center" align="center"></el-table-column> -->
+			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
+			<!-- <el-table-column prop="userId" label="投诉人id" header-align="center" align="center"></el-table-column> -->
 			<!-- <el-table-column prop="type" label="投诉类型(0:物业服务，1:社区服务)" header-align="center" align="center"></el-table-column> -->
 			<fast-table-column prop="type" label="投诉类型" dict-type="repair_type"></fast-table-column>
 			<!-- <el-table-column prop="title" label="投诉标题" header-align="center" align="center"></el-table-column> -->
 			<!-- <el-table-column prop="content" label="投诉内容" header-align="center" align="center"></el-table-column> -->
 			<!-- <el-table-column prop="imgs" label="图片" header-align="center" align="center"></el-table-column> -->
-			<el-table-column prop="userId" label="投诉人" header-align="center" align="center"></el-table-column>
+			<!-- <el-table-column prop="userId" label="投诉人" header-align="center" align="center"></el-table-column> -->
+			<el-table-column prop="userName" label="报修人" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="createTime" label="投诉时间" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="employeeIds" label="处理人" header-align="center" align="center"></el-table-column>
+			<!-- <el-table-column prop="employeeIds" label="处理人" header-align="center" align="center"></el-table-column> -->
+			<el-table-column prop="employeeNames" label="处理人" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="handleTime" label="处理时间" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="state" label="状态" dict-type="hand_status"></fast-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<!-- <el-button v-auth="'property:complaint:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button> -->
+					<!-- <el-button v-auth="'property:complaint:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button> -->
+					<el-button v-auth="'property:complaint:delete'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">分配</el-button>
 					<el-button v-auth="'property:complaint:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
+					<el-button v-auth="'property:complaint:delete'" type="primary" link @click="info(scope.row)">查看</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -77,17 +84,25 @@ import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
-import { useGetDictType, userGetCommunityOption } from '../property'
+import { useGetDictType, userGetCommunityOption, useSetInfo } from '../property'
+import { router } from '@/router'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/property/complaint/page',
 	deleteUrl: '/property/complaint',
 	queryForm: {
 		communityId: '',
+		state: null,
 		type: '',
-		updateTime: ''
+		createTime: ''
 	}
 })
+//详情
+const info = (data: any) => {
+	// console.log(data)
+	useSetInfo(data)
+	router.push('/property/complaint/info')
+}
 
 const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id?: number) => {

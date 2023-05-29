@@ -38,7 +38,7 @@ const dataForm = reactive({
 	content: '',
 	imgs: '',
 	state: '',
-	employeeIds: '',
+	employeeIds: null,
 	result: '',
 	handleTime: '',
 	evaluate: '',

@@ -4,19 +4,18 @@
 		<div class="sm">提交时间:{{ data.createTime }}</div>
 		<div class="content">
 			<div class="left">
-				<div>报修单号：{{ data.id }}</div>
+				<div>投诉单号：{{ data.id }}</div>
 				<div>
-					报修类型:
-					<template v-for="n in repair_type" :key="n.dictValue">
+					投诉类型:
+					<template v-for="n in complaint_type" :key="n.dictValue">
 						<span v-if="data.type == n.dictValue">
 							{{ n.dictLabel }}
 						</span>
 					</template>
 				</div>
-
-				<div>报修小区：{{ data.communityName }}</div>
-				<div>报修时间：{{ data.createTime }}</div>
-				<div>报修人：{{ data.userName }}</div>
+				<div>投诉小区：{{ data.communityName }}</div>
+				<div>投诉时间：{{ data.createTime }}</div>
+				<div>投诉人：{{ data.userName }}</div>
 
 				<div>手机号：1234567890</div>
 
@@ -27,29 +26,19 @@
 				<img :src="data.imgs" />
 			</div>
 		</div>
-		<h3>报修处理</h3>
+		<h3>投诉处理</h3>
 	</el-card>
 </template>
 
 <script setup lang="ts">
 import { useReadNoticeUser } from '@/api/property/notice'
+import { router } from '@/router'
 import { reactive } from 'vue'
-import { useGetDictType, useGetInfo } from '../property'
+import { useGetDictType, useGetInfo, useSetInfo } from '../property'
 const data = useGetInfo()
-// console.log(data)
-// let state = reactive({
-// 	dataListLoading: true,
-// 	dataList: [],
-// })
+let complaint_type = await useGetDictType(18)
 
-// useReadNoticeUser(data.id).then((res)=>{
-// 	console.log(res)
-// 	state.dataList = res.data
-// }).finally(()=>{
-// 	state.dataListLoading = false
-// 	console.log(state.dataListLoading)
-// })
-let repair_type = await useGetDictType(16)
+
 </script>
 
 <style scoped>
@@ -68,15 +57,15 @@ h1 {
 	position: relative;
 }
 
-.content .left {
+.content .left{
 	/* border: 1px solid red; */
 }
-.content .right {
+.content .right{
 	position: absolute;
 	right: 10px;
 	top: 0px;
 }
-.content img {
+.content img{
 	width: 150px;
 	height: 150px;
 }
