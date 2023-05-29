@@ -17,7 +17,7 @@ const state: IHooksOptions = reactive({
 	dataListUrl: '/safe/point/page',
 	deleteUrl: '/safe/point',
 	queryForm: {
-		communityId: ''
+		communityIds: []
 	}
 })
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
@@ -35,7 +35,7 @@ const addOrUpdateHandle = (id?: number) => {
 				<el-input v-model="state.queryForm.communityId" placeholder="小区名" clearable></el-input>
 			</el-form-item> -->
 			<el-form-item>
-				<el-select v-model="state.queryForm.communityId" placeholder="请选择社区">
+				<el-select v-model="state.queryForm.communityIds" placeholder="请选择社区" multiple class="select-list">
 					<el-option v-for="option in communities" :key="option.id" :label="option.communityName" :value="option.id"></el-option>
 				</el-select>
 			</el-form-item>
@@ -74,6 +74,7 @@ const addOrUpdateHandle = (id?: number) => {
 				<template #default="scope">
 					<el-button v-auth="'safe:point:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
 					<el-button v-auth="'safe:point:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
+					<el-button type="primary" link @click="deleteBatchHandle(scope.row.id)">巡更记录</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -92,4 +93,9 @@ const addOrUpdateHandle = (id?: number) => {
 	</el-card>
 </template>
 
-<style scoped></style>
+<style scoped>
+.select-list {
+	max-height: 60px; /* 限制下拉框高度 */
+	overflow-y: auto; /* 启用垂直滚动条 */
+}
+</style>

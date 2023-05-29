@@ -21,6 +21,9 @@ import FastRadioGroup from '@/components/fast-radio-group'
 import FastSelect from '@/components/fast-select'
 import FastUser from '@/components/fast-user'
 import SvgIcon from '@/components/svg-icon'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+
+
 
 VXETable.setup({
 	zIndex: 3000,
@@ -34,6 +37,12 @@ const app = createApp(App)
 app.use(createPinia())
 
 
+// 注册element所有图标
+
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+	app.component(key, component)
+  }
+  
 // 注册 Pinia
 registerStore()
 

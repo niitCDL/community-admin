@@ -21,3 +21,4 @@ export const useCommuntiySearchApi=()=>{
     return service.get('/safe/point/communties')
     
 }
+
