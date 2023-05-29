@@ -91,3 +91,7 @@ export const changeSettings = (dataForm: any) => {
 export const getAllDoor = () => {
 	return service.get('/smart/door/list')
 }
+
+export const changeReviewStatusApi = (dataForm: any) => {
+	return service.put('/smart/review', dataForm)
+}
