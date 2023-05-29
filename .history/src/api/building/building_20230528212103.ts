@@ -31,7 +31,7 @@ export function getBuildingList() {
 export function importBuilding(file: any) {
 	return service.post('/sys/building/import', file)
 }
-export const exportBuilding = () => {
+export const exportBuilding= () =>{
 	//return service.get('/sys/building/export')
 	location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
 }

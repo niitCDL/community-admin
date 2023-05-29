@@ -6,13 +6,13 @@
 					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<input v-model="dataForm.communityName" type="hidden" />
+			<input type="hidden" v-model="dataForm.communityName" />
 			<el-form-item prop="buildingId" label="所属楼宇">
 				<el-select v-model="dataForm.buildingId" class="m-2" placeholder="所属楼宇" @change="updateBuildingName">
 					<el-option v-for="item in filteredBuildings" :key="item.id" :label="item.buildingName" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<input v-model="dataForm.buildingName" type="hidden" />
+			<input type="hidden" v-model="dataForm.buildingName" />
 			<el-form-item prop="houseNumber" label="房间号">
 				<el-input v-model="dataForm.houseNumber" placeholder="房间号"></el-input>
 			</el-form-item>

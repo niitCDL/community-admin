@@ -2,17 +2,17 @@
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="communityId" label="所属小区">
-				<el-select v-model="dataForm.communityId" class="m-2" placeholder="所属小区" @change="updateCommunityName">
+				<el-select v-model="dataForm.communityId" class="m-2" placeholder="所属小区">
 					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<input v-model="dataForm.communityName" type="hidden" />
+			<input type="hidden" v-model="dataForm.communityName" />
 			<el-form-item prop="buildingId" label="所属楼宇">
-				<el-select v-model="dataForm.buildingId" class="m-2" placeholder="所属楼宇" @change="updateBuildingName">
+				<el-select v-model="dataForm.buildingId" class="m-2" placeholder="所属楼宇">
 					<el-option v-for="item in filteredBuildings" :key="item.id" :label="item.buildingName" :value="item.id" />
 				</el-select>
 			</el-form-item>
-			<input v-model="dataForm.buildingName" type="hidden" />
+			<input type="hidden" v-model="dataForm.buildingName" />
 			<el-form-item prop="houseNumber" label="房间号">
 				<el-input v-model="dataForm.houseNumber" placeholder="房间号"></el-input>
 			</el-form-item>
@@ -116,24 +116,8 @@ watch(
 	value => {
 		filteredBuildings.value = buildingList.value.filter(b => b.communityId === value)
 		dataForm.buildingId = undefined
-		// 更新 communityName
-		updateCommunityName()
-		updateBuildingName()
 	},
 	{ deep: true }
-)
-// 监听 dataForm.buildingId 的变化并更新 buildingName
-watch(
-	() => dataForm.buildingId,
-	value => {
-		const selectedBuilding = buildingList.value.find(item => item.id === value)
-		if (selectedBuilding) {
-			dataForm.buildingName = selectedBuilding.buildingName
-		} else {
-			dataForm.buildingName = ''
-		}
-	},
-	{ immediate: true }
 )
 
 // 处理选择小区时的事件
@@ -148,25 +132,6 @@ const dataRules = ref({
 	mobile: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
 	orgId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
-
-// 更新 communityName
-const updateCommunityName = () => {
-	const selectedCommunity = communityList.value.find(item => item.id === dataForm.communityId)
-	if (selectedCommunity) {
-		dataForm.communityName = selectedCommunity.communityName
-	} else {
-		dataForm.communityName = ''
-	}
-}
-// 更新 buildingName
-const updateBuildingName = () => {
-	const selectedBuilding = buildingList.value.find(item => item.id === dataForm.buildingId)
-	if (selectedBuilding) {
-		dataForm.buildingName = selectedBuilding.building
-	} else {
-		dataForm.buildingName = ''
-	}
-}
 
 // 表单提交
 const submitHandle = () => {

@@ -5,10 +5,13 @@
 				<el-input v-model="state.queryForm.communityName" placeholder="小区名称" clearable style="width: 150px"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-input v-model="state.queryForm.realName" clearable placeholder="业主名" style="width: 150px"></el-input>
+				<el-input v-model="state.queryForm.buildingName" clearable placeholder="楼宇名称" style="width: 150px"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-input v-model="state.queryForm.mallNumber" placeholder="商铺编号" clearable style="width: 150px"></el-input>
+				<el-input v-model="state.queryForm.units" placeholder="所在单元" clearable style="width: 120px"></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="state.queryForm.houseNumber" placeholder="房间号" clearable style="width: 120px"></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
@@ -32,9 +35,8 @@
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
 			<!-- <el-table-column type="index" label="编号" header-align="center" align="center" width="80"></el-table-column> -->
 			<el-table-column prop="communityName" label="小区名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="realName" label="业主" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="username" label="用户名" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="mallNumber" label="商铺编号" header-align="center" align="center" width="110"></el-table-column>
-			<el-table-column prop="mallArea" label="商铺面积" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="address" label="商铺地址" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="mallType" label="商铺类型" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="mallStatus" label="商铺状态" header-align="center" align="center"
@@ -80,9 +82,9 @@ const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/mall/page',
 	deleteUrl: '/sys/mall/delete',
 	queryForm: {
-		realName: '',
+		units: '',
 		communityName: '',
-		mallNumber: ''
+		buildingName: ''
 	}
 })
 
@@ -121,3 +123,4 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>
+
