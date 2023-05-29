@@ -3,7 +3,7 @@
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="parkId" label="所属停车场">
 				<el-select v-model="dataForm.parkId" class="m-2" placeholder="所属停车场">
-					<el-option v-for="item in parkList" :key="item.id" :label="item.parkName" :value="item.id" />
+					<el-option v-for="item in parkList" :key="item.id" :label="item.parkyName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 
@@ -60,7 +60,7 @@ const dataFormRef = ref()
 
 const dataForm = reactive({
 	id: undefined as number | undefined,
-	parkId: '',
+	parkId: undefined as number | undefined,
 	carId: '',
 	ownerId: '',
 	carportName: '',
@@ -70,8 +70,8 @@ const dataForm = reactive({
 	parkName: ''
 })
 
-// // 经过筛选的楼宇列表
-// const filteredBuildings = ref<any[]>([])
+// 经过筛选的楼宇列表
+const filteredBuildings = ref<any[]>([])
 
 const init = (id?: number) => {
 	visible.value = true

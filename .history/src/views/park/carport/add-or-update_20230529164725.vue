@@ -3,7 +3,7 @@
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="parkId" label="所属停车场">
 				<el-select v-model="dataForm.parkId" class="m-2" placeholder="所属停车场">
-					<el-option v-for="item in parkList" :key="item.id" :label="item.parkName" :value="item.id" />
+					<el-option v-for="item in parkList" :key="item.id" :label="item.parkyName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 
@@ -52,26 +52,25 @@ import { getParkList, getOwnerList, getCarList } from '@/api/carport/carport'
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-const parkList = ref<any[]>([])
-const ownerList = ref<any[]>([])
-const carList = ref<any[]>([])
+const communityList = ref<any[]>([])
+const buildingList = ref<any[]>([])
+const postList = ref<any[]>([])
 const roleList = ref<any[]>([])
 const dataFormRef = ref()
 
 const dataForm = reactive({
 	id: undefined as number | undefined,
-	parkId: '',
+	parkId: undefined as number | undefined,
 	carId: '',
 	ownerId: '',
 	carportName: '',
 	status: '',
 	startTime: '',
-	endTime: '',
-	parkName: ''
+	endTime: ''
 })
 
-// // 经过筛选的楼宇列表
-// const filteredBuildings = ref<any[]>([])
+// 经过筛选的楼宇列表
+const filteredBuildings = ref<any[]>([])
 
 const init = (id?: number) => {
 	visible.value = true
@@ -183,7 +182,7 @@ const submitHandle = () => {
 			return false
 		}
 
-		useCarportSubmitApi(dataForm).then(() => {
+		useHouseSubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,
