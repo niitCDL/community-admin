@@ -86,7 +86,7 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const downloadExcel = () => {
-	// exportBuilding()
+	exportBuilding()
 	//return
 }
 

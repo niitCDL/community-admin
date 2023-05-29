@@ -86,8 +86,8 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const downloadExcel = () => {
-	// exportBuilding()
-	//return
+	exportBuilding()
+	return
 }
 
 const handleSuccess: UploadProps['onSuccess'] = (res, file) => {

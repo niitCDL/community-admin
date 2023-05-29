@@ -27,8 +27,8 @@ export function getBuildingList() {
 // 	return service.delete(`/building`, ids)
 // }
 export function importBuilding(file: any) {
-	return service.post('/sys/building/import', file)
+	return service.post('/building/import', file)
 }
 export function exportBuilding() {
-	return service.get('/sys/building/export')
+	return service.get('/building/export')
 }
