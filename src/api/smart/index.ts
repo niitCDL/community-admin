@@ -85,5 +85,9 @@ export const useDoorSubmitApi = (dataForm: any) => {
 }
 
 export const changeSettings = (dataForm: any) => {
-	return service.put('/smart/doorReview', dataForm)
+	return service.put('/smart/doorSetting', dataForm)
+}
+
+export const getAllDoor = () => {
+	return service.get('/smart/door/list')
 }

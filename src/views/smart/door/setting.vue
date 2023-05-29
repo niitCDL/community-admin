@@ -2,10 +2,12 @@
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-input v-model="state.queryForm.id" placeholder="选择门禁"></el-input>
+				<el-select v-model="state.queryForm.id" placeholder="选择门禁" clearable>
+					<el-option v-for="item in doorList" :key="item.id" :label="item.doorName" :value="item.id" />
+				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-select v-model="state.queryForm.communityId" placeholder="所属小区">
+				<el-select v-model="state.queryForm.communityId" placeholder="所属小区" clearable>
 					<el-option label="万象城" :value="1"></el-option>
 					<el-option label="汤臣一品" :value="2"></el-option>
 				</el-select>
@@ -64,13 +66,13 @@
 
 <script setup lang="ts" name="SysDoorIndex">
 import { useCrud } from '@/hooks'
-import { reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { IHooksOptions } from '@/hooks/interface'
-import { changeSettings } from '@/api/smart'
+import { changeSettings, getAllDoor } from '@/api/smart'
 import { ElMessage } from 'element-plus/es'
 
 const state: IHooksOptions = reactive({
-	dataListUrl: '/smart/doorReview/page',
+	dataListUrl: '/smart/doorSetting/page',
 	queryForm: {
 		id: '',
 		communityId: ''
@@ -91,4 +93,22 @@ const handleStatusChange = (status: number, field: string, row: any) => {
 		}
 	})
 }
+
+const doorList = ref<any[]>([])
+
+const getDoorList = () => {
+	getAllDoor().then((res: any) => {
+		if (res.code != 0) {
+			ElMessage.success({
+				message: '接口异常',
+				duration: 500
+			})
+		}
+		doorList.value = res.data
+	})
+}
+
+onMounted(() => {
+	getDoorList()
+})
 </script>
