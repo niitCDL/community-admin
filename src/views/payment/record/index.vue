@@ -44,8 +44,7 @@
 			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="houseNumber" label="房产" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="orderType" label="收费项目" dict-type="order_type" header-align="center" align="center"></fast-table-column>
-			<el-table-column prop="createTime" label="账单开始时间"></el-table-column>
-			<el-table-column prop="endTime" label="账单截至时间"></el-table-column>
+			<el-table-column prop="otime" label="账单日期" width="250" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="money" label="费用" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="status" label="状态" dict-type="payment_status" header-align="center" align="center"></fast-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
