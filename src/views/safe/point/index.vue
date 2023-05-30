@@ -7,6 +7,14 @@ import { useCrud } from '@/hooks'
 //添加修改组件
 import AddOrUpdate from './add-or-update.vue'
 import { useCommuntiySearchApi } from '@/api/safe/point'
+import record from '@/views/safe/point/record.vue'
+//打开巡更记录
+const RecordOpen = ref()
+const openRecord = (id?: number) => {
+	RecordOpen.value.visible = true
+	console.log('aaaaaaaaaaaaa:' + id)
+	RecordOpen.value.init(id)
+}
 const communities = ref<any[]>([])
 useCommuntiySearchApi().then(res => {
 	communities.value = res.data
@@ -23,6 +31,7 @@ const state: IHooksOptions = reactive({
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 
 const addOrUpdateRef = ref()
+
 const addOrUpdateHandle = (id?: number) => {
 	addOrUpdateRef.value.init(id)
 }
@@ -57,7 +66,7 @@ const addOrUpdateHandle = (id?: number) => {
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
 			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="communityName" label="请选择社区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="buildingName" label="楼宇名称" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="units" label="单元号" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="pointName" label="巡更点名称" header-align="center" align="center"></el-table-column>
@@ -74,7 +83,7 @@ const addOrUpdateHandle = (id?: number) => {
 				<template #default="scope">
 					<el-button v-auth="'safe:point:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
 					<el-button v-auth="'safe:point:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
-					<el-button type="primary" link @click="deleteBatchHandle(scope.row.id)">巡更记录</el-button>
+					<el-button type="primary" link @click="openRecord(scope.row.id)">巡更记录 </el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -90,6 +99,7 @@ const addOrUpdateHandle = (id?: number) => {
 		</el-pagination>
 		<!-- 弹窗, 新增 / 修改 -->
 		<AddOrUpdate ref="addOrUpdateRef" @refresh-data-list="getDataList"></AddOrUpdate>
+		<record ref="RecordOpen"></record>
 	</el-card>
 </template>
 

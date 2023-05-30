@@ -22,3 +22,7 @@ export const useCommuntiySearchApi=()=>{
     
 }
 
+export const useBuildingsByCommuntiyId=(communityId:any)=>{
+	return service.get('/safe/point/buildings/'+communityId)
+}
+
