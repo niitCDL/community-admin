@@ -1,12 +1,6 @@
 ﻿<template>
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
-			<!-- <el-form-item>
-				<el-input v-model="state.queryForm.createTime" placeholder="开始时间" clearable></el-input>
-			</el-form-item>
-			<el-form-item>
-				<el-input v-model="state.queryForm.endTime" placeholder="结束时间" clearable></el-input>
-			</el-form-item> -->
 			<el-form-item>
 				<el-date-picker
 					v-model="state.queryForm.createTime"
@@ -46,14 +40,15 @@
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="id" label="序号" header-align="center" align="center" width="60"></el-table-column>
+			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="houseNumber" label="房产" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="orderType" label="收费项目" header-align="center" align="center"></el-table-column>
-			<fast-table-column prop="createTime" label="账单开始时间" dict-type="user_gender"></fast-table-column>
-			<fast-table-column prop="endTime" label="账单截至时间" dict-type="user_gender"></fast-table-column>
+			<fast-table-column prop="orderType" label="收费项目" dict-type="order_type" header-align="center" align="center"></fast-table-column>
+			<el-table-column prop="createTime" label="账单开始时间"></el-table-column>
+			<el-table-column prop="endTime" label="账单截至时间"></el-table-column>
 			<el-table-column prop="price" label="价格" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="money" label="金额" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="status" label="缴费状态" header-align="center" align="center"></el-table-column>
+			<fast-table-column prop="status" label="缴费状态" dict-type="payment_status" header-align="center" align="center"></fast-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<el-button type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
@@ -83,7 +78,7 @@ import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-updates.vue'
 import { IHooksOptions } from '@/hooks/interface'
 // import constant from '@/utils/constant'
-import { useUserExportApi } from '@/api/society/order'
+import { useOrderExportApi } from '@/api/society/order'
 import { ElMessage, UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
 
@@ -96,6 +91,7 @@ const state: IHooksOptions = reactive({
 		gender: ''
 	}
 })
+
 const uploadUserExcelUrl = import.meta.env.VITE_API_URL + '/soft2242/order/import?accessToken=' + cache.getToken()
 
 const addOrUpdateRef = ref()
@@ -104,7 +100,7 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const downloadExcel = () => {
-	useUserExportApi()
+	useOrderExportApi()
 	return
 }
 

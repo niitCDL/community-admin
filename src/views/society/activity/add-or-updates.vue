@@ -1,16 +1,28 @@
 ﻿<template>
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
-			<el-form-item prop="houseNumber" label="房屋">
-				<el-tree-select v-model="dataForm.houseNumber" :data="houseList" style="width: 100%" />
+			<el-form-item prop="activityName" label="活动名称">
+				<el-input v-model="dataForm.activityName" placeholder="活动名称 "></el-input>
 			</el-form-item>
-			<el-form-item prop="communityName" label="小区">
-				<el-tree-select v-model="dataForm.communityName" :data="communityList" style="width: 100%" />
+			<el-form-item prop="title" label="活动标题">
+				<el-input v-model="dataForm.title" placeholder="活动标题 "></el-input>
 			</el-form-item>
-			<el-form-item prop="orderType" label="收费项目">
-				<el-tree-select v-model="dataForm.orderType" :data="orgList" style="width: 100%" />
+			<el-form-item prop="communityId" label="所属社区">
+				<el-tree-select v-model="dataForm.communityId" :data="communityList" style="width: 100%" />
 			</el-form-item>
-			<el-form-item prop="createTime" label="账单开始时间">
+			<el-form-item prop="typeId" label="活动类别">
+				<el-tree-select v-model="dataForm.typeId" :data="activityTypeList" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="content" label="活动内容">
+				<el-input v-model="dataForm.content" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="tel" label="联系电话">
+				<el-input v-model="dataForm.tel" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="location" label="活动地点">
+				<el-input v-model="dataForm.location" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="createTime" label="开始时间">
 				<el-date-picker
 					v-model="dataForm.createTime"
 					type="datetime"
@@ -19,7 +31,7 @@
 					value-format="YYYY-MM-DD hh:mm:ss"
 				/>
 			</el-form-item>
-			<el-form-item prop="endTime" label="账单截至时间">
+			<el-form-item prop="endTime" label="截至时间">
 				<el-date-picker
 					v-model="dataForm.endTime"
 					type="datetime"
@@ -28,12 +40,9 @@
 					value-format="YYYY-MM-DD hh:mm:ss"
 				/>
 			</el-form-item>
-			<el-form-item prop="price" label="价格">
-				<el-input v-model="dataForm.price" placeholder="价格"></el-input>
-			</el-form-item>
-			<el-form-item prop="money" label="金额">
-				<el-input v-model="dataForm.money" placeholder="金额"></el-input>
-			</el-form-item>
+			<!-- <el-form-item prop="price" label="物业公司">
+				<el-input v-model="dataForm.price" placeholder="物业公司"></el-input>
+			</el-form-item> -->
 			<el-form-item prop="status" label="状态">
 				<!-- <fast-radio-group v-model="dataForm.status" dict-type="user_status"></fast-radio-group> -->
 				<el-radio-group v-model="dataForm.status">
@@ -52,61 +61,60 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { useOrderSubmitApi, useOrderApi, useHouseListApi, useCommunityListApi } from '@/api/society/order'
+import { useCommunityListApi } from '@/api/society/order'
+import { useActivitySubmitApi, useTypeApi, useActivityTypeListApi } from '@/api/society/activity'
 
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-let houseList = reactive([{}])
+let activityTypeList = reactive([{}])
 let communityList = reactive([{}])
 
-const orgList = ref([
-	{
-		value: 0,
-		label: '购买车位订单'
-	},
-	{
-		value: 1,
-		label: '租赁车位订单'
-	},
-	{
-		value: 2,
-		label: '停车订单'
-	},
-	{
-		value: 3,
-		label: '水费'
-	},
-	{
-		value: 4,
-		label: '电费'
-	},
-	{
-		value: 5,
-		label: '物业费'
-	}
-])
+// const orgList = ref([
+// 	{
+// 		value: 0,
+// 		label: '购买车位订单'
+// 	},
+// 	{
+// 		value: 1,
+// 		label: '租赁车位订单'
+// 	},
+// 	{
+// 		value: 2,
+// 		label: '停车订单'
+// 	},
+// 	{
+// 		value: 3,
+// 		label: '水费'
+// 	},
+// 	{
+// 		value: 4,
+// 		label: '电费'
+// 	},
+// 	{
+// 		value: 5,
+// 		label: '物业费'
+// 	}
+// ])
 const dataFormRef = ref()
 
 const dataForm = reactive({
 	id: '',
 	userId: 1,
-	comminityId: 1,
-	parkRecordId: 1,
-	orderType: 1,
-	price: '12',
-	amount: 0,
-	money: 1.0,
+	communityId: 1,
+	status: 1,
+	deleted: '0',
 	createTime: '2023-05-25 19:25:55',
 	creator: 10000,
 	updater: 10000,
-	status: 1,
 	updateTime: '2023-05-25 19:25:55',
-	houseId: 1,
-	ownerId: 1,
-	endTime: '2023-05-25 19:25:55',
-	houseNumber: '',
-	communityName: ''
+	typeId: 0,
+	title: '',
+	content: '',
+	location: '',
+	tel: '',
+	activityName: '',
+	endTime: '2023-05-25 19:25:55'
 })
 
 const init = (id?: number) => {
@@ -120,28 +128,13 @@ const init = (id?: number) => {
 
 	// id 存在则为修改
 	if (id) {
-		getOrder(id)
+		getType(id)
 	}
 
 	getCommunityList()
-	getHouseList()
+	getList()
 }
 
-// 获取房屋列表
-const getHouseList = () => {
-	return useHouseListApi().then(res => {
-		const getList = ref([{ id: 1, houseNumber: '' }])
-		getList.value = res.data
-		console.log(getList.value)
-		// 遍历housrList
-		getList.value.map(item => {
-			console.log(item.houseNumber)
-			// 将getList的元素插入 houseList中
-			houseList.push({ value: item.id, label: item.houseNumber })
-			console.log(houseList)
-		})
-	})
-}
 // 获取小区列表
 const getCommunityList = () => {
 	return useCommunityListApi().then(res => {
@@ -157,9 +150,25 @@ const getCommunityList = () => {
 		})
 	})
 }
+// 获取活动类型列表
+const getList = () => {
+	return useActivityTypeListApi().then(res => {
+		const getList = ref([{ id: 1, name: '' }])
+		getList.value = res.data
+		console.log(getList.value)
+		// 遍历housrList
+		getList.value.map(item => {
+			console.log(item.name)
+			// 将getList的元素插入 houseList中
+			activityTypeList.push({ value: item.id, label: item.name })
+			console.log(activityTypeList)
+		})
+	})
+}
+
 // 获取信息
-const getOrder = (id: number) => {
-	useOrderApi(id).then(res => {
+const getType = (id: number) => {
+	useTypeApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }
@@ -178,7 +187,7 @@ const submitHandle = () => {
 			return false
 		}
 
-		useOrderSubmitApi(dataForm).then(() => {
+		useActivitySubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,
