@@ -33,6 +33,7 @@
 			<el-table-column prop="communityName" label="所属社区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="houseNumber" label="授权楼栋" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="owner" label="授权人" header-align="center" align="center" width="70"></el-table-column>
+			<el-table-column prop="visitorId" label="访客id" header-align="center" align="center" width="70"></el-table-column>
 
 			<el-table-column prop="validTime" label="有效时间" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="doorIds" label="授权位置" header-align="center" align="center"></el-table-column>
@@ -41,7 +42,7 @@
 
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="250">
 				<template #default="scope">
-					<el-button type="primary" link @click="addOrUpdateHandle(scope.row.id)">查看开门记录</el-button>
+					<el-button type="primary" link @click="addOrUpdateHandle(scope.row.visitorId)">查看开门记录</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
