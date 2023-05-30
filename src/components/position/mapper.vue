@@ -55,7 +55,8 @@ const mapcontainer = ref('')
 const emit = defineEmits(['change-form'])
 window._AMapSecurityConfig = {
 	// 安全密钥
-	securityJsCode: 'b58e6f7934bc68448057e8e6bee47ea3'
+	// securityJsCode: 'b58e6f7934bc68448057e8e6bee47ea3',
+	securityJsCode: '487aede32253bcb842681ca1663af153'
 }
 
 //弹窗是否显示
@@ -151,9 +152,9 @@ const currentSelect = val => {
 	if (!val) {
 		return
 	}
-	console.log(val.name)
-	keywords.value = val.name
-	geoCoder.value.getLocation(val.name, function (status, result) {
+	console.log(val)
+	keywords.value = val.district + val.name
+	geoCoder.value.getLocation(val.district + val.name, function (status, result) {
 		if (status === 'complete' && result.info === 'OK') {
 			//获取经纬度
 			form.lng = result.geocodes[0].location.lng
@@ -180,7 +181,8 @@ const initMap = coordinate => {
 
 	AMapLoader.load({
 		// 你申请的Key
-		key: '04555912172a06b816aa942177fdfe80',
+		// key: '04555912172a06b816aa942177fdfe80',
+		key: '8b7cbd2d78caa876bcc96657099d5059',
 		version: '2.0',
 		// 需要用到的插件
 		plugins: ['AMap.Geocoder', 'AMap.AutoComplete']
