@@ -29,6 +29,3 @@ export const useItemsSearchApi=(communityId:any)=>{
     
 }
 
-export const usePointByIds=(elementIds:Array<Number>)=>{
-	return service.get('/safe/path/point/'+elementIds)
-}

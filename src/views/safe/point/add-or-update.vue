@@ -2,16 +2,15 @@
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="communityId" label="所属社区">
-				<el-select v-model="dataForm.communityId" placeholder="请选择社区">
+				<el-select v-model="dataForm.communityId" placeholder="请选择社区" @change="changeCommunity">
 					<el-option v-for="option in communities" :key="option.id" :label="option.communityName" :value="option.id"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item prop="buildingId" label="所属楼宇">
-				<el-input v-model="dataForm.buildingId" placeholder="所属楼宇"></el-input>
-			</el-form-item>
 
-			<el-form-item prop="units" label="所属单元">
-				<el-input v-model="dataForm.units" placeholder="所属单元"></el-input>
+			<el-form-item prop="buildingId" label="所属楼宇">
+				<el-select v-model="dataForm.buildingId" placeholder="请选择楼宇">
+					<el-option v-for="option in buildings" :key="option.id" :label="option.buildingName" :value="option.id"></el-option>
+				</el-select>
 			</el-form-item>
 
 			<el-form-item prop="pointName" label="巡更点名称">
@@ -57,13 +56,19 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { usePointSubmitApi, usePointApi } from '@/api/safe/point'
+import { usePointSubmitApi, usePointApi, useBuildingsByCommuntiyId } from '@/api/safe/point'
 
 import { useCommuntiySearchApi } from '@/api/safe/point'
 import mapper from './mapper.vue'
 import { Location } from '@element-plus/icons-vue'
 
 const communities = ref<any[]>([])
+const buildings = ref<any[]>([])
+const changeCommunity = () => {
+	useBuildingsByCommuntiyId(dataForm.communityId).then(res => {
+		buildings.value = res.data
+	})
+}
 useCommuntiySearchApi().then(res => {
 	communities.value = res.data
 })
@@ -109,6 +114,12 @@ const init = (id?: number) => {
 const getInspectionItem = (id: number) => {
 	usePointApi(id).then(res => {
 		Object.assign(dataForm, res.data)
+		console.log('++++++++++++++++++++' + dataForm.communityId)
+
+		useBuildingsByCommuntiyId(dataForm.communityId).then(res => {
+			buildings.value = res.data
+		})
+		console.log('-------------' + buildings.value)
 	})
 }
 

@@ -65,10 +65,8 @@
 <script setup lang="ts">
 import { reactive, ref, computed } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { usePathSubmitApi, usePathApi } from '@/api/safe/path'
-
 import { useCommuntiySearchApi } from '@/api/safe/point'
-import { usePointSearchApi, useItemsSearchApi, usePointByIds } from '@/api/safe/path'
+import { usePointSearchApi, useItemsSearchApi, usePathSubmitApi, usePathApi } from '@/api/safe/path'
 
 //获取社区id和name
 let communities = ref<any[]>([])
@@ -77,13 +75,29 @@ useCommuntiySearchApi().then(res => {
 })
 
 //巡更点列表
-let points = ref([])
+let points = ref<any[]>([])
 
 //巡检项目列表
 let items = ref<any[]>([])
 
 //获取巡检项目和巡更点数据
 const change = () => {
+	dataForm.elementIds = []
+	if (dataForm.type == '0') {
+		usePointSearchApi(dataForm.communityId).then(res => {
+			points.value = res.data
+		})
+	}
+
+	if (dataForm.type == '1') {
+		useItemsSearchApi(dataForm.communityId).then(res => {
+			items.value = res.data
+		})
+	}
+}
+
+const initGet = () => {
+	// dataForm.elementIds = []
 	if (dataForm.type == '0') {
 		usePointSearchApi(dataForm.communityId).then(res => {
 			points.value = res.data
@@ -102,7 +116,6 @@ const emit = defineEmits(['refreshDataList'])
 const visible = ref(false)
 const dataFormRef = ref()
 
-const value1 = ref
 const dataForm = reactive({
 	id: '',
 	communityId: '',
@@ -125,16 +138,12 @@ const init = (id?: number) => {
 			dataForm[key] = ''
 		}
 	}
-
 	change()
-	console.log('---------------------------' + points.value)
+	// console.log('---------------------------' + points.value)
 
 	// id 存在则为修改
 	if (id) {
 		getInspectionItem(id)
-		usePointByIds(dataForm.elementIds).then(res => {
-			points.value = res.data
-		})
 	}
 }
 
@@ -142,6 +151,8 @@ const init = (id?: number) => {
 const getInspectionItem = (id: number) => {
 	usePathApi(id).then(res => {
 		Object.assign(dataForm, res.data)
+
+		initGet()
 		console.log(dataForm)
 	})
 }
