@@ -30,3 +30,6 @@ export const useHouseListApi = () => {
 export const useCommunityListApi = () => {
 	return service.get('/soft2242/order/community')
 }
+export const useDeleteORderApi = (id: number) => {
+	return service.put('/soft2242/order/delete/' + id)
+}

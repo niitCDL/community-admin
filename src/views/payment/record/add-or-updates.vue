@@ -62,28 +62,12 @@ let communityList = reactive([{}])
 
 const orgList = ref([
 	{
-		value: 0,
-		label: '购买车位订单'
-	},
-	{
-		value: 1,
-		label: '租赁车位订单'
-	},
-	{
-		value: 2,
-		label: '停车订单'
-	},
-	{
 		value: 3,
 		label: '水费'
 	},
 	{
 		value: 4,
 		label: '电费'
-	},
-	{
-		value: 5,
-		label: '物业费'
 	}
 ])
 const dataFormRef = ref()
