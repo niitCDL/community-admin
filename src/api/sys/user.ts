@@ -1,7 +1,6 @@
 import service from '@/utils/request'
 import cache from '@/utils/cache'
 import constant from '@/utils/constant'
-
 export const useUserInfoApi = () => {
 	return service.get('/sys/user/info')
 }
@@ -19,6 +18,10 @@ export const useUserApi = (id: number) => {
 
 export const useUserExportApi = () => {
 	location.href = constant.apiUrl + '/sys/user/export?accessToken=' + cache.getToken()
+}
+
+export const getUserExportApi = () => {
+	return constant.apiUrl + '/sys/user/export'
 }
 
 export const useUserSubmitApi = (dataForm: any) => {
