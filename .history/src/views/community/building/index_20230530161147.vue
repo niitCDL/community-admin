@@ -20,7 +20,7 @@
 				<el-button v-auth="'sys:building:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
 			</el-form-item>
 			<el-form-item v-auth="'sys:building:import'">
-				<el-upload :action="uploadBuildingExceUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
+				<el-upload :action="uploadUserExcelUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
 					<el-button type="info">导入</el-button>
 				</el-upload>
 			</el-form-item>
@@ -95,7 +95,7 @@ const downloadExcel = () => {
 	axios
 		.get(url, { responseType: 'blob' })
 		.then(response => {
-			const filename = 'building.xlsx' // 下载文件的默认文件名
+			const filename = 'data.xlsx' // 下载文件的默认文件名
 			const blob = new Blob([response.data])
 			const link = document.createElement('a')
 			link.href = URL.createObjectURL(blob)

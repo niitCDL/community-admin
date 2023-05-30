@@ -20,7 +20,7 @@
 				<el-button v-auth="'sys:building:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
 			</el-form-item>
 			<el-form-item v-auth="'sys:building:import'">
-				<el-upload :action="uploadBuildingExceUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
+				<el-upload :action="constant.uploadUserExcelUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
 					<el-button type="info">导入</el-button>
 				</el-upload>
 			</el-form-item>
@@ -69,8 +69,6 @@ import constant from '@/utils/constant'
 import { useUserExportApi } from '@/api/sys/user'
 import { ElMessage, UploadProps } from 'element-plus'
 import { importBuilding, exportBuilding } from '@/api/building/building'
-import axios from 'axios'
-import cache from '@/utils/cache'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/building/page',
@@ -87,26 +85,22 @@ const addOrUpdateHandle = (id?: number) => {
 	addOrUpdateRef.value.init(id)
 }
 
-//导入
-const uploadBuildingExceUrl = constant.apiUrl + '/sys/building/import?accessToken=' + cache.getToken()
 const downloadExcel = () => {
 	//exportBuilding()
-	const url = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
-	axios
-		.get(url, { responseType: 'blob' })
-		.then(response => {
-			const filename = 'building.xlsx' // 下载文件的默认文件名
-			const blob = new Blob([response.data])
-			const link = document.createElement('a')
-			link.href = URL.createObjectURL(blob)
-			link.download = filename
-			document.body.appendChild(link)
-			link.click()
-			document.body.removeChild(link)
-		})
-		.catch(error => {
-			console.error(error)
-		})
+	// 创建用户数据导出的 API 接口实例
+	const api = exportBuilding()
+
+	// 触发导出操作
+	api.request().then(res => {
+		// 将文件流数据保存到本地文件中
+		const blob = new Blob([res.data])
+		const filename = '用户数据.xlsx'
+		const link = document.createElement('a')
+		link.href = URL.createObjectURL(blob)
+		link.download = filename
+		link.click()
+		URL.revokeObjectURL(link.href)
+	})
 }
 
 const handleSuccess: UploadProps['onSuccess'] = (res, file) => {
