@@ -46,7 +46,8 @@
 			<fast-table-column prop="orderType" label="收费项目" dict-type="order_type" header-align="center" align="center"></fast-table-column>
 			<el-table-column prop="otime" label="账单时间" width="180" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="price" label="价格" width="60" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="money" label="金额" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="amount" label="用量" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="orderMoney" label="金额" header-align="center" align="center"></el-table-column>
 			<fast-table-column
 				prop="status"
 				label="缴费状态"
