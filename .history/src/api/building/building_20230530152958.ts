@@ -36,8 +36,4 @@ export function importBuilding(file: any) {
 export const exportBuilding = () => {
 	return service.get('/sys/building/export')
 	//location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
-// }
-	//return service.get('/sys/building/export')
-	location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
 }
-

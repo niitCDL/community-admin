@@ -31,7 +31,7 @@ export function getCommunityList() {
 // 	return service.delete(`/community`, ids)
 // }
 export function importCommunity(file: any) {
-	return service.post('/sys/community/import', file)
+	return service.post('/community/import', file)
 }
 // export function exportCommunity() {
 // 	return service.get('/community/export')

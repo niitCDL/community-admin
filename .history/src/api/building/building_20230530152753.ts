@@ -32,12 +32,16 @@ export function getBuildingList() {
 export function importBuilding(file: any) {
 	return service.post('/sys/building/import', file)
 }
-
+const http = axios.create({
+	baseURL: constant.apiUrl + '/sys/building/export?Authorization=' + cache.getToken(),
+	headers: { Authorization: getToken() }
+  })
 export const exportBuilding = () => {
-	return service.get('/sys/building/export')
-	//location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
-// }
+	  return http({
+		method: 'get',
+		url: '/sys/building/export',
+		responseType: 'blob'
+	  })
 	//return service.get('/sys/building/export')
-	location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
+	//location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
 }
-
