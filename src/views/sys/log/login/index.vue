@@ -44,6 +44,7 @@ import { IHooksOptions } from '@/hooks/interface'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/log/login/page',
+	exportUrl: '/sys/log/login/export',
 	queryForm: {
 		creatorName: ''
 	}
