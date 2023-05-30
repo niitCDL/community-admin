@@ -60,6 +60,7 @@ import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { IHooksOptions } from '@/hooks/interface'
 import { apApply, reApply } from '@/api/owner/owner'
+import { router } from '@/router'
 const options = [
 	{
 		label: '未审核',
@@ -106,7 +107,10 @@ const resetData = () => {
 	state.queryForm.state = 1
 	getDataList()
 }
-const toInfo = (id: number) => {}
+const toInfo = (id: any) => {
+	localStorage.setItem('ownerId', id)
+	router.push('info')
+}
 const { getDataList, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>
 <style scoped>
