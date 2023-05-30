@@ -26,9 +26,9 @@
 			<el-form-item>
 				<el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
 			</el-form-item>
-			<el-form-item>
+			<!-- <el-form-item>
 				<el-button v-auth="'sys:user:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item v-auth="'sys:user:import'">
 				<el-upload :action="uploadUserExcelUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
 					<el-button type="info">导入</el-button>
@@ -47,10 +47,12 @@
 			<el-table-column prop="otime" label="账单日期" width="250" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="money" label="费用" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="status" label="状态" dict-type="payment_status" header-align="center" align="center"></fast-table-column>
+			<fast-table-column prop="deleted" width="85" label="删除" dict-type="activity_delete" header-align="center" align="center"></fast-table-column>
+
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<el-button type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-					<el-button v-auth="'sys:user:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
+					<el-button v-auth="'sys:user:delete'" type="primary" link @click="deleteOrder(scope.row.id)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -76,13 +78,13 @@ import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-updates.vue'
 import { IHooksOptions } from '@/hooks/interface'
 // import constant from '@/utils/constant'
-import { useOrderExportApi } from '@/api/society/order'
+import { useOrderExportApi, useDeleteORderApi } from '@/api/society/order'
 import { ElMessage, UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/soft2242/order/recordPage',
-	deleteUrl: 'soft2242/order',
+	deleteUrl: '',
 	queryForm: {
 		username: '',
 		mobile: '',
@@ -99,6 +101,18 @@ const addOrUpdateHandle = (id?: number) => {
 
 const downloadExcel = () => {
 	useOrderExportApi()
+	return
+}
+const deleteOrder = (id: number) => {
+	useDeleteORderApi(id)
+	ElMessage.success({
+		message: '删除成功',
+		duration: 500,
+		onClose: () => {
+			getDataList()
+		}
+	})
+	getDataList()
 	return
 }
 

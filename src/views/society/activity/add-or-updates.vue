@@ -1,5 +1,5 @@
 ﻿<template>
-	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
+	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" width="70%" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="activityName" label="活动名称">
 				<el-input v-model="dataForm.activityName" placeholder="活动名称 "></el-input>
@@ -14,7 +14,10 @@
 				<el-tree-select v-model="dataForm.typeId" :data="activityTypeList" style="width: 100%" />
 			</el-form-item>
 			<el-form-item prop="content" label="活动内容">
-				<el-input v-model="dataForm.content" style="width: 100%" />
+				<!-- <el-input v-model="dataForm.content" style="width: 100%" /> -->
+				<div>
+					<WangEditor v-model="dataForm.content" placeholder="请输入..."></WangEditor>
+				</div>
 			</el-form-item>
 			<el-form-item prop="tel" label="联系电话">
 				<el-input v-model="dataForm.tel" style="width: 100%" />
@@ -62,7 +65,8 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useCommunityListApi } from '@/api/society/order'
-import { useActivitySubmitApi, useTypeApi, useActivityTypeListApi } from '@/api/society/activity'
+import { useActivitySubmitApi, useActivityTypeListApi, useActivityApi } from '@/api/society/activity'
+import WangEditor from '@/components/wang-editor/index.vue'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -116,6 +120,8 @@ const dataForm = reactive({
 	activityName: '',
 	endTime: '2023-05-25 19:25:55'
 })
+// 富文本编辑数据
+const editorValue = ref('<p>内容</p>')
 
 const init = (id?: number) => {
 	visible.value = true
@@ -130,8 +136,6 @@ const init = (id?: number) => {
 	if (id) {
 		getType(id)
 	}
-
-	getCommunityList()
 	getList()
 }
 
@@ -168,7 +172,7 @@ const getList = () => {
 
 // 获取信息
 const getType = (id: number) => {
-	useTypeApi(id).then(res => {
+	useActivityApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }

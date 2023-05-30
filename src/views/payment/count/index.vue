@@ -53,7 +53,10 @@ import cache from '@/utils/cache'
 import axios from 'axios'
 
 onMounted(() => {
-	query()
+	// 延时
+	setTimeout(() => {
+		query()
+	}, 1000)
 })
 const state = reactive({
 	createdIsNeed: true,
