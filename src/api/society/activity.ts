@@ -41,3 +41,6 @@ export const useActivityListApi = () => {
 export const useActivityTypeListApi = () => {
 	return service.get('/soft2242/activity/type/TypeList')
 }
+export const useActivityApi = (id: number) => {
+	return service.get('/soft2242/activity/' + id)
+}
