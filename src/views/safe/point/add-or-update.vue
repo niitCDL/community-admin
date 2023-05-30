@@ -26,22 +26,9 @@
 				<el-input v-model="dataForm.coordinate" placeholder="经纬度坐标"></el-input>
 			</el-form-item> -->
 			<el-form-item prop="coordinate" label="经纬度坐标">
-				<el-input v-model="dataForm.coordinate" :suffix-icon="Location" @click="openMapper" />
-
-				<!-- <mapper :form="form" @change-form="handleClick" :ifShow="message"></mapper> -->
+				<el-input v-model="dataForm.coordinate" :suffix-icon="Location" @click="choose" />
+				<mapper ref="mapcontainer" :form="form" @change-form="handleClick"></mapper>
 			</el-form-item>
-
-			<!-- <el-form-item prop="orgId" label="所属机构">
-				<el-tree-select
-					v-model="dataForm.orgId"
-					:data="orgList"
-					value-key="id"
-					check-strictly
-					:render-after-expand="false"
-					:props="{ label: 'name', children: 'children' }"
-					style="width: 100%"
-				/>
-			</el-form-item> -->
 
 			<el-form-item prop="status" label="状态">
 				<fast-radio-group v-model="dataForm.status" dict-type="enable_disable"></fast-radio-group>
@@ -60,7 +47,7 @@ import { ElMessage } from 'element-plus/es'
 import { usePointSubmitApi, usePointApi } from '@/api/safe/point'
 
 import { useCommuntiySearchApi } from '@/api/safe/point'
-import mapper from './mapper.vue'
+import mapper from '@/components/position/mapper.vue'
 import { Location } from '@element-plus/icons-vue'
 
 const communities = ref<any[]>([])
@@ -75,6 +62,26 @@ const postList = ref<any[]>([])
 const roleList = ref<any[]>([])
 const orgList = ref([])
 const dataFormRef = ref()
+
+//定位组件先绑定ref
+const mapcontainer = ref()
+//选择座标被点击
+const choose = () => {
+	console.log('aaaa')
+	//根据组件绑定的ref使用初始化方法
+	mapcontainer.value.initMap(dataForm.coordinate)
+}
+
+let form = ref()
+const handleClick = newValue => {
+	console.log('niah' + newValue.lng)
+	form.value = newValue
+	const newForm = form.value
+	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+	for (const key in newValue) {
+		newValue[key] = ''
+	}
+}
 
 const dataForm = reactive({
 	id: '',
@@ -138,8 +145,6 @@ const submitHandle = () => {
 defineExpose({
 	init
 })
-
-let form = ref()
 
 // const handleClick = newValue => {
 // 	console.log('niah' + newValue.lng)

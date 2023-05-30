@@ -151,9 +151,9 @@ const currentSelect = val => {
 	if (!val) {
 		return
 	}
-	console.log(val.name)
-	keywords.value = val.name
-	geoCoder.value.getLocation(val.name, function (status, result) {
+	console.log(val)
+	keywords.value = val.district + val.name
+	geoCoder.value.getLocation(val.district + val.name, function (status, result) {
 		if (status === 'complete' && result.info === 'OK') {
 			//获取经纬度
 			form.lng = result.geocodes[0].location.lng
