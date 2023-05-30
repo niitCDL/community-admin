@@ -1,5 +1,5 @@
 <template>
-	<el-dialog :model-value="props.show">
+	<el-dialog v-model="ifShow">
 		<div style="display: flex">
 			<div>
 				<div>
@@ -22,7 +22,7 @@
 						</el-option>
 					</el-select>
 				</div>
-				<div id="container" class="container"></div>
+				<div id="container" ref="mapcontainer" class="container"></div>
 			</div>
 			<div class="info-box">
 				纬度：{{ form.lat }}
@@ -40,18 +40,25 @@
 import key from '@/utils/cache/key'
 import AMapLoader from '@amap/amap-jsapi-loader'
 import { onMounted, reactive, ref, shallowRef } from 'vue'
-
-const props = defineProps({
-	show: {
-		type: Boolean,
-		default: false
-	}
-})
+import { ElMessage } from 'element-plus/es'
+const mapcontainer = ref('')
+// const props = defineProps({
+// 	show: {
+// 		type: Boolean,
+// 		default: false
+// 	},
+// 	coordinate: {
+// 		type: String,
+// 		default: ''
+// 	}
+// })
 const emit = defineEmits(['change-form'])
 window._AMapSecurityConfig = {
 	// 安全密钥
 	securityJsCode: 'b58e6f7934bc68448057e8e6bee47ea3'
 }
+
+//弹窗是否显示
 const ifShow = ref(false)
 // 地图实例
 const map = shallowRef(null)
@@ -79,11 +86,11 @@ const loading = ref(false)
 const options = ref([])
 const content = ref('')
 
-onMounted(() => {
-	setTimeout(() => {
-		initMap()
-	}, 2000)
-})
+// onMounted(() => {
+// 	setTimeout(() => {
+// 		initMap()
+// 	}, 2000)
+// })
 
 // 标记点
 const setMapMarker = AMap => {
@@ -131,6 +138,7 @@ const remoteMethod = query => {
 			loading.value = false
 			AutoComplete.value.search(query, (status, result) => {
 				options.value = result.tips
+				console.log(result.tips)
 			})
 		}, 200)
 	} else {
@@ -144,21 +152,32 @@ const currentSelect = val => {
 		return
 	}
 	console.log(val.name)
+	keywords.value = val.name
 	geoCoder.value.getLocation(val.name, function (status, result) {
 		if (status === 'complete' && result.info === 'OK') {
 			//获取经纬度
 			form.lng = result.geocodes[0].location.lng
 			form.lat = result.geocodes[0].location.lat
+			// 清除点
+			removeMarker()
+			// 标记点
+			setMapMarker(amap)
+		} else {
+			ElMessage.error({
+				message: '位置不够详细',
+				duration: 500
+			})
 		}
 	})
-
-	// 清除点
-	removeMarker()
-	// 标记点
-	setMapMarker(amap)
 }
 //初始化
-const initMap = () => {
+const initMap = coordinate => {
+	ifShow.value = true
+	for (const key in form) {
+		form[key] = ''
+		keywords.value = ''
+	}
+
 	AMapLoader.load({
 		// 你申请的Key
 		key: '04555912172a06b816aa942177fdfe80',
@@ -168,9 +187,7 @@ const initMap = () => {
 	})
 		.then(AMap => {
 			let con = document.getElementById('container')
-			// while (con == null) {
-			// 	con = document.getElementById('container')
-			// }
+			console.log('--------:' + con)
 			amap.value = AMap
 			map.value = new AMap.Map(con, {
 				viewMode: '3D', //是否为3D地图模式
@@ -194,12 +211,22 @@ const initMap = () => {
 				// 标记点
 				setMapMarker(amap)
 			})
+			if (coordinate) {
+				const co = coordinate.split(',')
+				form.lng = co[0]
+				form.lat = co[1]
+				removeMarker()
+				setMapMarker(amap)
+			}
 		})
 		.catch(err => {
 			// 错误
 			console.log(err)
 		})
 }
+defineExpose({
+	initMap
+})
 </script>
 
 <style>

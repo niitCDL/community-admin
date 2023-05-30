@@ -4,8 +4,16 @@
 		<div class="sm">提交时间:{{ data.createTime }}</div>
 		<div class="content">
 			<div class="left">
-				<div>投诉单号：{{ data.id }}</div>
-				<div>报修类型:<span v-if="data.type == 0">公共报修</span><span v-else>个人报修</span></div>
+				<div>报修单号：{{ data.id }}</div>
+				<div>
+					报修类型:
+					<template v-for="n in repair_type" :key="n.dictValue">
+						<span v-if="data.type == n.dictValue">
+							{{ n.dictLabel }}
+						</span>
+					</template>
+				</div>
+
 				<div>报修小区：{{ data.communityName }}</div>
 				<div>报修时间：{{ data.createTime }}</div>
 				<div>报修人：{{ data.userName }}</div>
@@ -26,9 +34,9 @@
 <script setup lang="ts">
 import { useReadNoticeUser } from '@/api/property/notice'
 import { reactive } from 'vue'
-import { useGetInfo } from '../property'
+import { useGetDictType, useGetInfo } from '../property'
 const data = useGetInfo()
-console.log(data)
+// console.log(data)
 // let state = reactive({
 // 	dataListLoading: true,
 // 	dataList: [],
@@ -41,6 +49,7 @@ console.log(data)
 // 	state.dataListLoading = false
 // 	console.log(state.dataListLoading)
 // })
+let repair_type = await useGetDictType(16)
 </script>
 
 <style scoped>
@@ -59,15 +68,15 @@ h1 {
 	position: relative;
 }
 
-.content .left{
+.content .left {
 	/* border: 1px solid red; */
 }
-.content .right{
+.content .right {
 	position: absolute;
 	right: 10px;
 	top: 0px;
 }
-.content img{
+.content img {
 	width: 150px;
 	height: 150px;
 }

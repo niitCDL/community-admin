@@ -26,8 +26,9 @@
 				<el-input v-model="dataForm.coordinate" placeholder="经纬度坐标"></el-input>
 			</el-form-item> -->
 			<el-form-item prop="coordinate" label="经纬度坐标">
-				<el-input v-model="dataForm.coordinate"> </el-input>
-				<mapper :form="form" @change-form="handleClick"></mapper>
+				<el-input v-model="dataForm.coordinate" :suffix-icon="Location" @click="openMapper" />
+
+				<!-- <mapper :form="form" @change-form="handleClick" :ifShow="message"></mapper> -->
 			</el-form-item>
 
 			<!-- <el-form-item prop="orgId" label="所属机构">
@@ -60,6 +61,7 @@ import { usePointSubmitApi, usePointApi } from '@/api/safe/point'
 
 import { useCommuntiySearchApi } from '@/api/safe/point'
 import mapper from './mapper.vue'
+import { Location } from '@element-plus/icons-vue'
 
 const communities = ref<any[]>([])
 useCommuntiySearchApi().then(res => {
@@ -139,10 +141,15 @@ defineExpose({
 
 let form = ref()
 
-const handleClick = newValue => {
-	console.log('niah' + newValue.lng)
-	form.value = newValue
-	const newForm = form.value
-	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+// const handleClick = newValue => {
+// 	console.log('niah' + newValue.lng)
+// 	form.value = newValue
+// 	const newForm = form.value
+// 	message.value = newValue.ifShow
+// 	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+// }
+const message = ref()
+const openMapper = () => {
+	message.value = true
 }
 </script>
