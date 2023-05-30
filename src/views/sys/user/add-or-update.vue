@@ -16,13 +16,14 @@
 					:render-after-expand="false"
 					:props="{ label: 'name', children: 'children' }"
 					style="width: 100%"
+					placeholder="所属机构"
 				/>
 			</el-form-item>
 			<el-form-item prop="gender" label="性别">
 				<fast-radio-group v-model="dataForm.gender" dict-type="user_gender"></fast-radio-group>
 			</el-form-item>
-			<el-form-item prop="mobile" label="手机号">
-				<el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
+			<el-form-item prop="phone" label="手机号">
+				<el-input v-model="dataForm.phone" placeholder="手机号"></el-input>
 			</el-form-item>
 			<el-form-item prop="email" label="邮箱">
 				<el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
@@ -40,8 +41,8 @@
 					<el-option v-for="post in postList" :key="post.id" :label="post.postName" :value="post.id"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item prop="status" label="状态">
-				<fast-radio-group v-model="dataForm.status" dict-type="user_status"></fast-radio-group>
+			<el-form-item prop="accountStatus" label="状态">
+				<fast-radio-group v-model="dataForm.accountStatus" dict-type="user_status"></fast-radio-group>
 			</el-form-item>
 		</el-form>
 		<template #footer>
@@ -76,16 +77,16 @@ const dataForm = reactive({
 	password: '',
 	gender: 0,
 	email: '',
-	mobile: '',
+	phone: '',
 	roleIdList: [] as any[],
 	postIdList: [] as any[],
-	status: 1
+	accountStatus: 1
 })
 
 const init = (id?: number) => {
 	visible.value = true
 	dataForm.id = ''
-
+	dataForm.password = ''
 	// 重置表单数据
 	if (dataFormRef.value) {
 		dataFormRef.value.resetFields()
@@ -93,6 +94,7 @@ const init = (id?: number) => {
 
 	// id 存在则为修改
 	if (id) {
+		dataForm.id = id.toString()
 		getUser(id)
 	}
 
@@ -132,7 +134,7 @@ const getUser = (id: number) => {
 const dataRules = ref({
 	username: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
 	realName: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	mobile: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
+	phone: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
 	orgId: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
@@ -143,15 +145,22 @@ const submitHandle = () => {
 			return false
 		}
 
-		useUserSubmitApi(dataForm).then(() => {
-			ElMessage.success({
-				message: '操作成功',
-				duration: 500,
-				onClose: () => {
-					visible.value = false
-					emit('refreshDataList')
-				}
-			})
+		useUserSubmitApi(dataForm).then((res: any) => {
+			if (res.code == 0) {
+				ElMessage.success({
+					message: '操作成功',
+					duration: 500,
+					onClose: () => {
+						visible.value = false
+						emit('refreshDataList')
+					}
+				})
+			} else {
+				ElMessage.error({
+					message: res.message,
+					duration: 500
+				})
+			}
 		})
 	})
 }

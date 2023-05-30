@@ -10,8 +10,11 @@
 			<el-form-item label="排序" prop="sort">
 				<el-input-number v-model="dataForm.sort" :min="0"></el-input-number>
 			</el-form-item>
-			<el-form-item label="状态" prop="status">
+			<!-- <el-form-item label="状态" prop="status">
 				<fast-radio-group v-model="dataForm.status" dict-type="post_status"></fast-radio-group>
+			</el-form-item> -->
+			<el-form-item label="创建时间" prop="createTime">
+				<el-input v-model="dataForm.createTime"></el-input>
 			</el-form-item>
 		</el-form>
 		<template #footer>
@@ -36,7 +39,8 @@ const dataForm = reactive({
 	postCode: '',
 	postName: '',
 	sort: 0,
-	status: 1
+	status: 1,
+	createTime: ''
 })
 
 const init = (id?: number) => {
