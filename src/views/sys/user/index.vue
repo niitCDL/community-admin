@@ -30,7 +30,18 @@
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="username" label="用户名" header-align="center" align="center"></el-table-column>
+			<el-table-column label="用户名" header-align="center" align="center">
+				<template #default="scope">
+					<div class="avatar-box">
+						<el-avatar shape="circle" :size="40" :src="scope.row.avatar"></el-avatar>
+						<div style="margin-left: 8px">
+							ID:{{ scope.row.adminId }}
+							<br />
+							{{ scope.row.username }}
+						</div>
+					</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="realName" label="姓名" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="gender" label="性别" dict-type="user_gender"></fast-table-column>
 			<el-table-column prop="phone" label="手机号" header-align="center" align="center"></el-table-column>
@@ -41,7 +52,7 @@
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<el-button v-auth="'sys:user:update'" type="primary" link @click="addOrUpdateHandle(scope.row.adminId)">修改</el-button>
-					<el-button v-auth="'sys:user:delete'" type="primary" link @click="deleteBatchHandle(scope.row.adminId)">删除</el-button>
+					<el-button v-auth="'sys:user:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -116,3 +127,11 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>
+
+<style scoped>
+.avatar-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+</style>
