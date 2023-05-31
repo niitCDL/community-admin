@@ -18,24 +18,6 @@
 			<el-form-item label="配置码" prop="sysCode">
 				<el-input v-model="dataForm.sysCode" placeholder="配置码"></el-input>
 			</el-form-item>
-			<!-- <el-form-item label="允许欠费通行 0-允许 1-不允许" prop="allowOwed">
-				<el-input v-model="dataForm.allowOwed" placeholder="允许欠费通行 0-允许 1-不允许"></el-input>
-			</el-form-item>
-			<el-form-item label="允许访客通行  0-允许 1-不允许" prop="allowVisit">
-				<el-input v-model="dataForm.allowVisit" placeholder="允许访客通行  0-允许 1-不允许"></el-input>
-			</el-form-item>
-			<el-form-item label="需要访客手机号 0-需要 1-不需要" prop="needTel">
-				<el-input v-model="dataForm.needTel" placeholder="需要访客手机号 0-需要 1-不需要"></el-input>
-			</el-form-item>
-			<el-form-item label="需要访客身份证 0-需要 1-不需要" prop="needIdCard">
-				<el-input v-model="dataForm.needIdCard" placeholder="需要访客身份证 0-需要 1-不需要"></el-input>
-			</el-form-item>
-			<el-form-item label="允许人脸识别 0-允许 1-不允许" prop="allowFace">
-				<el-input v-model="dataForm.allowFace" placeholder="允许人脸识别 0-允许 1-不允许"></el-input>
-			</el-form-item>
-			<el-form-item label="允许指纹识别  0-允许 1-不允许" prop="allowFinger">
-				<el-input v-model="dataForm.allowFinger" placeholder="允许指纹识别  0-允许 1-不允许"></el-input>
-			</el-form-item> -->
 		</el-form>
 		<template #footer>
 			<el-button @click="visible = false">取消</el-button>
@@ -58,6 +40,7 @@ const dataFormRef = ref()
 const dataForm = reactive({
 	id: '',
 	deviceId: '',
+	doorImg: 'https://flobby529.oss-cn-nanjing.aliyuncs.com/image/door.png',
 	doorName: '',
 	communityId: '',
 	sysCode: '',
