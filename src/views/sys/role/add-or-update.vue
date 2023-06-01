@@ -41,7 +41,6 @@ const dataForm = reactive({
 const init = (id?: number) => {
 	visible.value = true
 	dataForm.id = ''
-
 	// 重置表单数据
 	if (dataFormRef.value) {
 		dataFormRef.value.resetFields()
@@ -52,6 +51,7 @@ const init = (id?: number) => {
 
 	// id 存在则为修改
 	if (id) {
+		dataForm.id = id.toString()
 		getRole(id)
 	}
 

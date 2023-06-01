@@ -1,7 +1,7 @@
 <template>
 	<div class="fast-user">
 		<el-form-item>
-			<el-button type="primary" @click="visible = true">新增</el-button>
+			<el-button type="primary" @click="openSaveDialog()">新增</el-button>
 		</el-form-item>
 		<el-dialog v-model="visible" title="选择用户" :close-on-click-modal="false" :width="800" draggable>
 			<el-form :inline="true" :model="state.queryForm">
@@ -9,7 +9,7 @@
 					<el-input v-model="state.queryForm.username" placeholder="用户名"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-input v-model="state.queryForm.mobile" placeholder="手机号"></el-input>
+					<el-input v-model="state.queryForm.phone" placeholder="手机号"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<fast-select v-model="state.queryForm.gender" dict-type="user_gender" clearable placeholder="性别"></fast-select>
@@ -21,7 +21,7 @@
 			<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 				<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
 				<el-table-column prop="username" label="用户名" header-align="center" align="center"></el-table-column>
-				<el-table-column prop="mobile" label="手机号" header-align="center" align="center"></el-table-column>
+				<el-table-column prop="phone" label="手机号" header-align="center" align="center"></el-table-column>
 				<el-table-column prop="realName" label="姓名" header-align="center" align="center"></el-table-column>
 				<fast-table-column prop="gender" label="性别" dict-type="user_gender"></fast-table-column>
 				<el-table-column prop="createTime" label="创建时间" header-align="center" align="center" width="180"></el-table-column>
@@ -50,17 +50,26 @@ import { IHooksOptions } from '@/hooks/interface'
 import { useCrud } from '@/hooks'
 import { ElMessage } from 'element-plus'
 
+const props = defineProps({
+	roleId: {
+		type: Number,
+		required: true
+	}
+})
+
 const state: IHooksOptions = reactive({
-	dataListUrl: '/sys/user/page',
+	dataListUrl: '/sys/user/page/byNotInRoleId',
 	queryForm: {
+		roleId: props.roleId,
 		username: '',
-		mobile: '',
+		phone: '',
 		gender: ''
 	}
 })
 
-const visible = ref(false)
+const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle } = useCrud(state)
 
+const visible = ref(false)
 const emit = defineEmits(['select'])
 const submitHandle = () => {
 	const dataList = state.dataListSelections ? state.dataListSelections : []
@@ -69,12 +78,16 @@ const submitHandle = () => {
 		return
 	}
 
+	//更新表格数据
 	visible.value = false
 
 	emit('select', dataList)
 }
 
-const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle } = useCrud(state)
+const openSaveDialog = () => {
+	visible.value = true
+	getDataList()
+}
 </script>
 
 <style lang="scss" scoped>

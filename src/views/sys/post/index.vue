@@ -50,15 +50,15 @@ import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
-
 const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/post/page',
 	deleteUrl: '/sys/post',
 	queryForm: {
 		postCode: '',
-		postName: '',
-		status: ''
-	}
+		postName: ''
+	},
+	order: 'sort',
+	asc: true
 })
 
 const addOrUpdateRef = ref()
