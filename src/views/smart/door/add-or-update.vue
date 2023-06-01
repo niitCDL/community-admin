@@ -18,6 +18,12 @@
 			<el-form-item label="配置码" prop="sysCode">
 				<el-input v-model="dataForm.sysCode" placeholder="配置码"></el-input>
 			</el-form-item>
+			<el-form-item label="在线状态" prop="onlineStatus">
+				<el-radio-group v-model="dataForm.onlineStatus">
+					<el-radio :label="0">在线</el-radio>
+					<el-radio :label="1">离线</el-radio>
+				</el-radio-group>
+			</el-form-item>
 		</el-form>
 		<template #footer>
 			<el-button @click="visible = false">取消</el-button>
@@ -44,12 +50,7 @@ const dataForm = reactive({
 	doorName: '',
 	communityId: '',
 	sysCode: '',
-	allowOwed: '',
-	allowVisit: '',
-	needTel: '',
-	needIdCard: '',
-	allowFace: '',
-	allowFinger: ''
+	onlineStatus: 0
 })
 
 const init = (id?: number) => {

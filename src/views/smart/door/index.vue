@@ -29,6 +29,11 @@
 			<el-table-column prop="deviceName" label="设备" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="sysCode" label="配置码" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="onlineStatus" label="在线状态" header-align="center" align="center">
+				<template #default="{ row }">
+					<el-switch :model-value="row.onlineStatus" :active-value="0" :inactive-value="1" @change="handleStatusChange($event, row)" />
+				</template>
+			</el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<el-button v-auth="'sys:door:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
@@ -57,6 +62,8 @@ import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
+import { ElMessage } from 'element-plus'
+import { useDoorSubmitApi } from '@/api/smart'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/smart/door/page',
@@ -74,4 +81,17 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
+
+// 修改状态
+const handleStatusChange = (status: number, row: any) => {
+	row['onlineStatus'] = status
+	useDoorSubmitApi(row).then((res: any) => {
+		if (res.code == 0) {
+			ElMessage.success({
+				message: '操作成功',
+				duration: 500
+			})
+		}
+	})
+}
 </script>
