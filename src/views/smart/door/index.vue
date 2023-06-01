@@ -9,8 +9,7 @@
 			</el-form-item>
 			<el-form-item>
 				<el-select v-model="state.queryForm.communityId" placeholder="所属小区">
-					<el-option label="万象城" :value="1"></el-option>
-					<el-option label="汤臣一品" :value="2"></el-option>
+					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -59,11 +58,12 @@
 
 <script setup lang="ts" name="SysDoorIndex">
 import { useCrud } from '@/hooks'
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
 import { ElMessage } from 'element-plus'
 import { useDoorSubmitApi } from '@/api/smart'
+import { getCommunityList } from '@/api/community/community'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/smart/door/page',
@@ -94,4 +94,16 @@ const handleStatusChange = (status: number, row: any) => {
 		}
 	})
 }
+
+//获取所有小区列表
+const communityList = ref<any[]>([])
+const getCommunityLists = () => {
+	getCommunityList().then(res => {
+		communityList.value = res.data
+	})
+}
+
+onMounted(() => {
+	getCommunityLists()
+})
 </script>

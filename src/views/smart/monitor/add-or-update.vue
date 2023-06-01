@@ -11,8 +11,7 @@
 			</el-form-item>
 			<el-form-item label="所属小区" prop="communityId">
 				<el-select v-model="dataForm.communityId" placeholder="请选择">
-					<el-option label="万象城" :value="1"></el-option>
-					<el-option label="汤臣一品" :value="2"></el-option>
+					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
@@ -51,6 +50,7 @@ import { reactive, ref, onMounted } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { useMonitorApi, useMonitorSubmitApi } from '@/api/smart'
 import { getDeviceList } from '@/api/smart'
+import { getCommunityList } from '@/api/community/community'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -133,7 +133,16 @@ const getDevice = () => {
 	})
 }
 
+//获取所有小区列表
+const communityList = ref<any[]>([])
+const getCommunityLists = () => {
+	getCommunityList().then(res => {
+		communityList.value = res.data
+	})
+}
+
 onMounted(() => {
 	getDevice()
+	getCommunityLists()
 })
 </script>

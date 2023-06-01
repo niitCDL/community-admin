@@ -6,8 +6,7 @@
 			</el-form-item>
 			<el-form-item>
 				<el-select v-model="state.queryForm.communityId" placeholder="小区名" clearable>
-					<el-option label="万象城" :value="1"></el-option>
-					<el-option label="汤臣一品" :value="2"></el-option>
+					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -70,10 +69,11 @@
 
 <script setup lang="ts" name="SysDoorReviewIndex">
 import { useCrud } from '@/hooks'
-import { reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { IHooksOptions } from '@/hooks/interface'
 import { changeReviewStatusApi } from '@/api/smart'
 import { ElMessage } from 'element-plus/es'
+import { getCommunityList } from '@/api/community/community'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/smart/review/page',
@@ -95,4 +95,16 @@ const changeReviewStatus = (reviewId: number, status: number) => {
 		getDataList()
 	})
 }
+
+//获取所有小区列表
+const communityList = ref<any[]>([])
+const getCommunityLists = () => {
+	getCommunityList().then(res => {
+		communityList.value = res.data
+	})
+}
+
+onMounted(() => {
+	getCommunityLists()
+})
 </script>
