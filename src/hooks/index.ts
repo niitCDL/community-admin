@@ -91,6 +91,8 @@ export const useCrud = (options: IHooksOptions) => {
 	// 多选
 	const selectionChangeHandle = (selections: any[]) => {
 		state.dataListSelections = selections.map((item: any) => state.primaryKey && item[state.primaryKey])
+		console.log('选择的')
+		console.log(state.dataListSelections)
 	}
 
 	// 排序
@@ -190,6 +192,10 @@ export const useCrud = (options: IHooksOptions) => {
 			})
 	}
 
+	const getDataListSelections = () => {
+		return state.dataListSelections
+	}
+
 	return {
 		getDataList,
 		sizeChangeHandle,
@@ -198,6 +204,7 @@ export const useCrud = (options: IHooksOptions) => {
 		sortChangeHandle,
 		deleteHandle,
 		deleteBatchHandle,
-		downloadHandle
+		downloadHandle,
+		getDataListSelections
 	}
 }
