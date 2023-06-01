@@ -3,8 +3,7 @@
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
 				<el-select v-model="state.queryForm.communityId" placeholder="所属小区" clearable>
-					<el-option label="万象城" :value="1"></el-option>
-					<el-option label="汤臣一品" :value="2"></el-option>
+					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -78,6 +77,7 @@ import { onMounted, reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
 import { getEnabledMonitorTypeList } from '@/api/smart'
+import { getCommunityList } from '@/api/community/community'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/smart/monitor/page',
@@ -105,7 +105,16 @@ const getMonitorType = () => {
 	})
 }
 
+//获取所有小区列表
+const communityList = ref<any[]>([])
+const getCommunityLists = () => {
+	getCommunityList().then(res => {
+		communityList.value = res.data
+	})
+}
+
 onMounted(() => {
+	getCommunityLists()
 	getMonitorType()
 })
 </script>

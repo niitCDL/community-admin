@@ -2,10 +2,7 @@
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-select v-model="state.queryForm.userId" placeholder="业主名" clearable filterable>
-					<el-option label="张之维" :value="1"></el-option>
-					<el-option label="王晓刚" :value="2"></el-option>
-				</el-select>
+				<el-input v-model="state.queryForm.username" placeholder="业主名"></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-select v-model="state.queryForm.doorId" placeholder="闸机" clearable>
@@ -17,12 +14,12 @@
 					<el-option label="刷卡" :value="0"></el-option>
 					<el-option label="人脸" :value="1"></el-option>
 					<el-option label="指纹" :value="2"></el-option>
+					<el-option label="物业开门" :value="3"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item>
 				<el-select v-model="state.queryForm.communityId" placeholder="小区" clearable filterable>
-					<el-option label="万象城" :value="1"></el-option>
-					<el-option label="汤臣一品" :value="2"></el-option>
+					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -37,15 +34,16 @@
 					<el-tag v-if="scope.row.passWay === 0" type="info">刷卡</el-tag>
 					<el-tag v-if="scope.row.passWay === 1" type="success">人脸</el-tag>
 					<el-tag v-if="scope.row.passWay === 2" type="warning">指纹</el-tag>
+					<el-tag v-if="scope.row.passWay === 3" type="danger">物业开门</el-tag>
 				</template>
 			</el-table-column>
 			<el-table-column prop="communityName" label="通行小区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center"></el-table-column>
-			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
+			<!-- <el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<el-button v-auth="'sys:pass:info'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">详情</el-button>
 				</template>
-			</el-table-column>
+			</el-table-column> -->
 		</el-table>
 		<el-pagination
 			:current-page="state.page"
@@ -66,21 +64,17 @@ import { onMounted, reactive, ref } from 'vue'
 import { IHooksOptions } from '@/hooks/interface'
 import { getAllDoor } from '@/api/smart'
 import { ElMessage } from 'element-plus/es'
+import { getCommunityList } from '@/api/community/community'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/smart/pass/page',
 	queryForm: {
-		userId: '',
+		username: '',
 		doorId: '',
 		passWay: '',
 		communityId: ''
 	}
 })
-
-const addOrUpdateRef = ref()
-const addOrUpdateHandle = (id?: number) => {
-	addOrUpdateRef.value.init(id)
-}
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle } = useCrud(state)
 
@@ -98,7 +92,16 @@ const getDoorList = () => {
 	})
 }
 
+//获取所有小区列表
+const communityList = ref<any[]>([])
+const getCommunityLists = () => {
+	getCommunityList().then(res => {
+		communityList.value = res.data
+	})
+}
+
 onMounted(() => {
 	getDoorList()
+	getCommunityLists()
 })
 </script>
