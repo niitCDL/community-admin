@@ -21,8 +21,8 @@
 			</el-form-item>
 			<el-form-item label="拍照要求">
 				<el-radio-group v-model="dataForm.photoRequirement">
-					<el-radio :label="3" value="1">拍照</el-radio>
-					<el-radio :label="6" value="0">不拍照</el-radio>
+					<el-radio :label="3" :value="1">拍照</el-radio>
+					<el-radio :label="6" :value="0">不拍照</el-radio>
 				</el-radio-group>
 			</el-form-item>
 			<el-form-item prop="planCycle" label="执行频率">
@@ -35,6 +35,9 @@
 			</el-form-item>
 			<el-form-item prop="endTime" label="巡更结束">
 				<el-time-select v-model="dataForm.endTime" start="00:00" step="02:00" end="23:00" placeholder="Select time" />
+			</el-form-item>
+			<el-form-item prop="planStart" label="计划开始日期">
+				<el-date-picker v-model="dataForm.planStart" placeholder="选择开始日期" />
 			</el-form-item>
 			<el-form-item label="备注">
 				<el-input v-model="dataForm.notes" placeholder="备注"></el-input>
@@ -54,6 +57,7 @@
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
 import { usePlanApi, usePlanSubmitApi, useGetPathListByComm, useUserListByRoleId } from '@/api/safe/plan'
+import { el } from 'element-plus/es/locale'
 
 const emit = defineEmits(['refreshDataList'])
 
@@ -87,6 +91,7 @@ const dataForm = reactive({
 	planCycle: 0,
 	startTime: '',
 	endTime: '',
+	planStart: '',
 	notes: '',
 	status: 1
 })
@@ -134,12 +139,14 @@ const communitychange = value => {
 	PathListByCommunity.value.forEach(element => {
 		if (element.communityId === value) {
 			pathList.value = element.patrolPathVO
-			dataForm.pathId = pathList.value[0].id
+			if (pathList.value.length > 0) {
+				dataForm.pathId = pathList.value[0].id
+			} else {
+				dataForm.pathId = ''
+			}
 			return
 		}
 	})
-	console.log(value)
-	// getPathListByCommId(dataForm.communityId)
 }
 
 const getPathListByCommId = () => {
@@ -152,7 +159,8 @@ const dataRules = ref({
 	communityId: [{ required: true, message: '必填项不能为空', trigger: 'change	' }],
 	pathId: [{ required: true, message: '必填项不能为空', trigger: 'change	' }],
 	inspectorId: [{ required: true, message: '必填项不能为空', trigger: 'change	' }],
-	planCycle: [{ required: true, message: '必填项不能为空', trigger: 'change	' }]
+	planCycle: [{ required: true, message: '必填项不能为空', trigger: 'change	' }],
+	planStart: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
 // 表单提交
@@ -162,6 +170,7 @@ const submitHandle = () => {
 			return false
 		}
 		usePlanSubmitApi(dataForm).then(() => {
+			console.log(dataForm)
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,

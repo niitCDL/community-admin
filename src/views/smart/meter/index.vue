@@ -6,8 +6,7 @@
 			</el-form-item>
 			<el-form-item>
 				<el-select v-model="state.queryForm.communityId" placeholder="所属小区" clearable>
-					<el-option label="万象城" :value="1"></el-option>
-					<el-option label="汤臣一品" :value="2"></el-option>
+					<el-option v-for="item in communityList" :key="item.id" :label="item.communityName" :value="item.id" />
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -91,9 +90,10 @@
 
 <script setup lang="ts" name="Soft2242MeterIndex">
 import { useCrud } from '@/hooks'
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
+import { getCommunityList } from '@/api/community/community'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/smart/meter/page',
@@ -113,4 +113,16 @@ const addOrUpdateHandle = (id?: number) => {
 }
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
+
+//获取所有小区列表
+const communityList = ref<any[]>([])
+const getCommunityLists = () => {
+	getCommunityList().then(res => {
+		communityList.value = res.data
+	})
+}
+
+onMounted(() => {
+	getCommunityLists()
+})
 </script>

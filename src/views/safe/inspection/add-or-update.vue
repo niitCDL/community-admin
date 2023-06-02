@@ -30,8 +30,9 @@
 			<el-form-item label="维保厂商">
 				<el-input v-model="dataForm.insuranceFactory" placeholder="维保厂商"></el-input>
 			</el-form-item>
-			<el-form-item label="坐标">
-				<el-input v-model="dataForm.coordinate" placeholder="座标"></el-input>
+			<el-form-item prop="coordinate" label="坐标">
+				<el-input v-model="dataForm.coordinate" placeholder="座标" @click="choose"></el-input>
+				<mapper ref="mapcontainer" :form="form" @change-form="handleClick"></mapper>
 			</el-form-item>
 			<el-form-item label="备注">
 				<el-input v-model="dataForm.note" placeholder="备注"></el-input>
@@ -54,13 +55,13 @@ import { useInspectionApi, useInspectionSubmitApi } from '@/api/safe/inspectionI
 import { getCommunityList } from '@/api/community/community'
 import type { UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
+import mapper from '@/components/position/mapper.vue'
 
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
 const communityList = ref<any[]>([])
-const roleList = ref<any[]>([])
-const orgList = ref([])
+const show = ref(false)
 const dataFormRef = ref()
 
 const dataForm = reactive({
@@ -76,6 +77,26 @@ const dataForm = reactive({
 	status: 1
 })
 
+let form = ref()
+
+//定位组件先绑定ref
+const mapcontainer = ref()
+
+//选择座标被点击
+const choose = () => {
+	//根据组件绑定的ref使用初始化方法
+	mapcontainer.value.initMap(dataForm.coordinate)
+}
+
+const handleClick = newValue => {
+	console.log('niah' + newValue.lng)
+	form.value = newValue
+	const newForm = form.value
+	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+	for (const key in newValue) {
+		newValue[key] = ''
+	}
+}
 const init = (id?: number) => {
 	visible.value = true
 	dataForm.id = ''
@@ -110,7 +131,8 @@ const getCommunityLists = () => {
 }
 const dataRules = ref({
 	name: [{ required: true, message: '必填项不能为空', trigger: 'blur' }],
-	communityId: [{ required: true, message: '必填项不能为空', trigger: 'change	' }]
+	communityId: [{ required: true, message: '必填项不能为空', trigger: 'change	' }],
+	coordinate: [{ required: true, message: '必填项不能为空', trigger: 'blur' }]
 })
 
 // 表单提交

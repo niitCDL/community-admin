@@ -21,3 +21,8 @@ export const useCommuntiySearchApi=()=>{
     return service.get('/safe/point/communties')
     
 }
+
+export const useBuildingsByCommuntiyId=(communityId:any)=>{
+	return service.get('/safe/point/buildings/'+communityId)
+}
+

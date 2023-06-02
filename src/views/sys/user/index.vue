@@ -5,7 +5,7 @@
 				<el-input v-model="state.queryForm.username" placeholder="用户名" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-input v-model="state.queryForm.mobile" placeholder="手机号" clearable></el-input>
+				<el-input v-model="state.queryForm.phone" placeholder="手机号" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
 				<fast-select v-model="state.queryForm.gender" dict-type="user_gender" clearable placeholder="性别"></fast-select>
@@ -30,17 +30,28 @@
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="username" label="用户名" header-align="center" align="center"></el-table-column>
+			<el-table-column label="用户名" header-align="center" align="center">
+				<template #default="scope">
+					<div class="avatar-box">
+						<el-avatar shape="circle" :size="40" :src="scope.row.avatar"></el-avatar>
+						<div style="margin-left: 8px">
+							ID:{{ scope.row.adminId }}
+							<br />
+							{{ scope.row.username }}
+						</div>
+					</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="realName" label="姓名" header-align="center" align="center"></el-table-column>
 			<fast-table-column prop="gender" label="性别" dict-type="user_gender"></fast-table-column>
-			<el-table-column prop="mobile" label="手机号" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="phone" label="手机号" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="email" label="邮箱" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="orgName" label="所属机构" header-align="center" align="center"></el-table-column>
-			<fast-table-column prop="status" label="状态" dict-type="user_status"></fast-table-column>
+			<fast-table-column prop="accountStatus" label="状态" dict-type="user_status"></fast-table-column>
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center" width="180"></el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
-					<el-button v-auth="'sys:user:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+					<el-button v-auth="'sys:user:update'" type="primary" link @click="addOrUpdateHandle(scope.row.adminId)">修改</el-button>
 					<el-button v-auth="'sys:user:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
 				</template>
 			</el-table-column>
@@ -67,7 +78,8 @@ import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
 import constant from '@/utils/constant'
-import { useUserExportApi } from '@/api/sys/user'
+import axios from 'axios'
+import { useUserExportApi, getUserExportApi } from '@/api/sys/user'
 import { ElMessage, UploadProps } from 'element-plus'
 
 const state: IHooksOptions = reactive({
@@ -75,7 +87,7 @@ const state: IHooksOptions = reactive({
 	deleteUrl: '/sys/user',
 	queryForm: {
 		username: '',
-		mobile: '',
+		phone: '',
 		gender: ''
 	}
 })
@@ -115,3 +127,11 @@ const beforeUpload: UploadProps['beforeUpload'] = file => {
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)
 </script>
+
+<style scoped>
+.avatar-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+</style>

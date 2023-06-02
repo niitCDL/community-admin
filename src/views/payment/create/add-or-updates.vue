@@ -1,47 +1,45 @@
 ﻿<template>
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
-			<el-form-item prop="username" label="用户名">
-				<el-input v-model="dataForm.username" placeholder="用户名"></el-input>
+			<el-form-item prop="houseNumber" label="房屋">
+				<el-tree-select v-model="dataForm.houseNumber" :data="houseList" style="width: 100%" />
 			</el-form-item>
-			<el-form-item prop="realName" label="姓名">
-				<el-input v-model="dataForm.realName" placeholder="姓名"></el-input>
+			<el-form-item prop="communityName" label="小区">
+				<el-tree-select v-model="dataForm.communityName" :data="communityList" style="width: 100%" />
 			</el-form-item>
-			<el-form-item prop="orgId" label="所属机构">
-				<el-tree-select
-					v-model="dataForm.orgId"
-					:data="orgList"
-					value-key="id"
-					check-strictly
-					:render-after-expand="false"
-					:props="{ label: 'name', children: 'children' }"
-					style="width: 100%"
+			<el-form-item prop="orderType" label="收费项目">
+				<el-tree-select v-model="dataForm.orderType" :data="orgList" style="width: 100%" />
+			</el-form-item>
+			<el-form-item prop="createTime" label="账单开始时间">
+				<el-date-picker
+					v-model="dataForm.createTime"
+					type="datetime"
+					placeholder="开始时间"
+					format="YYYY/MM/DD hh:mm:ss"
+					value-format="YYYY-MM-DD hh:mm:ss"
 				/>
 			</el-form-item>
-			<el-form-item prop="gender" label="性别">
-				<fast-radio-group v-model="dataForm.gender" dict-type="user_gender"></fast-radio-group>
+			<el-form-item prop="endTime" label="账单截至时间">
+				<el-date-picker
+					v-model="dataForm.endTime"
+					type="datetime"
+					placeholder="结束时间"
+					format="YYYY/MM/DD hh:mm:ss"
+					value-format="YYYY-MM-DD hh:mm:ss"
+				/>
 			</el-form-item>
-			<el-form-item prop="mobile" label="手机号">
-				<el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
+			<el-form-item prop="price" label="价格">
+				<el-input v-model="dataForm.price" placeholder="价格"></el-input>
 			</el-form-item>
-			<el-form-item prop="email" label="邮箱">
-				<el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
-			</el-form-item>
-			<el-form-item prop="password" label="密码">
-				<el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
-			</el-form-item>
-			<el-form-item prop="roleIdList" label="所属角色">
-				<el-select v-model="dataForm.roleIdList" multiple placeholder="所属角色" style="width: 100%">
-					<el-option v-for="role in roleList" :key="role.id" :label="role.name" :value="role.id"></el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item prop="postIdList" label="所属岗位">
-				<el-select v-model="dataForm.postIdList" multiple placeholder="所属岗位" style="width: 100%">
-					<el-option v-for="post in postList" :key="post.id" :label="post.postName" :value="post.id"></el-option>
-				</el-select>
+			<el-form-item prop="money" label="金额">
+				<el-input v-model="dataForm.money" placeholder="金额"></el-input>
 			</el-form-item>
 			<el-form-item prop="status" label="状态">
-				<fast-radio-group v-model="dataForm.status" dict-type="user_status"></fast-radio-group>
+				<!-- <fast-radio-group v-model="dataForm.status" dict-type="user_status"></fast-radio-group> -->
+				<el-radio-group v-model="dataForm.status">
+					<el-radio :label="0">生效</el-radio>
+					<el-radio :label="1">失效</el-radio>
+				</el-radio-group>
 			</el-form-item>
 		</el-form>
 		<template #footer>
@@ -54,32 +52,61 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { useOrgListApi } from '@/api/sys/orgs'
-import { useUserApi, useUserSubmitApi } from '@/api/sys/user'
-import { usePostListApi } from '@/api/sys/post'
-import { useRoleListApi } from '@/api/sys/role'
+import { useOrderSubmitApi, useOrderApi, useHouseListApi, useCommunityListApi } from '@/api/society/order'
 
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-const postList = ref<any[]>([])
-const roleList = ref<any[]>([])
-const orgList = ref([])
+let houseList = reactive([{}])
+let communityList = reactive([{}])
+
+const orgList = ref([
+	{
+		value: 0,
+		label: '购买车位订单'
+	},
+	{
+		value: 1,
+		label: '租赁车位订单'
+	},
+	{
+		value: 2,
+		label: '停车订单'
+	},
+	{
+		value: 3,
+		label: '水费'
+	},
+	{
+		value: 4,
+		label: '电费'
+	},
+	{
+		value: 5,
+		label: '物业费'
+	}
+])
 const dataFormRef = ref()
 
 const dataForm = reactive({
 	id: '',
-	username: '',
-	realName: '',
-	orgId: '',
-	orgName: '',
-	password: '',
-	gender: 0,
-	email: '',
-	mobile: '',
-	roleIdList: [] as any[],
-	postIdList: [] as any[],
-	status: 1
+	userId: 1,
+	comminityId: 1,
+	parkRecordId: 1,
+	orderType: 1,
+	price: '12',
+	amount: 0,
+	money: 1.0,
+	createTime: '2023-05-25 19:25:55',
+	creator: 10000,
+	updater: 10000,
+	status: 1,
+	updateTime: '2023-05-25 19:25:55',
+	houseId: 1,
+	ownerId: 1,
+	endTime: '2023-05-25 19:25:55',
+	houseNumber: '',
+	communityName: ''
 })
 
 const init = (id?: number) => {
@@ -93,38 +120,46 @@ const init = (id?: number) => {
 
 	// id 存在则为修改
 	if (id) {
-		getUser(id)
+		getOrder(id)
 	}
 
-	getOrgList()
-	getPostList()
-	getRoleList()
+	getCommunityList()
+	getHouseList()
 }
 
-// 获取岗位列表
-const getPostList = () => {
-	return usePostListApi().then(res => {
-		postList.value = res.data
+// 获取房屋列表
+const getHouseList = () => {
+	return useHouseListApi().then(res => {
+		const getList = ref([{ id: 1, houseNumber: '' }])
+		getList.value = res.data
+		console.log(getList.value)
+		// 遍历housrList
+		getList.value.map(item => {
+			console.log(item.houseNumber)
+			// 将getList的元素插入 houseList中
+			houseList.push({ value: item.id, label: item.houseNumber })
+			console.log(houseList)
+		})
 	})
 }
-
-// 获取角色列表
-const getRoleList = () => {
-	return useRoleListApi().then(res => {
-		roleList.value = res.data
+// 获取小区列表
+const getCommunityList = () => {
+	return useCommunityListApi().then(res => {
+		const getList = ref([{ id: 1, communityName: '' }])
+		getList.value = res.data
+		console.log(getList.value)
+		// 遍历housrList
+		getList.value.map(item => {
+			console.log(item.communityName)
+			// 将getList的元素插入 houseList中
+			communityList.push({ value: item.id, label: item.communityName })
+			console.log(communityList)
+		})
 	})
 }
-
-// 获取机构列表
-const getOrgList = () => {
-	return useOrgListApi().then(res => {
-		orgList.value = res.data
-	})
-}
-
 // 获取信息
-const getUser = (id: number) => {
-	useUserApi(id).then(res => {
+const getOrder = (id: number) => {
+	useOrderApi(id).then(res => {
 		Object.assign(dataForm, res.data)
 	})
 }
@@ -143,7 +178,7 @@ const submitHandle = () => {
 			return false
 		}
 
-		useUserSubmitApi(dataForm).then(() => {
+		useOrderSubmitApi(dataForm).then(() => {
 			ElMessage.success({
 				message: '操作成功',
 				duration: 500,

@@ -1,19 +1,9 @@
 <template>
+	
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<!-- <el-input v-model="state.queryForm.communityId" placeholder="社区id"></el-input> -->
-				<!-- <el-select-v2 v-model="value" :options="options" placeholder="选择小区" style="width: 240px" multiple /> -->
-				<el-select-v2
-					v-model="state.queryForm.communityId"
-					:options="options"
-					placeholder="选择小区"
-					style="width: 240px"
-					multiple
-					collapse-tags
-					collapse-tags-tooltip
-					:max-collapse-tags="3"
-				/>
+				<el-select-v2 v-model="state.queryForm.communityId" :options="options" placeholder="选择小区" style="width: 240px" multiple />
 			</el-form-item>
 
 			<el-form-item>
@@ -29,14 +19,14 @@
 				<el-button v-auth="'property:notice:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
 			</el-form-item>
 		</el-form>
+
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
+			  <el-table-column type="index" align="center" width="90"  label="编号"> </el-table-column>
+			<!-- <el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column> -->
 			<el-table-column prop="title" label="通知标题" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
-			<!-- <el-table-column prop="type" label="通知类型(0:消杀通知 1：物业通知 2：缴费通知)" header-align="center" align="center">
-			</el-table-column> -->
-			<fast-table-column prop="type" label="通知类型" dict-type="totice_type"></fast-table-column>
+			<fast-table-column prop="type" label="通知类型" dict-type="notice_type"></fast-table-column>
 			<!-- <fast-table-column prop="type" label="通知类型" dict-type="type"></fast-table-column> -->
 			<el-table-column prop="userName" label="发布人" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="publishTime" label="发布时间" header-align="center" align="center"></el-table-column>
@@ -66,17 +56,17 @@
 	</el-card>
 </template>
 
-<script setup lang="ts" name="Soft2242NoticeIndex">
+<script setup lang="ts">
 import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
-import { ElMessageBox } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import service from '@/utils/request'
 import { useNoticeSubmitApi } from '@/api/property/notice'
 import { dataType } from 'element-plus/es/components/table-v2/src/common'
 import { router } from '@/router'
-import { useGetCommunityList, useSetInfo } from '../property'
+import { useGetCommunityList, userGetCommunityOption, useSetInfo } from '../property'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/property/notice/page',
@@ -105,10 +95,11 @@ const review = (dataForm?: any) => {
 			dataForm.review = 1
 			useNoticeSubmitApi(dataForm)
 				.then(() => {
-					alert('审核成功')
+					// alert('审核成功')
+					ElMessage.success('审核成功')
 				})
 				.catch(error => {
-					alert(error)
+					// alert(error)
 				})
 		})
 		.catch(action => {
@@ -116,37 +107,21 @@ const review = (dataForm?: any) => {
 				dataForm.review = 2
 				useNoticeSubmitApi(dataForm)
 					.then(() => {
-						alert('审核成功')
+						ElMessage.success('审核成功')
 					})
 					.catch(error => {
-						alert(error)
+						// alert(error)
 					})
 			}
 		})
 }
-let communities
-let options = [
-	{
-		label: 'community',
-		value: '0'
-	},
-	{
-		label: 'community1',
-		value: '1'
-	}
-]
-communities = useGetCommunityList()
-// console.log(communities)
-options = communities.map(obj => ({
-	value: obj.id,
-	label: obj.communityName
-}))
+
+let options = await userGetCommunityOption()
 
 //详情
 const info = (data: any) => {
-	console.log(data)
+	// console.log(data)
 	useSetInfo(data)
-	
 	router.push('/property/notice/info')
 }
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)

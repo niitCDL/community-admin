@@ -5,7 +5,7 @@
 				<el-input v-model="state.queryForm.communityName" placeholder="小区名称" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-input v-model="state.queryForm.units" placeholder="所在单元" clearable></el-input>
+				<el-input v-model="state.queryForm.units" placeholder="层数" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-input v-model="state.queryForm.buildingName" clearable placeholder="楼宇名称"></el-input>
@@ -20,7 +20,7 @@
 				<el-button v-auth="'sys:building:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
 			</el-form-item>
 			<el-form-item v-auth="'sys:building:import'">
-				<el-upload :action="constant.uploadUserExcelUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
+				<el-upload :action="uploadBuildingExceUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
 					<el-button type="info">导入</el-button>
 				</el-upload>
 			</el-form-item>
@@ -33,7 +33,7 @@
 			<!-- <el-table-column type="index" label="编号" header-align="center" align="center" width="80"></el-table-column> -->
 			<el-table-column prop="communityName" label="小区名称" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="buildingName" label="楼宇名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="units" label="所在单元" header-align="center" align="center" width="110"></el-table-column>
+			<el-table-column prop="units" label="层数" header-align="center" align="center" width="110"></el-table-column>
 			<el-table-column prop="usedArea" label="占地面积" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="content" label="备注" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="createTime" label="创建时间" header-align="center" align="center" width="180"></el-table-column>
@@ -68,6 +68,9 @@ import { IHooksOptions } from '@/hooks/interface'
 import constant from '@/utils/constant'
 import { useUserExportApi } from '@/api/sys/user'
 import { ElMessage, UploadProps } from 'element-plus'
+import { importBuilding, exportBuilding } from '@/api/building/building'
+import axios from 'axios'
+import cache from '@/utils/cache'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/building/page',
@@ -84,9 +87,26 @@ const addOrUpdateHandle = (id?: number) => {
 	addOrUpdateRef.value.init(id)
 }
 
+//导入
+const uploadBuildingExceUrl = constant.apiUrl + '/sys/building/import?accessToken=' + cache.getToken()
 const downloadExcel = () => {
-	useUserExportApi()
-	return
+	//exportBuilding()
+	const url = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
+	axios
+		.get(url, { responseType: 'blob' })
+		.then(response => {
+			const filename = '楼宇信息.xlsx' // 下载文件的默认文件名
+			const blob = new Blob([response.data])
+			const link = document.createElement('a')
+			link.href = URL.createObjectURL(blob)
+			link.download = filename
+			document.body.appendChild(link)
+			link.click()
+			document.body.removeChild(link)
+		})
+		.catch(error => {
+			console.error(error)
+		})
 }
 
 const handleSuccess: UploadProps['onSuccess'] = (res, file) => {

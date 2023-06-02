@@ -17,7 +17,6 @@ service.interceptors.request.use(
 		if (userStore?.token) {
 			config.headers.Authorization = userStore.token
 		}
-
 		// 追加时间戳，防止 GET 请求缓存
 		if (config.method?.toUpperCase() === 'GET') {
 			config.params = { ...config.params, t: new Date().getTime() }
@@ -42,6 +41,7 @@ service.interceptors.response.use(
 		}
 
 		const res = response.data
+
 		// 响应成功
 		if (res.code === 0) {
 			return res

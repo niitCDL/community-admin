@@ -1,4 +1,7 @@
 import service from '@/utils/request'
+import cache from '@/utils/cache'
+import constant from '@/utils/constant'
+import axios from 'axios'
 
 export const useBuildingApi = (id: number) => {
 	return service.get('/sys/building/' + id)
@@ -10,6 +13,9 @@ export const useBuildingSubmitApi = (dataForm: any) => {
 	} else {
 		return service.post('/sys/building', dataForm)
 	}
+}
+export function getBuildingList() {
+	return service.get('sys/building/list')
 }
 // export function saveBuilding(data: any) {
 // 	return service.post('/building', data)
@@ -23,9 +29,15 @@ export const useBuildingSubmitApi = (dataForm: any) => {
 // export function deleteBuildingBatch(ids: any) {
 // 	return service.delete(`/building`, ids)
 // }
-// export function importBuilding(file: any) {
-// 	return service.post('/building/import', file)
+export function importBuilding(file: any) {
+	return service.post('/sys/building/import', file)
+}
+
+export const exportBuilding = () => {
+	return service.get('/sys/building/export')
+	//location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
 // }
-// export function exportBuilding() {
-// 	return service.get('/building/export')
-// }
+	//return service.get('/sys/building/export')
+	location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
+}
+

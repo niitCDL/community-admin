@@ -23,6 +23,7 @@
 					<div>
 						<el-tree
 							ref="menuListTree"
+							class="flow-tree"
 							:data="menuList"
 							:props="{ label: 'name', children: 'children' }"
 							node-key="id"
@@ -199,6 +200,10 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
+.flow-tree {
+	overflow: auto;
+	height: 300px;
+}
 .mod__menu {
 	::v-deep(.el-popover.el-popper) {
 		overflow-x: hidden;

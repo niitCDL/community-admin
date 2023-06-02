@@ -2,25 +2,35 @@
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-input v-model="state.queryForm.username" placeholder="用户名" clearable></el-input>
+				<el-date-picker
+					v-model="state.queryForm.createTime"
+					type="datetime"
+					placeholder="开始时间"
+					format="YYYY/MM/DD hh:mm:ss"
+					value-format="YYYY-MM-DD h:m:s a"
+				/>
 			</el-form-item>
 			<el-form-item>
-				<el-input v-model="state.queryForm.mobile" placeholder="手机号" clearable></el-input>
+				<el-date-picker
+					v-model="state.queryForm.endTime"
+					type="datetime"
+					placeholder="结束时间"
+					format="YYYY/MM/DD hh:mm:ss"
+					value-format="YYYY-MM-DD h:m:s a"
+				/>
 			</el-form-item>
-			<el-form-item>
-				<fast-select v-model="state.queryForm.gender" dict-type="user_gender" clearable placeholder="性别"></fast-select>
-			</el-form-item>
+
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
 			</el-form-item>
 			<el-form-item>
-				<el-button v-auth="'sys:user:save'" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+				<el-button type="primary" @click="addOrUpdateHandle()">新增</el-button>
 			</el-form-item>
-			<el-form-item>
+			<!-- <el-form-item>
 				<el-button v-auth="'sys:user:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item v-auth="'sys:user:import'">
-				<el-upload :action="constant.uploadUserExcelUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
+				<el-upload :action="uploadUserExcelUrl" :before-upload="beforeUpload" :on-success="handleSuccess" :show-file-list="false">
 					<el-button type="info">导入</el-button>
 				</el-upload>
 			</el-form-item>
@@ -29,19 +39,28 @@
 			</el-form-item>
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
-			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="id" label="序号" header-align="center" align="center"></el-table-column>
+			<!-- <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column> -->
+			<el-table-column prop="id" label="序号" header-align="center" align="center" width="60"></el-table-column>
+			<el-table-column prop="communityName" label="所属小区" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="houseNumber" label="房产" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="orderType" label="收费项目" header-align="center" align="center"></el-table-column>
-			<fast-table-column prop="createTime" label="账单开始时间" dict-type="user_gender"></fast-table-column>
-			<fast-table-column prop="endTime" label="账单截至时间" dict-type="user_gender"></fast-table-column>
-			<el-table-column prop="price" label="价格" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="money" label="金额" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="status" label="缴费状态" header-align="center" align="center"></el-table-column>
+			<fast-table-column prop="orderType" label="收费项目" dict-type="order_type" header-align="center" align="center"></fast-table-column>
+			<el-table-column prop="otime" label="账单时间" width="180" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="price" label="价格" width="60" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="amount" label="用量" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="orderMoney" label="金额" header-align="center" align="center"></el-table-column>
+			<fast-table-column
+				prop="status"
+				label="缴费状态"
+				width="85"
+				dict-type="payment_status"
+				header-align="center"
+				align="center"
+			></fast-table-column>
+			<fast-table-column prop="deleted" width="85" label="删除" dict-type="activity_delete" header-align="center" align="center"></fast-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
-					<el-button v-auth="'sys:user:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-					<el-button v-auth="'sys:user:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
+					<el-button type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+					<el-button v-auth="'sys:user:delete'" type="primary" link @click="deleteOrder(scope.row.id)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -66,13 +85,14 @@ import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-updates.vue'
 import { IHooksOptions } from '@/hooks/interface'
-import constant from '@/utils/constant'
-import { useUserExportApi } from '@/api/society/order'
+// import constant from '@/utils/constant'
+import { useOrderExportApi, useDeleteORderApi } from '@/api/society/order'
 import { ElMessage, UploadProps } from 'element-plus'
+import cache from '@/utils/cache'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/soft2242/order/page',
-	deleteUrl: 'soft2242/order',
+	deleteUrl: '',
 	queryForm: {
 		username: '',
 		mobile: '',
@@ -80,13 +100,28 @@ const state: IHooksOptions = reactive({
 	}
 })
 
+const uploadUserExcelUrl = import.meta.env.VITE_API_URL + '/soft2242/order/import?accessToken=' + cache.getToken()
+
 const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id?: number) => {
 	addOrUpdateRef.value.init(id)
 }
 
 const downloadExcel = () => {
-	useUserExportApi()
+	useOrderExportApi()
+	return
+}
+
+const deleteOrder = (id: number) => {
+	useDeleteORderApi(id)
+	ElMessage.success({
+		message: '删除成功',
+		duration: 500,
+		onClose: () => {
+			getDataList()
+		}
+	})
+	getDataList()
 	return
 }
 

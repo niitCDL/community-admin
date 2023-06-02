@@ -8,9 +8,6 @@
 				<el-input v-model="state.queryForm.postName" placeholder="岗位名称" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
-				<fast-select v-model="state.queryForm.status" dict-type="post_status" clearable placeholder="状态"></fast-select>
-			</el-form-item>
-			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
 			</el-form-item>
 			<el-form-item>
@@ -25,7 +22,6 @@
 			<el-table-column prop="postCode" label="岗位编码" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="postName" label="岗位名称" header-align="center" align="center"></el-table-column>
 			<el-table-column prop="sort" label="排序" header-align="center" align="center"></el-table-column>
-			<fast-table-column prop="status" label="状态" dict-type="post_status"></fast-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="150">
 				<template #default="scope">
 					<el-button v-auth="'sys:post:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
@@ -54,15 +50,15 @@ import { useCrud } from '@/hooks'
 import { reactive, ref } from 'vue'
 import AddOrUpdate from './add-or-update.vue'
 import { IHooksOptions } from '@/hooks/interface'
-
 const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/post/page',
 	deleteUrl: '/sys/post',
 	queryForm: {
 		postCode: '',
-		postName: '',
-		status: ''
-	}
+		postName: ''
+	},
+	order: 'sort',
+	asc: true
 })
 
 const addOrUpdateRef = ref()

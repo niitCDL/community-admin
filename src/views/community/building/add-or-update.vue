@@ -9,20 +9,9 @@
 			<el-form-item prop="buildingName" label="楼宇名称">
 				<el-input v-model="dataForm.buildingName" placeholder="楼宇名称"></el-input>
 			</el-form-item>
-			<el-form-item prop="units" label="所在单元">
+			<el-form-item prop="units" label="层数">
 				<el-input v-model="dataForm.units" placeholder="所在单元"></el-input>
 			</el-form-item>
-			<!-- <el-form-item prop="orgId" label="所属机构">
-				<el-tree-select
-					v-model="dataForm.orgId"
-					:data="orgList"
-					value-key="id"
-					check-strictly
-					:render-after-expand="false"
-					:props="{ label: 'name', children: 'children' }"
-					style="width: 100%"
-				/>
-			</el-form-item> -->
 			<el-form-item prop="usedArea" label="占地面积">
 				<el-input v-model="dataForm.usedArea" placeholder="占地面积"></el-input>
 			</el-form-item>

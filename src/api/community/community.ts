@@ -30,9 +30,9 @@ export function getCommunityList() {
 // export function deleteCommunityBatch(ids: any) {
 // 	return service.delete(`/community`, ids)
 // }
-// export function importCommunity(file: any) {
-// 	return service.post('/community/import', file)
-// }
+export function importCommunity(file: any) {
+	return service.post('/sys/community/import', file)
+}
 // export function exportCommunity() {
 // 	return service.get('/community/export')
 // }

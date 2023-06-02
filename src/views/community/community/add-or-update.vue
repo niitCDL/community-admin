@@ -43,7 +43,7 @@ import cache from '@/utils/cache'
 const emit = defineEmits(['refreshDataList'])
 
 const visible = ref(false)
-const dataFormRef = ref()
+const dataFormRef: any = ref()
 
 const dataForm = reactive({
 	id: '',

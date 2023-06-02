@@ -2,16 +2,15 @@
 	<el-dialog v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :close-on-click-modal="false" draggable>
 		<el-form ref="dataFormRef" :model="dataForm" :rules="dataRules" label-width="120px" @keyup.enter="submitHandle()">
 			<el-form-item prop="communityId" label="所属社区">
-				<el-select v-model="dataForm.communityId" placeholder="请选择社区">
+				<el-select v-model="dataForm.communityId" placeholder="请选择社区" @change="changeCommunity">
 					<el-option v-for="option in communities" :key="option.id" :label="option.communityName" :value="option.id"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item prop="buildingId" label="所属楼宇">
-				<el-input v-model="dataForm.buildingId" placeholder="所属楼宇"></el-input>
-			</el-form-item>
 
-			<el-form-item prop="units" label="所属单元">
-				<el-input v-model="dataForm.units" placeholder="所属单元"></el-input>
+			<el-form-item prop="buildingId" label="所属楼宇">
+				<el-select v-model="dataForm.buildingId" placeholder="请选择楼宇">
+					<el-option v-for="option in buildings" :key="option.id" :label="option.buildingName" :value="option.id"></el-option>
+				</el-select>
 			</el-form-item>
 
 			<el-form-item prop="pointName" label="巡更点名称">
@@ -26,21 +25,9 @@
 				<el-input v-model="dataForm.coordinate" placeholder="经纬度坐标"></el-input>
 			</el-form-item> -->
 			<el-form-item prop="coordinate" label="经纬度坐标">
-				<el-input v-model="dataForm.coordinate"> </el-input>
-				<mapper :form="form" @change-form="handleClick"></mapper>
+				<el-input v-model="dataForm.coordinate" :suffix-icon="Location" @click="choose" />
+				<mapper ref="mapcontainer" :form="form" @change-form="handleClick"></mapper>
 			</el-form-item>
-
-			<!-- <el-form-item prop="orgId" label="所属机构">
-				<el-tree-select
-					v-model="dataForm.orgId"
-					:data="orgList"
-					value-key="id"
-					check-strictly
-					:render-after-expand="false"
-					:props="{ label: 'name', children: 'children' }"
-					style="width: 100%"
-				/>
-			</el-form-item> -->
 
 			<el-form-item prop="status" label="状态">
 				<fast-radio-group v-model="dataForm.status" dict-type="enable_disable"></fast-radio-group>
@@ -56,12 +43,19 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { usePointSubmitApi, usePointApi } from '@/api/safe/point'
+import { usePointSubmitApi, usePointApi, useBuildingsByCommuntiyId } from '@/api/safe/point'
 
 import { useCommuntiySearchApi } from '@/api/safe/point'
-import mapper from './mapper.vue'
+import mapper from '@/components/position/mapper.vue'
+import { Location } from '@element-plus/icons-vue'
 
 const communities = ref<any[]>([])
+const buildings = ref<any[]>([])
+const changeCommunity = () => {
+	useBuildingsByCommuntiyId(dataForm.communityId).then(res => {
+		buildings.value = res.data
+	})
+}
 useCommuntiySearchApi().then(res => {
 	communities.value = res.data
 })
@@ -73,6 +67,26 @@ const postList = ref<any[]>([])
 const roleList = ref<any[]>([])
 const orgList = ref([])
 const dataFormRef = ref()
+
+//定位组件先绑定ref
+const mapcontainer = ref()
+//选择座标被点击
+const choose = () => {
+	console.log('aaaa')
+	//根据组件绑定的ref使用初始化方法
+	mapcontainer.value.initMap(dataForm.coordinate)
+}
+
+let form = ref()
+const handleClick = newValue => {
+	console.log('niah' + newValue.lng)
+	form.value = newValue
+	const newForm = form.value
+	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+	for (const key in newValue) {
+		newValue[key] = ''
+	}
+}
 
 const dataForm = reactive({
 	id: '',
@@ -107,6 +121,12 @@ const init = (id?: number) => {
 const getInspectionItem = (id: number) => {
 	usePointApi(id).then(res => {
 		Object.assign(dataForm, res.data)
+		console.log('++++++++++++++++++++' + dataForm.communityId)
+
+		useBuildingsByCommuntiyId(dataForm.communityId).then(res => {
+			buildings.value = res.data
+		})
+		console.log('-------------' + buildings.value)
 	})
 }
 
@@ -137,12 +157,15 @@ defineExpose({
 	init
 })
 
-let form = ref()
-
-const handleClick = newValue => {
-	console.log('niah' + newValue.lng)
-	form.value = newValue
-	const newForm = form.value
-	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+// const handleClick = newValue => {
+// 	console.log('niah' + newValue.lng)
+// 	form.value = newValue
+// 	const newForm = form.value
+// 	message.value = newValue.ifShow
+// 	dataForm.coordinate = newForm.lng + ',' + newForm.lat
+// }
+const message = ref()
+const openMapper = () => {
+	message.value = true
 }
 </script>

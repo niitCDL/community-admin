@@ -10,9 +10,6 @@
 			<el-form-item label="排序" prop="sort">
 				<el-input-number v-model="dataForm.sort" :min="0"></el-input-number>
 			</el-form-item>
-			<el-form-item label="状态" prop="status">
-				<fast-radio-group v-model="dataForm.status" dict-type="post_status"></fast-radio-group>
-			</el-form-item>
 		</el-form>
 		<template #footer>
 			<el-button @click="visible = false">取消</el-button>
@@ -35,8 +32,7 @@ const dataForm = reactive({
 	id: '',
 	postCode: '',
 	postName: '',
-	sort: 0,
-	status: 1
+	sort: 0
 })
 
 const init = (id?: number) => {
