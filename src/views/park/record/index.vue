@@ -49,8 +49,6 @@
 import { useCrud } from '@/hooks'
 import { reactive, ref, computed } from 'vue'
 import { IHooksOptions } from '@/hooks/interface'
-import moment from 'moment'
-import { useRecordApi, useRecordSubmitApi } from '@/api/record/record'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/sys/parkRecord/page',
@@ -66,7 +64,7 @@ const addOrUpdateRef = ref()
 const addOrUpdateHandle = (id?: number) => {
 	addOrUpdateRef.value.init(id)
 }
-const computedTime = row => {
+const computedTime = (row: any) => {
 	let startTime = new Date(Date.parse(row.accessTime)).getTime()
 	let endTime = new Date(Date.parse(row.leaveTime)).getTime()
 	let time = (endTime - startTime) / 1000

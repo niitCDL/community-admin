@@ -123,7 +123,7 @@ const downloadExcel = () => {
 	axios
 		.get(url, { responseType: 'blob' })
 		.then(response => {
-			const filename = 'house.xlsx' // 下载文件的默认文件名
+			const filename = '房屋信息.xlsx' // 下载文件的默认文件名
 			const blob = new Blob([response.data])
 			const link = document.createElement('a')
 			link.href = URL.createObjectURL(blob)

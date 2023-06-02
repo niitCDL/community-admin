@@ -2,7 +2,7 @@
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-input v-model="state.queryForm.communityName" placeholder="社区名称"></el-input>
+				<el-input v-model="state.queryForm.communityName" placeholder="社区名称" clearable></el-input>
 				<!-- <fast-select v-model="state.queryForm.communityName" clearable placeholder="社区名称"></fast-select> -->
 			</el-form-item>
 			<el-form-item>
@@ -92,7 +92,7 @@ const downloadExcel = () => {
 	axios
 		.get(url, { responseType: 'blob' })
 		.then(response => {
-			const filename = 'community.xlsx' // 下载文件的默认文件名
+			const filename = '小区信息.xlsx' // 下载文件的默认文件名
 			const blob = new Blob([response.data])
 			const link = document.createElement('a')
 			link.href = URL.createObjectURL(blob)
