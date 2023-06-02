@@ -53,6 +53,15 @@ const asyncRoutes: RouteRecordRaw = {
 				title: '修改密码',
 				cache: true
 			}
+		},
+		{
+			path: '/profile/avatar',
+			name: 'ProfileAvatar',
+			component: () => import('../views/profile/avatar.vue'),
+			meta: {
+				title: '修改头像',
+				cache: true
+			}
 		}
 	]
 }

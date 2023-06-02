@@ -10,6 +10,9 @@
 				<router-link to="/profile/password">
 					<el-dropdown-item> 修改密码 </el-dropdown-item>
 				</router-link>
+				<router-link to="/profile/avatar">
+					<el-dropdown-item divided> 修改头像 </el-dropdown-item>
+				</router-link>
 				<el-dropdown-item divided @click="logout"> 退出登录</el-dropdown-item>
 			</el-dropdown-menu>
 		</template>
