@@ -1,6 +1,4 @@
 import service from '@/utils/request'
-import cache from '@/utils/cache'
-import constant from '@/utils/constant'
 export const useCarportApi = (id: number) => {
 	return service.get('/sys/carport/' + id)
 }
@@ -22,11 +20,11 @@ export function getOwnerList() {
 export function getCarList() {
 	return service.get('sys/car/list')
 }
-export function importCarport(file: any) {
-	return service.post('/sys/carport/import', file)
+export function importBuilding(file: any) {
+	return service.post('/sys/building/import', file)
 }
 
-export const exportCarport = () => {
-	return service.get('/sys/carport/export')
+export const exportBuilding = () => {
+	return service.get('/sys/building/export')
 	location.href = constant.apiUrl + '/sys/building/export?accessToken=' + cache.getToken()
 }

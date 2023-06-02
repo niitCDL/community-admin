@@ -2,45 +2,38 @@
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-input v-model="state.queryForm.communityName" placeholder="小区名称" clearable></el-input>
+				<el-input v-model="state.queryForm.licence" placeholder="车牌号" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-input v-model="state.queryForm.parkName" placeholder="停车场名称" clearable></el-input>
+				<el-input v-model="state.queryForm.realName" placeholder="用户名字" clearable></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="state.queryForm.brand" placeholder="品牌" clearable></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
 			</el-form-item>
 			<el-form-item>
-				<el-button v-auth="'sys:park:save'" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+				<el-button v-auth="'sys:car:save'" type="primary" @click="addOrUpdateHandle()">新增</el-button>
 			</el-form-item>
 			<el-form-item>
-				<el-button v-auth="'sys:park:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
+				<el-button v-auth="'sys:car:delete'" type="danger" @click="deleteBatchHandle()">删除</el-button>
 			</el-form-item>
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%" @selection-change="selectionChangeHandle">
 			<el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
-			<el-table-column prop="communityName" label="小区名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="parkName" label="停车场名称" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="contactPhone" label="联系电话" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="address" label="地址" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="carportNumber" label="车位数" header-align="center" align="center" width="80"></el-table-column>
-			<el-table-column prop="status" label="状态" header-align="center" align="center">
-				<template #default="{ row }">
-					<el-tag v-if="row.status == 0" type="success">开启</el-tag>
-					<el-tag v-if="row.status == 1" type="danger">关闭</el-tag>
-				</template>
-			</el-table-column>
-			<el-table-column prop="parkImg" label="停车场图" header-align="center" align="center">
-				<template #default="scope">
-					<el-image :src="scope.row.parkImg" alt="图片" class="w-[40px] h-[20px]" />
-				</template>
-			</el-table-column>
-			<el-table-column prop="content" label="备注" header-align="center" align="center"></el-table-column>
-			<el-table-column prop="price" label="单价" header-align="center" align="center" width="60"></el-table-column>
+			<el-table-column prop="realName" label="车主" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="phone" label="联系方式" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="licence" label="车牌号" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="brand" label="品牌" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="specification" label="型号" header-align="center" align="center" width="80"></el-table-column>
+			<el-table-column prop="color" label="颜色" header-align="center" align="center" width="80"></el-table-column>
+			<el-table-column prop="deadline" label="保险截止日期" header-align="center" align="center"></el-table-column>
+			<el-table-column prop="annualTime" label="年审日期" header-align="center" align="center"></el-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="130">
 				<template #default="scope">
-					<el-button v-auth="'sys:park:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-					<el-button v-auth="'sys:park:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
+					<el-button v-auth="'sys:car:update'" type="primary" link @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+					<el-button v-auth="'sys:car:delete'" type="primary" link @click="deleteBatchHandle(scope.row.id)">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -56,7 +49,7 @@
 		</el-pagination>
 
 		<!-- 弹窗, 新增 / 修改 -->
-		<add-or-update ref="addOrUpdateRef" @refresh-data-list="getDataList"></add-or-update>
+		<add-or-update ref="addOrUpdateRef" @refreshDataList="getDataList"></add-or-update>
 	</el-card>
 </template>
 
@@ -70,11 +63,12 @@ import { useUserExportApi } from '@/api/sys/user'
 import { ElMessage, UploadProps } from 'element-plus'
 
 const state: IHooksOptions = reactive({
-	dataListUrl: '/sys/park/page',
-	deleteUrl: '/sys/park/delete',
+	dataListUrl: '/sys/car/page',
+	deleteUrl: '/sys/car/delete',
 	queryForm: {
-		communityName: '',
-		parkName: ''
+		realName: '',
+		licence: '',
+		brand: ''
 	}
 })
 
