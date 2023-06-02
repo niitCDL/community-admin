@@ -8,6 +8,9 @@ export const useUserInfoApi = () => {
 export const updatePasswordApi = (data: any) => {
 	return service.put('/sys/user/password', data)
 }
+export const updateAvatarApi = (data: any) => {
+	return service.post('/sys/user/avatar', data)
+}
 export const getUserList = () => {
 	return service.get('/sys/user/list')
 }
