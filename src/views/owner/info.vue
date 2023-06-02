@@ -69,8 +69,22 @@
 						<el-descriptions-item label="地址：" label-align="right">{{ eContacts.address }}</el-descriptions-item>
 					</el-descriptions>
 				</el-tab-pane>
-				<el-tab-pane label="房屋信息" name="second">Config</el-tab-pane>
-				<el-tab-pane label="成员信息" name="third">Role</el-tab-pane>
+				<el-tab-pane label="成员信息" name="second">
+					<el-descriptions class="mt-5" title="成员登记" :column="2" border> </el-descriptions>
+					<el-table :data="familyData" stripe style="width: 100%">
+						<el-table-column prop="realName" label="姓名" width="180" />
+						<fast-table-column prop="gender" label="性别" dict-type="user_gender" width="100%"></fast-table-column>
+						<el-table-column prop="phone" label="手机号" width="180" />
+						<el-table-column prop="identityCard" label="身份证号" />
+						<fast-table-column prop="identity" label="关系" dict-type="owner_identity" width="100%"></fast-table-column>
+						<el-table-column prop="isRegister" label="是否注册" width="180" />
+						<el-table-column prop="date" label="操作" width="180">
+							<template #default="scope">
+								<el-button v-auth="'owner:info:delete'" type="danger" link @click="deleteFamilyHandle(scope.row.id)">删除</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+				</el-tab-pane>
 			</el-tabs>
 		</el-card>
 	</div>
@@ -78,18 +92,30 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { oInfo } from '@/api/owner/owner'
-import type { TabsPaneContext } from 'element-plus'
+import { oInfo, ownerFamily, deFamily } from '@/api/owner/owner'
+import { ElMessage } from 'element-plus'
 const activeName = ref('first')
-const data = ref({})
-const eContacts = ref({})
+const data = ref<any>({})
+const familyData = ref([])
+const eContacts = ref<any>({})
 onMounted(() => {
 	const ownerId = localStorage.getItem('ownerId')
 	oInfo(ownerId).then(res => {
 		data.value = res.data
 		eContacts.value = JSON.parse(data.value.econtacts)
 	})
+	ownerFamily({ ownerId: ownerId }).then(res => {
+		familyData.value = res.data
+	})
 })
+const deleteFamilyHandle = (id: number) => {
+	deFamily(id).then((res: any) => {
+		ElMessage.success('删除成功')
+		ownerFamily({ ownerId: localStorage.getItem('ownerId') }).then(res => {
+			familyData.value = res.data
+		})
+	})
+}
 </script>
 
 <style scoped>

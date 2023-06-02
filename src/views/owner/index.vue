@@ -10,10 +10,10 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" @click="getDataList()"><svg-icon icon="icon-search"></svg-icon>查询</el-button>
+				<el-button v-auth="'owner:index:page'" type="primary" @click="getDataList()"><svg-icon icon="icon-search"></svg-icon>查询</el-button>
 			</el-form-item>
 			<el-form-item>
-				<el-button @click="resetData()"><svg-icon icon="icon-reload"></svg-icon>重置</el-button>
+				<el-button v-auth="'owner:index:page'" @click="resetData()"><svg-icon icon="icon-reload"></svg-icon>重置</el-button>
 			</el-form-item>
 		</el-form>
 		<el-table v-loading="state.dataListLoading" :data="state.dataList" border style="width: 100%">
@@ -35,9 +35,13 @@
 			<fast-table-column prop="state" label="状态" width="100%" dict-type="owner_state"></fast-table-column>
 			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="200">
 				<template #default="scope">
-					<el-button type="primary" link @click="toInfo(scope.row.id)">查看</el-button>
-					<el-button v-if="scope.row.state === 0" type="success" link @click="approvedApply(scope.row.id)">通过</el-button>
-					<el-button v-if="scope.row.state === 0" type="warning" link @click="refuseApply(scope.row.id)">驳回</el-button>
+					<el-button v-auth="'owner:index:info'" type="primary" link @click="toInfo(scope.row.id)">查看</el-button>
+					<el-button v-if="scope.row.state === 0" v-auth="'owner:index:apApply'" type="success" link @click="approvedApply(scope.row.id)"
+						>通过</el-button
+					>
+					<el-button v-if="scope.row.state === 0" v-auth="'owner:index:reApply'" type="warning" link @click="refuseApply(scope.row.id)"
+						>驳回</el-button
+					>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -83,7 +87,7 @@ const state: IHooksOptions = reactive({
 	}
 })
 const approvedApply = (id: number) => {
-	apApply(id).then(res => {
+	apApply(id).then((res: any) => {
 		if (res.code == 0) {
 			ElMessage.success('审批成功')
 			getDataList()
@@ -93,7 +97,7 @@ const approvedApply = (id: number) => {
 	})
 }
 const refuseApply = (id: number) => {
-	reApply(id).then(res => {
+	reApply(id).then((res: any) => {
 		if (res.code == 0) {
 			ElMessage.success('审批成功')
 			getDataList()
