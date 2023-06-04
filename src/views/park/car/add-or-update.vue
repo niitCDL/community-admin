@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es'
-import { useCarApi, useCarSubmitApi, getUserList } from '@/api/car/car'
+import { useCarApi, useCarSubmitApi, getUserList, getCarVO } from '@/api/car/car'
 import type { UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
 
@@ -68,7 +68,7 @@ const init = (id?: number) => {
 	if (dataFormRef.value) {
 		dataFormRef.value.resetFields()
 		for (const key in dataForm) {
-			dataForm[key] = ''
+			dataForm[key as keyof typeof dataForm] = ''
 		}
 	}
 
@@ -78,8 +78,9 @@ const init = (id?: number) => {
 	getUserLists()
 }
 const getCar = (id: number) => {
-	useCarApi(id).then(res => {
+	getCarVO(id).then(res => {
 		Object.assign(dataForm, res.data)
+		console.log(res.data)
 	})
 }
 
@@ -87,6 +88,7 @@ const getCar = (id: number) => {
 const getUserLists = () => {
 	getUserList().then(res => {
 		userList.value = res.data
+		console.log(res.data)
 	})
 }
 

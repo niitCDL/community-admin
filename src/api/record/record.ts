@@ -11,3 +11,6 @@ export const useRecordSubmitApi = (dataForm: any) => {
 		return service.post('/sys/record', dataForm)
 	}
 }
+export function getInfo(id: any) {
+	return service.get(`/sys/record/info/${id}`)
+}

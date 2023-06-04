@@ -31,6 +31,11 @@
 					<el-tag v-if="row.type == 1" type="primary">固定车辆</el-tag>
 				</template>
 			</el-table-column>
+			<el-table-column label="操作" fixed="right" header-align="center" align="center" width="130">
+				<template #default="scope">
+					<el-button v-auth="'sys:record:info'" type="primary" link @click="detailHandle(scope.row.id)">详情</el-button>
+				</template>
+			</el-table-column>
 		</el-table>
 		<el-pagination
 			:current-page="state.page"
@@ -42,6 +47,8 @@
 			@current-change="currentChangeHandle"
 		>
 		</el-pagination>
+
+		<detail ref="detailRef" @refresh-data-list="getDataList"></detail>
 	</el-card>
 </template>
 
@@ -49,9 +56,15 @@
 import { useCrud } from '@/hooks'
 import { reactive, ref, computed } from 'vue'
 import { IHooksOptions } from '@/hooks/interface'
+import detail from './detail.vue'
+
+const detailRef = ref()
+const detailHandle = (id?: number) => {
+	detailRef.value.init(id)
+}
 
 const state: IHooksOptions = reactive({
-	dataListUrl: '/sys/parkRecord/page',
+	dataListUrl: '/sys/record/page',
 	queryForm: {
 		parkName: '',
 		licence: '',
@@ -60,10 +73,10 @@ const state: IHooksOptions = reactive({
 		duration: ''
 	}
 })
-const addOrUpdateRef = ref()
-const addOrUpdateHandle = (id?: number) => {
-	addOrUpdateRef.value.init(id)
-}
+// const addOrUpdateRef = ref()
+// const addOrUpdateHandle = (id?: number) => {
+// 	addOrUpdateRef.value.init(id)
+// }
 const computedTime = (row: any) => {
 	let startTime = new Date(Date.parse(row.accessTime)).getTime()
 	let endTime = new Date(Date.parse(row.leaveTime)).getTime()
