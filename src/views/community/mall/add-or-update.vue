@@ -14,9 +14,9 @@
 			<el-form-item prop="mallNumber" label="商铺编号">
 				<el-input v-model="dataForm.mallNumber" placeholder="商铺编号"></el-input>
 			</el-form-item>
-			<el-form-item prop="mallNumber" label="商铺编号">
+			<!-- <el-form-item prop="mallNumber" label="商铺编号">
 				<el-input v-model="dataForm.mallNumber" placeholder="商铺编号"></el-input>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item prop="address" label="商铺地址">
 				<el-input v-model="dataForm.address" placeholder="商铺地址"></el-input>
 			</el-form-item>

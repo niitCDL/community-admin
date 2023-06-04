@@ -14,3 +14,6 @@ export const useCarSubmitApi = (dataForm: any) => {
 export function getUserList() {
 	return service.post('one/user/list')
 }
+export function getCarVO(id: any) {
+	return service.get(`sys/car/VO/${id}`)
+}
