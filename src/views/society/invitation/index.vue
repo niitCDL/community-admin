@@ -1,24 +1,9 @@
 ﻿<template>
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
-			<el-form-item>
-				<el-date-picker
-					v-model="state.queryForm.createTime"
-					type="datetime"
-					placeholder="开始时间"
-					format="YYYY/MM/DD hh:mm:ss"
-					value-format="YYYY-MM-DD hh:mm:ss"
-				/>
-			</el-form-item>
-			<el-form-item>
-				<el-date-picker
-					v-model="state.queryForm.endTime"
-					type="datetime"
-					placeholder="结束时间"
-					format="YYYY/MM/DD hh:mm:ss"
-					value-format="YYYY-MM-DD hh:mm:ss "
-				/>
-			</el-form-item>
+			<!-- <el-form-item>
+				<el-input v-model="state.queryForm.communityName" placeholder="所属社区查询" clearable></el-input>
+			</el-form-item> -->
 
 			<el-form-item>
 				<el-button @click="getDataList()">查询</el-button>
@@ -76,9 +61,7 @@ const state: IHooksOptions = reactive({
 	dataListUrl: '/soft2242/visitor/invitation/page',
 	deleteUrl: '',
 	queryForm: {
-		username: '',
-		mobile: '',
-		gender: ''
+		communityName: ''
 	}
 })
 

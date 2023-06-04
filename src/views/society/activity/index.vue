@@ -7,7 +7,8 @@
 					type="datetime"
 					placeholder="开始时间"
 					format="YYYY/MM/DD hh:mm:ss"
-					value-format="YYYY-MM-DD h:m:s a"
+					value-format="YYYY-MM-DD hh:mm:ss"
+					@change="handleChange(state.queryForm.createTime, 0)"
 				/>
 			</el-form-item>
 			<el-form-item>
@@ -16,8 +17,12 @@
 					type="datetime"
 					placeholder="结束时间"
 					format="YYYY/MM/DD hh:mm:ss"
-					value-format="YYYY-MM-DD h:m:s a"
+					value-format="YYYY-MM-DD hh:mm:ss"
+					@change="handleChange(state.queryForm.endTime, 1)"
 				/>
+			</el-form-item>
+			<el-form-item>
+				<el-input v-model="state.queryForm.activityName" placeholder="活动名称" clearable></el-input>
 			</el-form-item>
 
 			<el-form-item>
@@ -76,13 +81,14 @@
 
 <script setup lang="ts" name="SysUserIndex">
 import { useCrud } from '@/hooks'
-import { reactive, ref } from 'vue'
+import { reactive, ref, watch } from 'vue'
 import AddOrUpdate from './add-or-updates.vue'
 import { IHooksOptions } from '@/hooks/interface'
 // import constant from '@/utils/constant'
 import { useDeleteActivityApi, useActivityStatusApi } from '@/api/society/activity'
 import { ElMessage, UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
+import dayjs from 'dayjs'
 
 const getOption = reactive({ urls: '/soft2242/activity/page' })
 const state: IHooksOptions = reactive({
@@ -90,11 +96,25 @@ const state: IHooksOptions = reactive({
 	dataListUrl: getOption.urls,
 	deleteUrl: '/soft2242/activity/type/delete',
 	queryForm: {
-		username: '',
-		mobile: '',
-		gender: ''
+		createTime: '',
+		endTime: '',
+		activityName: ''
 	}
 })
+const createTime = ref<any>()
+const entTime = ref<any>()
+const handleChange = (date: any, ops: any) => {
+	if (ops === 0) {
+		createTime.value = dayjs(date).format('YYYY-MM-DD hh:mm:ss')
+		console.log(createTime)
+		state.queryForm.createTime = createTime
+	}
+	if (ops === 1) {
+		entTime.value = dayjs(date).format('YYYY-MM-DD hh:mm:ss')
+		console.log(entTime)
+		state.queryForm.endTime = entTime
+	}
+}
 
 const uploadUserExcelUrl = import.meta.env.VITE_API_URL + '/soft2242/order/import?accessToken=' + cache.getToken()
 
@@ -109,49 +129,47 @@ const addOrUpdateHandle = (id?: number) => {
 // }
 const deleteActivity = (id: number) => {
 	useDeleteActivityApi(id)
-	ElMessage.success({
-		message: '删除成功',
-		duration: 500,
-		onClose: () => {
-			getDataList()
-		}
-	})
+		.then(res => {
+			ElMessage.success({
+				message: '删除成功',
+				duration: 500,
+				onClose: () => {
+					getDataList()
+				}
+			})
+		})
+		.catch(err => {
+			ElMessage.success({
+				message: err.msg,
+				duration: 500,
+				onClose: () => {}
+			})
+		})
+
 	getDataList()
 	return
 }
 const changeStatus = (id: number) => {
 	useActivityStatusApi(id)
-	ElMessage.success({
-		message: '修改成功',
-		duration: 500,
-		onClose: () => {
-			getDataList()
-		}
-	})
+		.then(res => {
+			ElMessage.success({
+				message: '修改成功',
+				duration: 500,
+				onClose: () => {
+					getDataList()
+				}
+			})
+		})
+		.catch(err => {
+			ElMessage.success({
+				message: err.msg,
+				duration: 500,
+				onClose: () => {}
+			})
+		})
+
 	getDataList()
 	return
-}
-const handleSuccess: UploadProps['onSuccess'] = (res, file) => {
-	if (res.code !== 0) {
-		ElMessage.error('上传失败：' + res.msg)
-		return false
-	}
-
-	ElMessage.success({
-		message: '上传成功',
-		duration: 500,
-		onClose: () => {
-			getDataList()
-		}
-	})
-}
-
-const beforeUpload: UploadProps['beforeUpload'] = file => {
-	if (file.size / 1024 / 1024 / 1024 / 1024 > 1) {
-		ElMessage.error('文件大小不能超过100M')
-		return false
-	}
-	return true
 }
 
 const { getDataList, selectionChangeHandle, sizeChangeHandle, currentChangeHandle, deleteBatchHandle } = useCrud(state)

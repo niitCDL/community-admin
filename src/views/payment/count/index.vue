@@ -1,7 +1,7 @@
 ﻿<template>
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
-			<el-form-item>
+			<!-- <el-form-item>
 				<el-date-picker
 					v-model="state.queryForm.createTime"
 					type="datetime"
@@ -18,7 +18,7 @@
 					format="YYYY/MM/DD hh:mm:ss"
 					value-format="YYYY-MM-DD h:m:s a"
 				/>
-			</el-form-item>
+			</el-form-item> -->
 
 			<el-form-item>
 				<el-button @click="query()">查询</el-button>
