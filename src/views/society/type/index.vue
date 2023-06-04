@@ -2,22 +2,7 @@
 	<el-card>
 		<el-form :inline="true" :model="state.queryForm" @keyup.enter="getDataList()">
 			<el-form-item>
-				<el-date-picker
-					v-model="state.queryForm.createTime"
-					type="datetime"
-					placeholder="开始时间"
-					format="YYYY/MM/DD hh:mm:ss"
-					value-format="YYYY-MM-DD h:m:s a"
-				/>
-			</el-form-item>
-			<el-form-item>
-				<el-date-picker
-					v-model="state.queryForm.endTime"
-					type="datetime"
-					placeholder="结束时间"
-					format="YYYY/MM/DD hh:mm:ss"
-					value-format="YYYY-MM-DD h:m:s a"
-				/>
+				<el-input v-model="state.queryForm.TypeName" placeholder="活动类型名称" clearable></el-input>
 			</el-form-item>
 
 			<el-form-item>
@@ -88,9 +73,7 @@ const state: IHooksOptions = reactive({
 	dataListUrl: getOption.urls,
 	deleteUrl: '/soft2242/activity/type/delete',
 	queryForm: {
-		username: '',
-		mobile: '',
-		gender: ''
+		TypeName: ''
 	}
 })
 

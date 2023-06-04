@@ -7,7 +7,8 @@
 					type="datetime"
 					placeholder="开始时间"
 					format="YYYY/MM/DD hh:mm:ss"
-					value-format="YYYY-MM-DD h:m:s a"
+					value-format="YYYY-MM-DD hh:mm:ss"
+					@change="handleChange(state.queryForm.createTime, 0)"
 				/>
 			</el-form-item>
 			<el-form-item>
@@ -16,7 +17,8 @@
 					type="datetime"
 					placeholder="结束时间"
 					format="YYYY/MM/DD hh:mm:ss"
-					value-format="YYYY-MM-DD h:m:s a"
+					value-format="YYYY-MM-DD hh:mm:ss"
+					@change="handleChange(state.queryForm.endTime, 1)"
 				/>
 			</el-form-item>
 
@@ -89,16 +91,30 @@ import { IHooksOptions } from '@/hooks/interface'
 import { useOrderExportApi, useDeleteORderApi } from '@/api/society/order'
 import { ElMessage, UploadProps } from 'element-plus'
 import cache from '@/utils/cache'
+import dayjs from 'dayjs'
 
 const state: IHooksOptions = reactive({
 	dataListUrl: '/soft2242/order/page',
 	deleteUrl: '',
 	queryForm: {
-		username: '',
-		mobile: '',
-		gender: ''
+		createTime: '',
+		endTime: ''
 	}
 })
+const createTime = ref<any>()
+const entTime = ref<any>()
+const handleChange = (date: any, ops: any) => {
+	if (ops === 0) {
+		createTime.value = dayjs(date).format('YYYY-MM-DD hh:mm:ss')
+		console.log(createTime)
+		state.queryForm.createTime = createTime
+	}
+	if (ops === 1) {
+		entTime.value = dayjs(date).format('YYYY-MM-DD hh:mm:ss')
+		console.log(entTime)
+		state.queryForm.endTime = entTime
+	}
+}
 
 const uploadUserExcelUrl = import.meta.env.VITE_API_URL + '/soft2242/order/import?accessToken=' + cache.getToken()
 
